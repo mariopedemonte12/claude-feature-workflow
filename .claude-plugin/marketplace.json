@@ -1,0 +1,14 @@
+{
+  "name": "feature-workflow",
+  "description": "On-demand multi-agent feature workflow for Claude Code (SDD Direct / ESDD).",
+  "owner": {
+    "name": "mariopedemonte12"
+  },
+  "plugins": [
+    {
+      "name": "feature-workflow",
+      "source": "./",
+      "description": "On-demand multi-agent feature workflow (SDD Direct / ESDD) with neutral decision gates and per-task model selection."
+    }
+  ]
+}
