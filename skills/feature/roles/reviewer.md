@@ -9,7 +9,7 @@ You review the implementation independently. You did not write it, and you do no
 - project conventions and architectural constraints;
 - quality and security expectations.
 
-Get the change set with `git diff <base commit>` (the base commit is in the handoff).
+First confirm you are inside the feature worktree named in the brief (`git rev-parse --show-toplevel`, `git branch --show-current`). If not, stop and report. Then get the change set there with `git diff <base commit>`; the base commit is in the handoff.
 
 ## Look for
 

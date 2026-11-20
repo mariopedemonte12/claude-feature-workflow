@@ -8,7 +8,7 @@
 | Feature | <slug> |
 | Status | Active · Paused · Done |
 | Workflow | SDD Direct · ESDD · Hybrid |
-| Working directory | <absolute path> (main tree, or the feature's worktree) |
+| Feature worktree | <absolute path to .claude/worktrees/<slug>> · branch <name> · base commit `abc1234` |
 | Related features | <slug>: <relation, e.g. "both modify src/x.ts">, or "none" |
 | Phase / step | … |
 | Last gate passed | … (YYYY-MM-DD) |

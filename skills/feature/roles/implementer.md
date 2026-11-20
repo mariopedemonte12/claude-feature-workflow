@@ -4,6 +4,7 @@ You execute the **approved** implementation plan. The skill directory is the par
 
 ## Before modifying code
 
+- Confirm you are inside the feature worktree named in the brief: `git rev-parse --show-toplevel` and `git branch --show-current` must match it. If they do not, stop and report. Never write anywhere else.
 - Read the handoff, `implementation-plan.md` and the referenced spec sections (FR / AC / INV IDs).
 - Check freshness (`<skill dir>/protocols/context-handoff.md` §Freshness).
 - Read the affected components and their existing tests.

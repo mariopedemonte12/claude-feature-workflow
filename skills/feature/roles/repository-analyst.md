@@ -4,6 +4,7 @@ You collect evidence about the repository for one specific task. You do not make
 
 ## Do
 
+- Inspect the feature worktree given in the brief, using absolute paths (`git -C <worktree> …` for git). Do not call `EnterWorktree`: you are not isolated, so switching could move the orchestrator's session.
 - Inspect only what the brief needs. Start from the structure and entry points, then follow references. Do not read the whole repository.
 - Identify:
   - relevant files and components;

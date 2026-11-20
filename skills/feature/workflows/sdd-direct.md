@@ -47,6 +47,16 @@ If independent review applies, brief the Reviewer (`roles/reviewer.md`) **in par
 
 **13. ⛔ Acceptance.** The programmer decides final acceptance.
 
+**14. ⛔ Integration.** The feature's code and artifacts live on its worktree branch. Present how to integrate it as a neutral decision, for example: merge into the target branch, rebase then merge, open a pull request, or leave the branch unmerged for now. Include the facts:
+- uncommitted changes in the worktree;
+- commits ahead of and behind the target;
+- files changed by this feature that also changed on the target since the base (intersect `git diff --name-only <base>` run in the worktree with `git diff --name-only <base> <target>`);
+- files that other in-progress features also change.
+
+Execute only what the programmer chooses. Committing the feature's work on its branch is part of carrying out the chosen integration, never something done before the choice.
+
+**15. ⛔ Cleanup.** After integration, or if the feature is abandoned, ask whether to remove the worktree and its branch. Removal destroys local state: do it only with the programmer's confirmation.
+
 ## Definition of done (ready for acceptance)
 
 - [ ] Spec approved; plan approved.

@@ -1,6 +1,6 @@
 ---
 name: feature
-description: Multi-agent feature workflow (SDD Direct or Evolutionary Spec-Driven Development) for one or several concurrent features, with human decision gates, neutral option presentation, per-delegation model selection, shared artifacts and context handoffs. Manual invocation only.
+description: Multi-agent feature workflow (SDD Direct or Evolutionary Spec-Driven Development) for one or several concurrent features, each in its own git worktree, with human decision gates, neutral option presentation, per-delegation model selection, shared artifacts and context handoffs. Manual invocation only.
 argument-hint: "<feature description> [--sdd | --esdd] | resume <slug>... | status"
 disable-model-invocation: true
 ---
@@ -31,12 +31,19 @@ The programmer has deliberately activated this workflow. From now until they say
 
 1. **Parse the request.**
    - `status`: show the portfolio board (`protocols/multi-feature.md` §Portfolio).
-   - `resume <slug> [<slug>…]`: for each slug, locate its feature folder (the project's features root, or a worktree from `git worktree list`), read its `handoff.md`, check freshness (`protocols/context-handoff.md` §Freshness), and report the current state and next step, tagged `[slug]`. Then continue.
+   - `resume <slug> [<slug>…]`: for each slug, locate its worktree (`.claude/worktrees/<slug>`, shown by `git worktree list`) and the feature folder inside it, read its `handoff.md`, check freshness (`protocols/context-handoff.md` §Freshness), and report the current state and next step, tagged `[slug]`. Then continue.
    - `<description> [--sdd | --esdd]`: a **new feature**. Give it a short kebab-case slug, unique among the features in progress, and state it. A flag means the programmer has already chosen this feature's workflow.
    - Empty: if features are in progress, show the board and ask what to do; otherwise ask what feature to work on.
    - As soon as more than one feature is in progress, read `protocols/multi-feature.md` and follow it from then on.
 2. **Project context, selectively.** CLAUDE.md, README, build/test commands, the modules the request points to. If more than a handful of files is needed, delegate to the Repository Analyst (§4). Never assume a language, framework, database or architecture without repository evidence.
-3. **Feature folder.** Use the project's existing spec/docs convention if there is one; otherwise `docs/features/<slug>/`. Tell the programmer the path (they may change it). Create a file only when a phase produces its content: no empty templates.
+3. **Feature worktree and folder.** Every feature lives in its own git worktree, created with Claude Code's built-in worktree function. This applies from the first feature, even when it is the only one. It is a standing instruction from the programmer, and it is the explicit authorization that `EnterWorktree`/`ExitWorktree` require.
+   1. Call `EnterWorktree` with `name: "<slug>"` (load it with ToolSearch if it is deferred). It creates `.claude/worktrees/<slug>` on a new branch. The base comes from the programmer's `worktree.baseRef` setting: by default `fresh` (`origin/<default-branch>`), or `head` (local HEAD).
+   2. Record its absolute path, its branch (`git branch --show-current`) and its base commit (`git rev-parse --short HEAD`).
+   3. Immediately call `ExitWorktree` with `action: "keep"`. You always stay in the original checkout and reach every feature through absolute paths. Never remain inside one feature's worktree.
+   4. If the base commit differs from the original checkout's HEAD, or the original checkout has uncommitted changes, tell the programmer as a fact: that work is not in the feature's worktree.
+   5. If the worktree cannot be created (not a git repository and no WorktreeCreate/WorktreeRemove hooks; the session is already inside a worktree session; a git error), stop this feature and present the situation to the programmer neutrally. Never fall back to the shared checkout on your own.
+
+   The **feature folder** lives inside the worktree, so artifacts travel with the feature branch. Use the project's spec/docs convention if there is one; otherwise `docs/features/<slug>/`. Tell the programmer the worktree path, the branch and the folder. Create a file only when a phase produces its content: no empty templates.
 4. **Workflow selection for this feature** (skip if a flag decided it). Each feature gets its own selection; features in the same portfolio may use different workflows.
    Assess each dimension with evidence: requirement clarity · functional uncertainty · technical feasibility · architectural uncertainty · expected discoveries · need for prototypes or experiments.
    Selection criteria: low uncertainty across the board → SDD Direct. Meaningful uncertainty or expected discovery → ESDD. Uncertainty confined to one area → **Hybrid**: SDD Direct overall, with an ESDD loop limited to that area. Feature size alone never decides.
@@ -107,15 +114,20 @@ Typical deviations (illustrative, not exhaustive):
 
 ### Delegation practice
 
-**Grouping.** Do not create a transition for a trivial task: read a couple of files yourself instead of spawning an analyst. The implementer runs routine tests for its own changes. When review is used, the reviewer is always a different agent from the implementer, for independence. Independent tasks run in parallel, within a feature (several analyst queries; testing and review) and across features.
+**Grouping.** Do not create a transition for a trivial task: read a couple of files yourself instead of spawning an analyst. The implementer runs routine tests for its own changes. When review is used, the reviewer is always a different agent from the implementer, for independence. Independent tasks run in parallel, within a feature (several analyst queries; testing and review) and across features. Within one feature, never run two code-modifying agents at the same time. Tester and Reviewer may run together because the Reviewer writes only its report.
+
+**Launching subagents into the feature worktree.**
+- **Write-capable roles** (Implementer, Tester, Reviewer): launch with `isolation: "worktree"` and include the "First action" line of the brief. Isolation pins the agent's working directory, so its `EnterWorktree` switch moves only that agent and never your session. The temporary worktree it starts in stays unchanged and is cleaned up automatically.
+- **Read-only roles** (Analyst, Planner): launch without isolation. They read the feature worktree through absolute paths and must not call `EnterWorktree`.
 
 **Briefing a subagent.** Set the Agent `description` to `[<slug>] <Role>: <task>`. The prompt contains this, and only this:
 
 ```
 You are the <Role> for feature "<slug>" in a multi-agent feature workflow.
+Feature worktree: <absolute path to .claude/worktrees/<slug>> (branch <branch>). Every project file you read, run or write is inside it; never touch files outside it.
+First action (write-capable roles only): call EnterWorktree with path "<absolute worktree path>" (load it with ToolSearch "select:EnterWorktree" if needed), then confirm with `git branch --show-current`. If this fails, stop and report. Do not work anywhere else.
 1. Read and follow your role file: <absolute path to roles/<role>.md>
-2. Read the handoff: <absolute path to handoff.md>. Open other artifacts only at the sections it references.
-Working directory: <absolute path>. Work only inside it. Other features may be running in parallel, so never modify files outside it.
+2. Read the handoff: <absolute path to handoff.md inside the worktree>. Open other artifacts only at the sections it references.
 Task: <one concrete paragraph>
 Scope: <in scope / out of scope>
 Output: <absolute path(s) to write>   (Analyst and Planner are read-only: they return their output instead)
@@ -145,7 +157,8 @@ Gates are **per feature**: a pending gate blocks only its own feature. Stop that
 ## 6. Feature folder layout
 
 ```
-<feature-folder>/
+<repo>/.claude/worktrees/<slug>/       # the feature's worktree (own branch)
+└── <features-root>/<slug>/             # e.g. docs/features/<slug>/
 ├── specification.md
 ├── implementation-plan.md
 ├── testing-plan.md
@@ -157,5 +170,6 @@ Gates are **per feature**: a pending gate blocks only its own feature. Stop that
 
 ## 7. Ending
 
-- **A feature** ends at its own final acceptance (status Done), or is paused when the programmer says so. Update its `handoff.md` first; the other features continue.
+- **A feature** ends at its own final acceptance, followed by the integration and cleanup gates in its workflow's finalization (status Done), or is paused when the programmer says so. Update its `handoff.md` first; the other features continue. A paused feature's worktree and branch stay on disk.
+- **Worktree cleanup** (`git worktree remove <path>`, then deleting the branch) destroys local state. Do it only after the programmer confirms. `ExitWorktree` cannot remove these worktrees, because you already left them right after creating them.
 - **The orchestration** ends when no feature remains in progress, or when the programmer tells you to stop. Update every in-progress feature's `handoff.md` first, so that `/feature resume <slug>…` can continue in a new session.

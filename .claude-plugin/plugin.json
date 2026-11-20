@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "feature-workflow",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "On-demand multi-agent feature workflow for Claude Code: SDD Direct or Evolutionary Spec-Driven Development, specialized subagents with per-task model selection, neutral (non-recommending) decision gates, several features in parallel.",
   "author": {
     "name": "mariopedemonte12"

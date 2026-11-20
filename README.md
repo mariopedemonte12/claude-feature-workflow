@@ -13,7 +13,8 @@ It loads **only when you call it** (`/feature`). In every other session it costs
 - **Specialized subagents.** Repository Analyst, Planner, Implementer, Tester and Independent Reviewer, each driven by its own role file.
 - **Per-task model selection.** Every role has a standard model, and the orchestrator picks the cheapest sufficient model for *each* delegation. That can be higher or lower than the standard, with floors so architecture and review are never downgraded. Every non-standard choice is announced, and every delegation is logged.
 - **Neutral decision gates.** Options are never recommended or ranked: they are sorted alphabetically, given symmetric pros and cons, described with verifiable facts instead of adjectives, and excluded options are listed with the constraint they violate. The agent gives an opinion only if you explicitly insist on one.
-- **Several features in parallel.** One orchestrator acts as the single intermediary between you and the agents of every feature. Each feature has its own workflow, gates, artifacts and agents. A gate in one feature does not block the others. Overlaps between features are reported, and the isolation strategy (git worktree per feature, serialized implementation, or shared tree) is your decision.
+- **One git worktree per feature.** Every feature, even a lone one, lives in its own worktree created with Claude Code's built-in worktree support (`.claude/worktrees/<slug>`, on its own branch). Its code and artifacts travel on that branch. How it is integrated (merge, pull request…) and whether the worktree is removed are your decisions.
+- **Several features in parallel.** One orchestrator acts as the single intermediary between you and the agents of every feature. Each feature has its own workflow, gates, artifacts and agents. A gate in one feature does not block the others. Overlaps between features (files changed on several branches, shared test resources) are reported early.
 - **Artifacts as source of truth.** Specification, plan, testing plan, decision records, reports and a handoff file per feature. Any feature can be resumed in a new session.
 - **Testing discipline.** Boundary value analysis, fuzz/property-based, symbolic/concolic, decision tables and state machines, each reported as *Applied*, *Not applicable* (with a reason) or *Blocked* (with an explanation). Mutation testing is mandatory for features you mark as critical.
 
@@ -58,6 +59,7 @@ A typical SDD Direct run:
 4. **Implementation.** The Implementer follows the approved plan. Any deviation comes back to you as a decision.
 5. **Testing and review.** The Tester and Reviewer run in parallel. Defects come back to you as decisions.
 6. **Final report.** Built only from evidence. You decide acceptance.
+7. **Integration and cleanup.** You choose how the feature branch is integrated and whether its worktree is removed.
 
 ESDD adds exploration, disposable prototypes, increments, discovery classification (Confirmed / Hypothesis / Under exploration / Rejected) and a traceable spec change log.
 
@@ -105,6 +107,10 @@ The workflow was derived from a longer design document, included as [`docs/maste
 ## Requirements and status
 
 - Claude Code with skills and subagents. Built against Claude Code 2.1.319; `claude plugin validate` passes.
+- A git repository (or `WorktreeCreate`/`WorktreeRemove` hooks), because every feature runs in its own worktree.
+  - The orchestrator creates each worktree with `EnterWorktree` and leaves it immediately with `ExitWorktree` (keep).
+  - Code-writing subagents are launched with `isolation: "worktree"` and switch into their feature's worktree.
+  - New worktrees branch from `origin/<default-branch>` by default. To branch from your local HEAD instead, set `"worktree": { "baseRef": "head" }` in your Claude Code settings.
 - Uses the built-in subagent types `Explore`, `Plan` and `general-purpose`, and the model aliases `haiku`, `sonnet` and `opus`.
 - Early version: the structure is validated, but the workflow has not yet been exercised across many real projects. Issues and pull requests are welcome.
 

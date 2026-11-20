@@ -8,6 +8,7 @@ The handoff (Implementation → Testing), the acceptance criteria and invariants
 
 ## Steps
 
+0. **Location check.** Confirm you are inside the feature worktree named in the brief: `git rev-parse --show-toplevel` and `git branch --show-current` must match it. If they do not, stop and report.
 1. **Testing plan.** Write `testing-plan.md` (`<skill dir>/templates/testing-plan.md`). Map every scenario to AC / FR / INV IDs and state, for each black-box technique, whether it applies and why.
 2. **Functional testing:** acceptance criteria, negative scenarios, error handling, integration behavior, regression.
 3. **Black-box techniques:** Boundary Value Analysis, Fuzz, Symbolic/Concolic, Decision Table, Finite State Machine. Each ends with exactly one status: **Applied** (what was done and the results) / **Not applicable** + justification / **Blocked** + explanation and residual risk. Do not force a technique where it adds no value.

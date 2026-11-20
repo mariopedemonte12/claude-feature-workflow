@@ -6,7 +6,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 
 ## Inputs
 
-The handoff (Specification → Planning), the referenced sections of `specification.md`, and the repository context it points to.
+The handoff (Specification → Planning), the referenced sections of `specification.md`, and the repository context it points to. Read the code in the feature worktree given in the brief, using absolute paths (`git -C <worktree> …` for git). Do not call `EnterWorktree`: you are not isolated, so switching could move the orchestrator's session.
 
 ## Do
 

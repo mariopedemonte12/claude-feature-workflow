@@ -63,4 +63,4 @@ This workflow runs **per feature**. For each delegation, the executor and standa
 
 ## Phase 6: Finalization
 
-Write `reports/final-report.md` (`templates/final-report.md`), including: final spec state and its evolution, important discoveries, approved decisions, implemented increments, architecture and implementation changes, testing performed, validation results, **remaining hypotheses**, known limitations and outstanding risks. ⛔ The programmer decides final acceptance.
+Write `reports/final-report.md` (`templates/final-report.md`), including: final spec state and its evolution, important discoveries, approved decisions, implemented increments, architecture and implementation changes, testing performed, validation results, **remaining hypotheses**, known limitations and outstanding risks. ⛔ The programmer decides final acceptance. Then apply the ⛔ integration and ⛔ cleanup gates exactly as in `workflows/sdd-direct.md`, steps 14–15.

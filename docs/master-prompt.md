@@ -1,11 +1,12 @@
 > **About this document**
 >
-> This is the original design document ("master prompt") that the `/feature` skill was derived from. It explains the reasoning behind the workflow. **Where the two differ, the skill in [`skills/feature/`](../skills/feature/SKILL.md) is authoritative.** The skill departs from this document on purpose in four ways:
+> This is the original design document ("master prompt") that the `/feature` skill was derived from. It explains the reasoning behind the workflow. **Where the two differ, the skill in [`skills/feature/`](../skills/feature/SKILL.md) is authoritative.** The skill departs from this document on purpose in five ways:
 >
 > 1. **Neutrality replaces recommendations.** Wherever this document says agents should "recommend" an option or include "a recommendation, when appropriate", the skill instead requires options to be presented neutrally: no recommended option, alphabetical order, symmetric pros and cons, facts instead of adjectives, and excluded options listed with the constraint they violate. The agent gives an opinion only if the programmer explicitly insists. See [`protocols/neutral-decisions.md`](../skills/feature/protocols/neutral-decisions.md).
 > 2. **Model selection per delegation.** Each role has a standard model, but the orchestrator picks the least expensive sufficient model for every individual delegation, above or below the standard. Floors keep planning and review from being downgraded. Every choice is logged in `delegations.md`.
 > 3. **Several features at once.** One orchestrator can run several feature flows in parallel, each with its own workflow (SDD Direct, ESDD or Hybrid), artifacts, gates and agents. The orchestrator is the single intermediary with the programmer. See [`protocols/multi-feature.md`](../skills/feature/protocols/multi-feature.md).
-> 4. **The skills library of Section 7 is consolidated.** It became role files, protocols and two knowledge guides inside the skill, loaded progressively, instead of separate global skills that would cost context in every session.
+> 4. **One git worktree per feature.** Every feature, even a lone one, works in its own worktree created with Claude Code's built-in worktree support. Integrating the branch and removing the worktree are programmer decisions.
+> 5. **The skills library of Section 7 is consolidated.** It became role files, protocols and two knowledge guides inside the skill, loaded progressively, instead of separate global skills that would cost context in every session.
 
 ---
 

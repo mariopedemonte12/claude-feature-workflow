@@ -7,7 +7,7 @@ One orchestrator (the main thread) can run a single feature flow or several at o
 Every feature in progress has:
 - a **slug** (short, unique in the session);
 - a **feature folder**;
-- a **working directory** (the main tree or its own worktree);
+- a **worktree** (`.claude/worktrees/<slug>`) and its branch;
 - a **workflow**;
 - a **status**: Active · Paused · Done;
 - a current phase/step, running agents and pending decisions.
@@ -51,24 +51,13 @@ Rows are alphabetical by slug.
 - **Record the relation** in both features' handoffs (§Related features).
 - **Never carry a decision** from one feature into another unless the programmer says so.
 
-## Working-directory isolation
+## Worktrees: what stays shared
 
-Concurrent implementation or testing in a single working tree can collide: the same files edited, diffs from several features mixed together, test runs interfering with each other.
+Every feature already lives in its own built-in worktree (`SKILL.md` §2.3), so features never share a working tree, and isolation is not a decision to ask about. Three things remain shared:
 
-The first time two features would be in implementation or testing at the same time, present the **isolation policy** as a decision (neutral protocol). The viable options usually include:
-
-- **Git worktree per feature** (requires git):
-  - Setup: `git worktree add <path> -b feature/<slug>`. All of that feature's agents work only in its worktree, and its artifacts live there.
-  - Diffs per feature stay clean.
-  - Integration (merge or rebase) becomes an explicit step at finalization, and that step is a programmer decision. Conflicts surface at integration time.
-- **Serialized implementation:**
-  - One feature implements and tests at a time in the shared tree; the others keep progressing through specification and planning.
-  - No integration step. Features wait for each other.
-- **Shared tree, concurrent:**
-  - Viable only when file sets and test resources are disjoint.
-  - Diffs mix in one tree, so `git diff <base>` for one feature includes the others' changes. The reviewer must then be given an explicit file list.
-
-Record the choice in each affected feature's `decisions/`. It becomes the session's isolation policy. Re-ask only when conditions change, for example when a new overlap appears. Brief every agent with its feature's working directory.
+- **Integration.** Branches that change the same files will conflict when integrated. Report the overlap as a fact (files, branches) as soon as plans show it, not only at the end. The integration order and method across features are the programmer's decisions, presented neutrally.
+- **Runtime resources.** Test runs in different worktrees can still collide on ports, databases, caches or external services. If two features would use the same resource at the same time, report it; serializing or isolating those runs is the programmer's decision.
+- **Base drift.** Each worktree branches from its base at creation. Once another feature is integrated, the remaining branches may need updating (merge or rebase of the new base). Whether and how to do that is the programmer's decision.
 
 ## Context economy
 

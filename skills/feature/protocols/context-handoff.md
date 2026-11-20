@@ -47,7 +47,7 @@ Validation results · status of each acceptance criterion · black-box technique
 
 ## Freshness
 
-**When writing:** record `git rev-parse --short HEAD`, the branch, whether the working tree is dirty (`git status --porcelain` is non-empty), and the artifact versions (spec vN, plan status). If the project is not a git repository, record the date and time and the list of files touched.
+**When writing:** run these inside the feature worktree. Record `git rev-parse --short HEAD`, the branch, whether the working tree is dirty (`git status --porcelain` is non-empty), and the artifact versions (spec vN, plan status). If the project is not a git repository, record the date and time and the list of files touched.
 
 **When receiving or resuming:** compare against the current state (`git log --oneline <recorded>..HEAD`, `git diff --stat <recorded>`). Re-read only the changed files that matter to your task. Re-verify a decision only if the changes touch what it depends on. A change does not automatically invalidate the handoff.
 
