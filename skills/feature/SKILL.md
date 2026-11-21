@@ -91,6 +91,7 @@ You handle everything that needs dialogue with the programmer: workflow selectio
 | Repository Analyst | `Explore` (read-only) | `haiku` | `roles/repository-analyst.md` |
 | Specification Writer | `general-purpose` | `opus` | `roles/spec-writer.md` |
 | Architecture & Planning | `Plan` (read-only) | `opus` | `roles/planner.md` |
+| Test Designer | `general-purpose` (writes only `testing-plan.md`) | `sonnet` | `roles/test-designer.md` |
 | Implementation | `general-purpose` | `sonnet` | `roles/implementer.md` |
 | Testing | `general-purpose` | `sonnet` | `roles/tester.md` |
 | Clean Code Critic | `general-purpose` | `opus` | `roles/reviewer.md` |
@@ -120,22 +121,39 @@ Typical deviations (illustrative, not exhaustive):
   - Implementer on concurrency, security, data migration or cross-cutting changes, or after a failed attempt → `opus`.
   - Tester doing symbolic/concolic analysis or reasoning about hard state → `opus`.
 
-**Floors.** Never use `haiku` for the specification, planning, the critic, the verifier or a phase runner. For **Critical** features, the specification, planning, the critic and phase runners use `opus`. These floors exist so that consequential architectural judgment is never downgraded to save cost.
+**Floors.** Never use `haiku` for the specification, planning, test design, the critic, the verifier or a phase runner. For **Critical** features, the specification, planning, test design, the critic and phase runners use `opus`. These floors exist so that consequential architectural judgment is never downgraded to save cost.
 
 **Rules:**
 - You may use any model alias the Agent tool accepts in this session.
 - Programmer overrides (per role, per feature or per delegation) take precedence over your choice. If a pinned model proves insufficient, moving away from it is the programmer's decision: report the evidence.
 - When launching with a non-standard model, state it in one line, e.g. `[slug] Implementer → opus (standard: sonnet): migrates live data`.
-- Log every delegation in the feature's `delegations.md`, one row each: date · step · role · model · reason if non-standard · outcome (done · escalated · failed).
+- Log every delegation in the feature's `delegations.md`, one row each: date · step · role · model · reason if non-standard · agent ID · new or resumed · outcome (done · escalated · failed).
 - Different features may use different models for the same role.
 
 ### Delegation practice
 
-**Grouping.** Do not create a transition for a trivial task: read a couple of files yourself instead of spawning an analyst. The implementer runs routine tests for its own changes. Critics and verifiers are always new agents with a clean context (`protocols/review-cycle.md`): never the implementer, never reused across rounds. Independent tasks run in parallel, within a feature (several analyst queries; testing and the first critic) and across features. Within one feature, never run two code-modifying agents at the same time. Tester, Critic and Verifier may run together because the critic and verifier write only their reports.
+**Who writes tests.** The Test Designer derives the cases from the approved spec, the Tester implements and runs them, and the Implementer writes production code only. It runs the existing tests to avoid handing over a regression, but adds none. Lite intensity is the exception: its single Implementer writes code and tests.
+
+**Grouping.** Do not create a transition for a trivial task: read a couple of files yourself instead of spawning an analyst. Critics and verifiers are always new agents with a clean context (`protocols/review-cycle.md`): never the implementer, never reused across rounds. Independent tasks run in parallel, within a feature (several analyst queries; testing and the first critic) and across features. Within one feature, never run two code-modifying agents at the same time. Tester, Critic and Verifier may run together because the critic and verifier write only their reports.
+
+**Headless launches.** Every subagent runs in the background (`run_in_background: true` where the Agent tool offers it), so its tool calls and output never fill the programmer's screen. You are notified when it finishes. Do not paste, stream or summarize an agent's work as it happens: show the programmer one line when an agent starts or finishes (`[slug] Tester: done, 42/45 cases pass`), and the full content only at gates. Never wait with `sleep`.
+
+**Reusing agents.** Record each agent's ID in the feature's `handoff.md` (§Workflow state, *Agents*). When work returns to a role that already ran for this feature, **resume that same agent** with `SendMessage`, carrying only the new task and its IDs. The agent keeps its context, so it does not re-read the plan, the code or its own earlier work. This covers:
+- testing or review sending fixes back to the Implementer;
+- the Tester re-running after fixes;
+- a spec change going back to the Specification Writer or the Test Designer;
+- the next ESDD increment.
+
+Launch a new agent only when:
+- the old one cannot be resumed (a new session, the agent no longer exists, an error);
+- its context is close to the window limit;
+- a different model was decided for the task.
+
+The new agent's brief then includes the earlier agent's last report. Critics and verifiers are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
 
 **Launching subagents into the feature worktree.**
 - **Every role** is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
-- Write-capable roles (Specification Writer, Implementer, Tester, Critic, Verifier) write only inside their feature worktree, plus temporary files outside the repository when their role allows it.
+- Write-capable roles (Specification Writer, Test Designer, Implementer, Tester, Critic, Verifier) write only inside their feature worktree, plus temporary files outside the repository when their role allows it.
 
 **Briefing a subagent.** Set the Agent `description` to `[<slug>] <Role>: <task>`. The prompt contains this, and only this:
 

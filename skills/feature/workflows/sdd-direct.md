@@ -16,10 +16,17 @@ This workflow runs **per feature**, at the feature's intensity: `protocols/inten
 
 **4. Analyze.** Brief the Repository Analyst: architecture evidence, folder organization, affected components, integration points, conventions, existing tests, E2E tooling, quality tooling, build/test commands. Skip this if the orchestrator already holds enough evidence. If the project has no `.quality/` registry, run the bootstrap in `protocols/anti-pattern-registry.md` (⛔ its own gate; it may share the step 6 gate). Write the Specification → Planning handoff.
 
-**5. Plan.** Brief the Planner (`roles/planner.md`). It returns implementation options, or a single option with the excluded alternatives when only one is viable. If it returns questions (a spec gap, a constraint only the programmer knows), relay them and resume it as `protocols/agent-questions.md` describes before presenting options; an answer that changes the approved spec goes back to the Specification Writer as a spec change.
+**5. Plan and design the tests, in parallel.** Launch both in one message:
+- the **Test Designer** (`roles/test-designer.md`), with the Specification → Test design handoff: it writes `testing-plan.md` from the approved spec alone, and never sees the plan;
+- the **Planner** (`roles/planner.md`).
+
+Relay the questions of either agent as `protocols/agent-questions.md` describes.
+
+The Planner returns implementation options, or a single option with the excluded alternatives when only one is viable. If it returns questions (a spec gap, a constraint only the programmer knows), relay them and resume it as `protocols/agent-questions.md` describes before presenting options; an answer that changes the approved spec goes back to the Specification Writer as a spec change.
 
 **6. ⛔ Decide.**
 - Check that the planner's output follows `protocols/neutral-decisions.md` (fix ordering or wording if needed) and present it.
+- In the same gate, present the **testing plan** in summary: case counts per technique, the ACs each covers, any AC without a case, and the Test Designer's questions. The programmer approves it or asks for changes.
 - In the same gate, settle verification depth:
   - **Critical feature:** mutation testing and the R2 review cycle are mandatory. State this; do not ask.
   - **Standard feature:** ask neutrally whether to run mutation testing, stating what it adds (what it can detect) and what it costs (time, tooling, possible new dev dependency). For review, **recommend** a level (R0 / R1 / R2) starting from the intensity default, with its evidence, as `protocols/review-cycle.md` §Recommending the level describes; the programmer validates or changes it.
@@ -28,11 +35,11 @@ This workflow runs **per feature**, at the feature's intensity: `protocols/inten
 - Write `implementation-plan.md` (`templates/implementation-plan.md`) for the approved approach only, with a one-line mention of each alternative not chosen and the decision reference.
 - Write the Planning → Implementation handoff.
 
-**7. Implement.** Brief the Implementer (`roles/implementer.md`). If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ present it neutrally, update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and the Implementation → Testing handoff.
+**7. Implement.** Brief the Implementer (`roles/implementer.md`). It writes production code only, follows the code quality standard, and reviews its own diff against the critic's checklist before the quality gate. It writes no tests. If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ present it neutrally, update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and the Implementation → Testing handoff.
 
 ## Phase 3: Testing and validation
 
-**8–11. Test.** Brief the Tester (`roles/tester.md`). It writes `testing-plan.md`, then performs:
+**8–11. Test.** Brief the Tester (`roles/tester.md`). It implements every case of the approved `testing-plan.md` as tests, then performs:
 - functional testing (acceptance criteria, negative scenarios, error handling, integration, regression);
 - end-to-end testing through the real entry point (`knowledge/e2e-testing.md`), with status Applied / Not applicable + justification / Blocked + explanation;
 - evaluation of each black-box technique (Boundary Value Analysis, Fuzz, Symbolic/Concolic, Decision Table, Finite State Machine), with status Applied / Not applicable + justification / Blocked + explanation;
@@ -41,7 +48,7 @@ This workflow runs **per feature**, at the feature's intensity: `protocols/inten
 
 **Review**, at the validated level (`protocols/review-cycle.md`). First re-check the level against the real diff. R1: one clean critic (`roles/reviewer.md`) **in parallel** with testing. R2: the first critic runs in parallel with testing, then the verify → fix → new-critic cycle; after it ends, the Tester re-runs the regression and E2E scenarios the fixes affect. R0: no review agent.
 
-**Defects and discrepancies.** ⛔ Present them to the programmer, including review findings that the cycle does not fix automatically. Fix now / accept as a known limitation / change the spec are options under the neutral protocol. Fixes go back to the Implementer with a focused handoff, followed by a re-run of the affected tests, and, when the level is R1 or R2, a new clean critic on the fix diff within the feature's cap of 3 critic rounds (`protocols/review-cycle.md`).
+**Defects and discrepancies.** ⛔ Present them to the programmer, including review findings that the cycle does not fix automatically. Fix now / accept as a known limitation / change the spec are options under the neutral protocol. Fixes go back to the **same** Implementer, resumed with `SendMessage` and the defect IDs (`SKILL.md` §4, *Reusing agents*). The reproducing test is the Tester's failing test. Then resume the same Tester to re-run the affected tests, and, when the level is R1 or R2, a new clean critic on the fix diff within the feature's cap of 3 critic rounds (`protocols/review-cycle.md`).
 
 **Anti-pattern candidates.** ⛔ In the same gate (or before acceptance if there were no defects), present `reports/anti-pattern-candidates.md` as described in `protocols/anti-pattern-registry.md` §The learning loop, steps 3–4. Update the registry with what the programmer approves; approved rule automation goes to the Implementer.
 

@@ -18,8 +18,9 @@ Every feature runs at one of three intensities: **Lite**, **Medium** or **High**
 | Repository Analyst | no; the orchestrator reads what it needs, or uses the project memory | only if the memory lacks the evidence | yes |
 | Specification Writer | no; the orchestrator writes the card's specification section | yes | yes |
 | Planner | no; the orchestrator writes one approach and lists alternatives in a line each | yes, briefed for the main decision only | yes, full solution space |
-| Implementer | writes the code **and** its tests (unit and end-to-end) | writes the code and the tests the plan requires | same as Medium |
-| Tester | no; the Implementer's tests are the evidence | yes, including end-to-end | yes, all black-box techniques evaluated |
+| Test Designer | no | yes, from the approved spec, in parallel with the Planner | yes, every technique evaluated |
+| Implementer | writes the code **and** its tests (unit and end-to-end) | writes the code only, no tests | same as Medium |
+| Tester | no; the Implementer's tests are the evidence | implements and runs the designed cases, including end-to-end | same, plus every black-box technique and mutation testing |
 | Review level: the default the recommendation starts from (`protocols/review-cycle.md`) | R0 | R1 | R2 |
 | Mutation testing | no | asked at the plan gate | yes |
 | Gates | one **spec + plan** gate, then acceptance (defects go into the acceptance gate) | spec gate, plan gate, defects gate, acceptance | every gate in the workflow |

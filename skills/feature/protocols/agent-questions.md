@@ -2,7 +2,7 @@
 
 Subagents cannot talk to the programmer. When one needs an answer only the programmer can give, it stops and returns its questions to the orchestrator, which relays them, records the answers and resumes **the same agent** with its context intact. This matters most in specification and planning, where a guessed answer becomes a requirement or an architecture.
 
-It applies at every intensity, to the Repository Analyst, Specification Writer, Planner, Implementer and Tester. Critics and verifiers never ask: ambiguity is a finding (`roles/verifier.md`, verdict AMBIGUOUS).
+It applies at every intensity, to the Repository Analyst, Specification Writer, Test Designer, Planner, Implementer and Tester. Critics and verifiers never ask: ambiguity is a finding (`roles/verifier.md`, verdict AMBIGUOUS).
 
 ## For the agent
 

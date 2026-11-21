@@ -15,6 +15,7 @@
 | Pending decisions | D-NNN … |
 | Git | commit `abc1234` · branch · dirty yes/no (or "not a git repo", with date/time) |
 | Artifact versions | spec vN · plan <status> |
+| Agents | role → agent ID, resumable (e.g. Implementer → a1b2…, Tester → c3d4…); critics and verifiers are never listed |
 
 ## Objective
 

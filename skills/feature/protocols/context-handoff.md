@@ -27,11 +27,14 @@ Structure: `templates/handoff.md`.
 **Specification → Planning**
 Intent · confirmed FR/AC IDs · constraints · invariants · open questions (blocking ones flagged) · repository references (analyst report) · areas of technical uncertainty.
 
+**Specification → Test design** (the Test Designer never reads the plan)
+Approved spec version · confirmed FR/AC/INV IDs · out of scope · existing test framework, location, style and commands · E2E tooling · existing behavior of the area (analyst report).
+
 **Planning → Implementation**
-Approved approach (D ref) · alternatives not chosen, with the reason only when that prevents re-litigating · technical decisions · affected files and components · dependencies · implementation sequence · risks · required tests · decisions still pending and what must not be touched until they are made · verification depth (mutation testing yes or no · review level R0 / R1 / R2) · end-to-end harness · registry entries (AP IDs) relevant to the change.
+Approved approach (D ref) · alternatives not chosen, with the reason only when that prevents re-litigating · technical decisions · affected files and components · dependencies · implementation sequence · risks · `testing-plan.md` (the behaviors the code must handle; the Implementer writes no tests) · decisions still pending and what must not be touched until they are made · verification depth (mutation testing yes or no · review level R0 / R1 / R2) · end-to-end harness · registry entries (AP IDs) relevant to the change.
 
 **Implementation → Testing** (critics and verifiers never read handoffs: `protocols/review-cycle.md` §Clean context)
-Implemented functionality by FR/AC · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · how to start the system for end-to-end tests · quality gate result · suggested testing focus.
+Implemented functionality by FR/AC · agent IDs to resume (Implementer, Tester) · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · how to start the system for end-to-end tests · quality gate result · suggested testing focus.
 
 **Testing → Specification / Evolution (ESDD)**
 Tests executed, with results and evidence · failures · uncovered scenarios · discrepancies between spec and implementation · newly discovered requirements (as hypotheses) · invalidated assumptions · risks · possible spec or plan changes, phrased as options for the programmer rather than recommendations.
