@@ -33,7 +33,7 @@ The programmer wants the pieces of the feature workflow that showed value at the
 **1. Worktree.**
 - **Create and stay:** call `EnterWorktree` with `name: "<slug>"` (load it with ToolSearch if deferred) and **stay in it**: you are the one who works there. Record its path, branch and base commit (`git rev-parse --short HEAD`).
 - **On failure:** if it cannot be created, stop and present the situation neutrally. Never work in the shared checkout on your own.
-- **Card:** create `docs/features/<slug>/feature.md` from `templates/feature-card.md`, or use the project's docs convention. Write "Lean" in its title line, and keep the card within 80 lines.
+- **Card:** create `docs/features/<slug>/feature.md` from `templates/feature-card.md`, or use the project's docs convention. Write "Lean" in its title line, and keep the card within 500 lines.
 
 **2. Read only what the feature needs:**
 - CLAUDE.md, the code of the affected area, its tests, and the build, test and lint commands;
@@ -65,6 +65,7 @@ Do not read the rest of the library.
   - For options involving parsers, regular expressions, escaping or safe-marking, run a quick probe before the gate: a timing loop that doubles the input size, and an injection string. Report what it printed.
   - If only one approach is viable, state it with the excluded alternatives and the constraint each violates.
 - **Choices by convention.** Implementation details you will settle by following the project's existing conventions, one line each. The programmer may override any of them.
+- **Criticality:** ask whether the feature is Critical or Standard. Critical makes mutation testing **mandatory**: state that, do not ask whether to run it. For a Standard feature, ask neutrally whether to run it, stating what it can detect and what it costs. When it will run and the project has no mutation tool, present installing one (a new dev dependency) and leaving it *Blocked* with its residual risk as neutral options.
 - **Approval:** end with approve · change (what) · reject.
 
 Record every answer in the card's *Decisions*, with the date.
@@ -77,6 +78,13 @@ Record every answer in the card's *Decisions*, with the date.
   - fuzz or property-based tests on every input that crosses a trust boundary or receives user-supplied objects, including objects whose comparison, conversion or iteration raises, with the expected behavior taken from the approved spec;
   - an end-to-end test through the real entry point when the feature is user-facing and the project has a harness (`knowledge/e2e-testing.md`);
   - when the project has no harness, a note in the card, without installing anything unapproved.
+- **Mutation testing**, when the feature is Critical or the programmer chose it, after the tests pass. Follow `knowledge/testing-techniques.md` §Mutation Testing:
+  - scope it to the changed code;
+  - classify every surviving mutant as test gap, equivalent or out of scope;
+  - add or strengthen tests for the test gaps;
+  - report the scope, tool, totals, score and survivors in the card's *Result*.
+
+  If the tool was not approved, its status is *Blocked*, with the residual risk.
 - **Checks:** run the tests, the project's lint and type checks, and `python3 <library>/scripts/quality_gate.py --repo <worktree> --base <base>`. Fix what you wrote.
 - **New questions:** a discovery that changes approved behavior is a new ⛔ question.
 
@@ -99,14 +107,14 @@ Return: a summary of at most 150 words.
 Discard nothing: the programmer sees every finding.
 
 **8. ⛔ Gate 2: findings and results.** In one message:
-- **Test and gate results:** commands and real output, summarized.
+- **Test and gate results:** commands and real output, summarized, including the mutation score and the surviving mutants when mutation testing ran.
 - **Findings:** every one, with severity, concrete case and your check result. Options for each: fix · accept as a known limitation · change the behavior. Accepting a reproduced Blocker requires the programmer's stated reason, recorded in the card and repeated at acceptance.
 - **Unresolved items:** anything you could not settle.
 
 **9. Fix** what the programmer chose. For each Blocker or Major that changes behavior, first write a test that reproduces it and run it to see it fail; then fix and see it pass (`knowledge/code-quality.md` §1, *Test first for defects*). Run the tests and the gate again. A second critic runs only if the programmer asks: same brief, task "review `git diff <commit before fixes>` (later round)".
 
 **10. ⛔ Acceptance, integration and cleanup.**
-- **Card:** write its *Result*: files changed, test commands with real results, testing technique statuses, gate result, `shortcut:` markers, known limitations, accepted findings.
+- **Card:** write its *Result*: files changed, test commands with real results, testing technique statuses, mutation testing results (or *not run*, with the reason), gate result, `shortcut:` markers, known limitations, accepted findings.
 - **Acceptance:** the programmer decides.
 - **Integration:** present it neutrally: merge, rebase then merge, pull request, or leave the branch unmerged. Include the facts: uncommitted changes, commits ahead and behind, and files also changed on the target since the base.
 - **Cleanup:** then ask whether to remove the worktree and branch. Execute only what is chosen. Commit the work on its branch only as part of the chosen integration.
@@ -117,4 +125,4 @@ Discard nothing: the programmer sees every finding.
 
 ## When Lean is not enough
 
-If the feature needs exploration with prototypes, several features coordinated together, mutation testing or the full review cycle, you may tell the programmer once that `/feature` provides it. Never start it yourself.
+If the feature needs exploration with prototypes, several features coordinated together, separate test design and testing agents, or the full review cycle, you may tell the programmer once that `/feature` provides it. Never start it yourself.

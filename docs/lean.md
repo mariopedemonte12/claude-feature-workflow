@@ -14,7 +14,7 @@ The behavior is defined by [`skills/feature-lean/SKILL.md`](../skills/feature-le
 | --- | --- |
 | One feature, or several independent ones you can run as parallel sessions | Several features that must be coordinated in one portfolio, with overlap detection |
 | Requirements are clear enough to settle at one gate | Requirements will evolve: ESDD increments, prototypes, a spec change log |
-| You want control over behavior and approach, and a clean review, at a moderate cost | You want separate specification, planning, test-design, implementation and testing agents, mutation testing, or the R2 review cycle |
+| You want control over behavior and approach, and a clean review, at a moderate cost | You want separate specification, planning, test-design, implementation and testing agents, or the R2 review cycle |
 | You are on a plan with a usage limit | The token budget is not a concern |
 
 `/feature-lean` never starts `/feature` itself. If the work outgrows it, it tells you once that `/feature` exists.
@@ -42,7 +42,7 @@ The session does all the work itself. The only subagent is the critic. There is 
 ### 1. Worktree and card
 
 - **Worktree:** the session calls `EnterWorktree` with the feature's slug and **stays in it**: it is the one working there, not an orchestrator. It records the path, the branch and the base commit. If the worktree cannot be created, it stops and asks; it never falls back to the shared checkout.
-- **Card:** the feature's only artifact is created from the template at `docs/features/<slug>/feature.md`, or the project's own docs convention. It is limited to 80 lines, and later the critic's `review.md` sits beside it. The card holds:
+- **Card:** the feature's only artifact is created from the template at `docs/features/<slug>/feature.md`, or the project's own docs convention. It is limited to 500 lines, enough room for the plan and design decisions, and later the critic's `review.md` sits beside it. The card holds:
   - intent and scope;
   - requirements and acceptance criteria;
   - decisions, with your answers and their dates;
@@ -85,6 +85,7 @@ One message, with every item shown in full:
   - **Probes:** for parsers, regular expressions, escaping or safe-marking, the session runs a quick probe before the gate: a timing loop that doubles the input, and an injection string. The worst case it reports is measured, not guessed.
   - **Single approach:** if only one approach is viable, it is stated with the excluded alternatives and the constraint each violates.
 - **Choices by convention:** small implementation details settled by following the project's conventions, one line each, so you can override any of them.
+- **Criticality:** Critical or Standard. Critical makes mutation testing mandatory. For Standard, you decide whether to run it. If no mutation tool is installed, you choose between installing one and leaving mutation testing *Blocked*, with its residual risk.
 - **Approval:** approve, change (what), or reject.
 
 Example from the measured run, on the `{% switch %}` template tag:
@@ -102,6 +103,7 @@ Example from the measured run, on the `{% switch %}` template tag:
   - each technique from `knowledge/testing-techniques.md`, recorded in the card as *Applied* or *Not applicable* with its reason: Boundary Value Analysis, Fuzz/property-based, Decision Table, Finite State Machine, Symbolic/Concolic;
   - fuzz or property tests on every input that crosses a trust boundary or receives user-supplied objects, including objects whose comparison, conversion or iteration raises;
   - an end-to-end test through the real entry point, when the feature is user-facing and the project has a harness. Without a harness, the card notes it, and nothing is installed without your approval.
+- **Mutation testing,** when the feature is Critical or you chose it. Once the tests pass, the session mutates the changed code with the project's tool (mutmut or cosmic-ray, Stryker, PIT, cargo-mutants…). It classifies each surviving mutant as a test gap, equivalent or out of scope, strengthens the tests for the gaps, and reports the score and the survivors at gate 2.
 - **Checks:** the tests, the project's lint and type checks, and `scripts/quality_gate.py`. The session fixes what it wrote.
 - **Discoveries:** a discovery that changes approved behavior becomes a new question to you.
 
@@ -109,7 +111,7 @@ Example from the measured run, on the `{% switch %}` template tag:
 
 - **Launch:** one new subagent (`general-purpose`, Opus), in the background. Its brief has only the worktree, the branch, the base commit, its role file and the output path. It gets no summary of the feature, no card and no conversation, and it is told not to open the feature folder.
 - **Review:** it reviews `git diff <base>` from scratch against the quality standard and the project's conventions, and writes `review.md`.
-- **Why a separate agent:** a model reviewing its own output misses more problems than a fresh one, per the self-attribution research cited in `skills/feature/protocols/review-cycle.md`.
+- **Why a separate agent:** a model reviewing its own output misses more problems than a fresh one, per the self-attribution research cited in [`references.md`](references.md).
 
 ### 7. Checking the findings
 
@@ -160,6 +162,6 @@ Measured on Django 6.1, with 3 large features (a `{% switch %}` tag, a `ColorFie
 
 - **No separate roles:** there is no separate specification, planning, test-design or testing agent. The same session that writes the code writes its tests. That is the main trade-off against `/feature`, where only the Tester writes tests and the cases come from a Test Designer who never sees the plan.
 - **Review:** there is no verifier, no automatic fixes and no multi-round cycle. You decide every finding.
-- **Testing depth:** there is no mutation testing, and no ESDD increments or prototypes.
+- **Testing depth:** mutation testing runs only for Critical features or when you choose it. There are no ESDD increments or prototypes.
 - **Coordination:** there is no portfolio, no claims and no overlap detection across sessions.
 - **Registry:** no anti-pattern registry bootstrap. If `.quality/` exists, Lean reads and respects it, but does not create or extend it.

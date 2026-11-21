@@ -40,9 +40,9 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 | `e2e` | a change is user-facing and needs end-to-end evidence | `knowledge/e2e-testing.md` |
 | `gate` | checking a change against the quality limits | run `python3 <library>/scripts/quality_gate.py --repo <repo> --base <ref>`; uses `.quality/config.json` when present |
 | `review` | the programmer asks for a review | see below |
-| `card` | the programmer wants a one-page record of the change | `templates/feature-card.md` |
+| `card` | the programmer wants a single-file record of the change (up to 500 lines) | `templates/feature-card.md` |
 
-**`review`.** A reviewer that wrote the code is biased toward it (`protocols/review-cycle.md` §References). So for a review, spawn a clean subagent (model `opus`) briefed only with `roles/reviewer.md`, the repository path and the diff range: never the conversation, the plan or your own reasoning. If the programmer asks to verify its findings, spawn a second clean subagent (model `sonnet`) with `roles/verifier.md` and the findings. Present the verified findings; fix only what the programmer approves. For a quick self-check instead, the programmer must ask for it explicitly, and you say it is not a clean review.
+**`review`.** A reviewer that wrote the code is biased toward it. So for a review, spawn a clean subagent (model `opus`) briefed only with `roles/reviewer.md`, the repository path and the diff range: never the conversation, the plan or your own reasoning. If the programmer asks to verify its findings, spawn a second clean subagent (model `sonnet`) with `roles/verifier.md` and the findings. Present the verified findings; fix only what the programmer approves. For a quick self-check instead, the programmer must ask for it explicitly, and you say it is not a clean review.
 
 ## Commands
 
