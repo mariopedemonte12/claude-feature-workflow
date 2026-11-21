@@ -23,6 +23,11 @@ It loads **only when you call it** (`/feature`). In every other session it costs
 - **Code quality standard for every agent that writes code.** The smallest complete change (reuse → standard library → installed dependency → minimum new code), no comments except `shortcut: <limit>, <when to upgrade>` markers and tool directives, files up to 400 lines and short functions as signals of mixed responsibilities, declarative names, single responsibility, feature folders where the project uses them, and classic design patterns only for problems present now. A dependency-free quality gate (`scripts/quality_gate.py`) checks the feature's changes; with `lizard` installed it also checks function size and complexity.
 - **A per-project anti-pattern registry that learns.** Seeded from catalogs matching the project's architecture (general, feature folders, layered/hexagonal, component UIs, back ends, tests). Agents read it before coding and record new anti-patterns they find as candidates; you approve what enters it, and entries that can be detected mechanically become lint rules (ast-grep, Semgrep, import-rule tools or the stack's own linter: your choice).
 - **End-to-end testing by the Tester.** Every user-facing acceptance criterion is exercised through the real entry point: Playwright for web UIs, real HTTP requests, CLI processes, mobile and desktop drivers, or a deterministic simulation harness when there is no interactive surface.
+- **A lean pipeline: `/feature-lean`.** For one feature per session, without an orchestrator relay:
+  - the session itself specifies the feature, with its edge, error, security and worst-case behavior;
+  - one gate with your answers and the approach, where options carry their security consequence and their probed worst case;
+  - code with tests and the quality gate;
+  - one clean critic, whose every finding comes to you.
 - **The skills without the workflow: `/feature-kit`.** When you work on a feature by hand, `/feature-kit` makes the workflow's knowledge available as a catalog of modules (explore, spec, plan, decide, quality/ponytail, patterns, anti-patterns, test, e2e, gate, review, card) that the agent loads only when the task needs one, or when you name it. No phases, gates, artifacts, worktrees or subagents, except a clean critic when you ask for a review.
 - **Testing discipline.** Boundary value analysis, fuzz/property-based, symbolic/concolic, decision tables and state machines, each reported as *Applied*, *Not applicable* (with a reason) or *Blocked* (with an explanation). Mutation testing is mandatory for features you mark as critical.
 
@@ -35,7 +40,7 @@ It loads **only when you call it** (`/feature`). In every other session it costs
 /plugin install feature-workflow@feature-workflow
 ```
 
-When installed as a plugin, the commands are namespaced: `/feature-workflow:feature` and `/feature-workflow:feature-kit`.
+When installed as a plugin, the commands are namespaced: `/feature-workflow:feature`, `/feature-workflow:feature-lean` and `/feature-workflow:feature-kit`.
 
 **Option B: script** (standalone skill, invoked as `/feature`)
 
@@ -46,7 +51,7 @@ cd claude-feature-workflow
 ./install.sh --project    # current project only -> ./.claude/skills/{feature,feature-kit}
 ```
 
-**Option C: manual.** Copy `skills/feature/` and `skills/feature-kit/` side by side into `~/.claude/skills/` (or `<project>/.claude/skills/`). The kit reads its modules from `../feature`.
+**Option C: manual.** Copy `skills/feature/`, `skills/feature-kit/` and `skills/feature-lean/` side by side into `~/.claude/skills/` (or `<project>/.claude/skills/`). The kit and the lean pipeline read from `../feature`.
 
 Then start a new Claude Code session.
 
@@ -60,6 +65,7 @@ Then start a new Claude Code session.
 /feature resume csv-export                        # continue a feature (or several) from its handoff
 /feature hub                                      # become the principal orchestrator of several groups
 /feature join main-hub billing                    # in another session: run the "billing" group for hub "main-hub"
+/feature-lean add CSV export                      # lean pipeline: one session, two gates, one clean critic
 /feature-kit                                      # work by hand; the agent loads modules on demand
 /feature-kit plan quality                         # same, loading the plan and quality modules now
 /feature-kit off                                  # stop applying the kit
@@ -88,6 +94,8 @@ ESDD adds exploration, disposable prototypes, increments, discovery classificati
 ```
 .claude-plugin/          plugin + marketplace manifests
 install.sh               standalone installer
+skills/feature-lean/
+└── SKILL.md             lean pipeline: spec + edge cases, one gate, code and tests, one clean critic
 skills/feature-kit/
 └── SKILL.md             module catalog for hand-driven work (reads from skills/feature)
 skills/feature/

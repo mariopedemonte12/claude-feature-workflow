@@ -10,6 +10,7 @@
   "repository": "https://github.com/mariopedemonte12/claude-feature-workflow",
   "skills": [
     "./skills/feature",
-    "./skills/feature-kit"
+    "./skills/feature-kit",
+    "./skills/feature-lean"
   ]
 }

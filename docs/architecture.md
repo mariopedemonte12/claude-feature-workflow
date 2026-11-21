@@ -87,6 +87,7 @@ flowchart LR
     C4["/feature hub"] --> M3["Principal orchestrator"]
     C5["/feature join &lt,hub&gt, &lt,group&gt,"] --> M4["Sub-orchestrator of one group"]
     M3 <-->|"STATUS · DECISION-REQUEST · DECISION<br/>QUESTION · ANSWER · OVERLAP · DONE"| M4
+    C7["/feature-lean &lt;description&gt; | resume &lt;slug&gt;"] --> M6["Lean pipeline: this session works,<br/>one clean critic subagent"]
     C6["/feature-kit [module…] | list | off"] --> M5["No workflow: modules loaded on demand<br/>for hand-driven work"]
 ```
 
@@ -97,9 +98,18 @@ flowchart LR
 | `/feature status` | Board of every feature in progress, plus the ones other orchestrators claim. |
 | `/feature continue <answer>` | A fresh session answers a pending gate, using `memory.md` and `decisions/` on disk. |
 | `/feature hub`, `/feature join <hub> <group>` | Hierarchical mode (§10). |
+| `/feature-lean <description>` | Separate skill: one session, one feature, no orchestrator relay; the only artifacts are a card and the review. Steps below. |
 | `/feature-kit` | Separate skill. It exposes the roles and knowledge as modules (explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, card) without phases, gates, artifacts or worktrees. Only `review` launches subagents: a clean critic and, if asked, a verifier. |
 
-Both skills have `disable-model-invocation: true`: they load only when the programmer types the command.
+**`/feature-lean` steps:**
+1. A specification pass covers edge, error, security and worst-case behavior.
+2. ⛔ Gate 1: questions and approach. Options carry their security consequence and their probed worst case.
+3. Code, tests and the quality gate.
+4. One clean critic (opus). Each finding is checked against the code.
+5. ⛔ Gate 2: every finding, each with fix · accept · change behavior.
+6. ⛔ Acceptance, integration and cleanup.
+
+All three skills have `disable-model-invocation: true`: they load only when the programmer types the command.
 
 ## 3. Startup of a feature
 
