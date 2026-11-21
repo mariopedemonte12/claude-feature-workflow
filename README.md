@@ -120,6 +120,8 @@ And once per project, after your approval: `.quality/` (`config.json` with limit
 
 ## Design background
 
+A detailed description of the current architecture, with diagrams of every flow and the responsibilities of each agent, is in [`docs/architecture.md`](docs/architecture.md).
+
 The workflow was derived from a longer design document, included as [`docs/master-prompt.md`](docs/master-prompt.md). Its header lists where the skill deliberately departs from it: neutrality instead of recommendations, per-delegation model selection, multi-feature orchestration and a consolidated skills library.
 
 Part of the code quality standard and of the review checklist adapts [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (MIT): the smallest-complete-change ladder, `shortcut:` markers, splitting by responsibility rather than line count, and findings that require a concrete case. This workflow is stricter on comments and does not install Ponytail's hooks.
