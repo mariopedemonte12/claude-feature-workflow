@@ -1,5 +1,7 @@
 # Testing Plan: <Feature name>
 
+Designed by the Test Designer from the approved specification (spec vN), before implementation. Implemented and run by the Tester. Cases the Tester adds during exploratory testing are marked *added* with their reason.
+
 ## Scope
 
 In scope: … Out of scope: …
@@ -8,8 +10,8 @@ In scope: … Out of scope: …
 
 ## Functional scenarios
 
-| ID | Scenario | Type (positive · negative · error · integration · regression) | Covers (AC/FR/INV) | Technique |
-| --- | --- | --- | --- | --- |
+| ID | Scenario | Type (positive · negative · error · security · worst case · integration · regression) | Technique | Covers (AC/FR/INV) | Input or setup | Expected result (from the spec) | Status (planned · implemented · passed · failed) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## End-to-end
 
@@ -17,6 +19,10 @@ Status (Applied · Not applicable · Blocked) and basis. Harness and version · 
 
 | ID | User path | Covers (AC) | Expected observable result |
 | --- | --- | --- | --- |
+
+## Traceability
+
+Every AC with its case IDs. ACs without a case, and why.
 
 ## Black-box technique applicability
 

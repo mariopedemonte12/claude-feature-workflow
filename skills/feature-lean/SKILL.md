@@ -80,7 +80,7 @@ Record every answer in the card's *Decisions*, with the date.
 - **Checks:** run the tests, the project's lint and type checks, and `python3 <library>/scripts/quality_gate.py --repo <worktree> --base <base>`. Fix what you wrote.
 - **New questions:** a discovery that changes approved behavior is a new ⛔ question.
 
-**6. Clean critic.** Launch one subagent, `general-purpose`, model `opus`, with this brief and nothing else (no summary of the feature, no card):
+**6. Clean critic.** Launch one subagent in the background (`run_in_background: true` where the Agent tool offers it), `general-purpose`, model `opus`, with this brief and nothing else (no summary of the feature, no card). Tell the programmer in one line that it started, and wait for its notification. If the programmer asks for a second critic later, launch a **new** one: critics are never resumed.
 
 ```
 You are the Clean Code Critic for a code change.

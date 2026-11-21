@@ -43,6 +43,7 @@ flowchart TB
         A1["Repository Analyst"]
         A2["Specification Writer"]
         A3["Planner"]
+        A8["Test Designer"]
         A4["Implementer"]
         A5["Tester"]
         A6["Clean Code Critic"]
@@ -101,7 +102,7 @@ flowchart LR
 | `/feature-lean <description>` | Separate skill: one session, one feature, no orchestrator relay; the only artifacts are a card and the review. Steps below. |
 | `/feature-kit` | Separate skill. It exposes the roles and knowledge as modules (explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, card) without phases, gates, artifacts or worktrees. Only `review` launches subagents: a clean critic and, if asked, a verifier. |
 
-**`/feature-lean` steps:**
+**`/feature-lean` steps** (detailed in [`lean.md`](lean.md)):
 1. A specification pass covers edge, error, security and worst-case behavior. Each case states what the project's nearest existing analog does with it.
 2. ⛔ Gate 1: questions and approach. Options carry their security consequence and their probed worst case.
 3. Code and tests: every case, a status for each testing technique, and fuzz or property tests at trust boundaries. Then the quality gate.
@@ -143,17 +144,17 @@ flowchart TB
         SP --> G1{"⛔ 3 · Spec gate<br/>programmer approves"}
     end
     subgraph F2["Phase 2 · Implementation"]
-        AN["4 · Analyze<br/>architecture, folders, tests, E2E and quality tooling,<br/>registry bootstrap if no .quality/"] --> PL["5 · Plan<br/>Planner returns neutral options and outlines"]
-        PL --> G2{"⛔ 6 · Plan gate<br/>approach · mutation testing · review level R0/R1/R2<br/>recommended and validated · E2E harness"}
-        G2 --> IM["7 · Implement<br/>Implementer: code, tests, quality gate, report, handoff"]
+        AN["4 · Analyze<br/>architecture, folders, tests, E2E and quality tooling,<br/>registry bootstrap if no .quality/"] --> PL["5 · Plan + design tests, in parallel<br/>Planner: neutral options and outlines<br/>Test Designer: testing-plan.md from the spec only"]
+        PL --> G2{"⛔ 6 · Plan gate<br/>approach · testing plan · mutation testing ·<br/>review level R0/R1/R2 recommended and validated · E2E harness"}
+        G2 --> IM["7 · Implement<br/>Implementer: production code only, self-review,<br/>quality gate, report, handoff"]
         IM -->|"plan invalid or deviation"| G2b{"⛔ Deviation gate"}
         G2b --> IM
     end
     subgraph F3["Phase 3 · Testing and validation"]
-        TE["8–11 · Test<br/>Tester: testing plan, functional, E2E,<br/>black-box techniques, mutation if decided, validation report"]
+        TE["8–11 · Test<br/>Tester: implements the designed cases, functional, E2E,<br/>exploration, mutation if decided, validation report"]
         RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature"]
         TE & RV --> G3{"⛔ Defects and anti-pattern candidates gate<br/>fix now · accept as limitation · change spec"}
-        G3 -->|"fix"| FX["Implementer fixes → affected tests re-run<br/>→ new clean critic at R1/R2"]
+        G3 -->|"fix"| FX["same Implementer resumed: makes the Tester's failing test pass<br/>→ same Tester re-runs → new clean critic at R1/R2"]
         FX --> G3
     end
     subgraph F4["Phase 4 · Finalization"]
@@ -212,8 +213,9 @@ Set per feature or per group. Source: `protocols/intensity.md`.
 | Repository Analyst | no | only if the memory lacks the evidence | yes |
 | Specification Writer | no: the orchestrator writes the card's spec section | yes | yes |
 | Planner | no: the orchestrator writes one approach | main decision only | full solution space |
-| Implementer | code **and** its unit and E2E tests | code and the planned tests | same as Medium |
-| Tester | no | yes, with E2E | yes, every black-box technique |
+| Test Designer | no | yes, from the spec, in parallel with the Planner | yes, every technique |
+| Implementer | code **and** its unit and E2E tests | production code only | same as Medium |
+| Tester | no | implements and runs the designed cases, with E2E | same, plus every technique and mutation testing |
 | Review (default the recommendation starts from) | R0 | R1 | R2 |
 | Mutation testing | no | asked at the plan gate | yes |
 | Gates | one spec+plan gate, then acceptance | spec, plan, defects, acceptance | all |
@@ -362,8 +364,9 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 | **Repository Analyst** | `Explore` · haiku (sonnet for large or unfamiliar code) | Evidence for one task: components, dependencies, conventions, existing behavior, tests and commands, architecture style, quality and E2E tooling; observed vs inferred | The feature worktree, only what the brief needs | Nothing: returns a context report of about 600 words | Recommend approaches, assume a stack without evidence, modify files |
 | **Specification Writer** | `general-purpose` · opus (sonnet for short, clear requests; never haiku) | Turning the request into intent, FR/NFR, constraints, invariants, Given/When/Then criteria, out of scope and open questions, each item traced to a source; ESDD statuses; applying approved spec changes | `request.md`, handoff, the specification guide and template, the repository (read-only) | `specification.md` (Draft) | Invent requirements, resolve ambiguity, include implementation details, write vague criteria to avoid a question |
 | **Planner** | `Plan` · opus (sonnet for one mechanical approach; never haiku) | The solution space: viable approaches in the neutral format, per-option outlines that follow the quality standard, the E2E harness, other decisions needed, excluded options with the constraint they violate | Handoff, spec sections, code, registry | Nothing: returns the decision block | Choose, rank, change requirements, add speculative abstractions |
-| **Implementer** | `general-purpose` · sonnet (haiku if mechanical, opus if risky) | Code for the approved plan only; tests the plan requires (at Lite, all tests including E2E); quality gate and project lint; anti-pattern candidates; stopping on plan-invalidating discoveries | Handoff, plan, quality standard, design patterns, registry | Code and tests in the worktree, `implementation-report.md`, handoff to testing, Lite card result | Drift from the plan silently, add comments, leave quality violations unreported, expand scope |
-| **Tester** | `general-purpose` · sonnet (haiku for re-runs, opus for hard state) | Testing plan, functional and regression tests, E2E through the real entry point, black-box techniques with a status each, mutation testing if decided, validation against the spec | Handoff, spec, testing techniques, E2E guide | `testing-plan.md`, tests, `reports/e2e/`, `validation-report.md`, handoff | Decide an expected result the spec leaves open, weaken or skip failing tests, report a test it did not run as passed |
+| **Test Designer** | `general-purpose` · sonnet (opus if Critical; never haiku) | Test cases derived from the approved spec alone, in parallel with the Planner: each technique applied or justified, error, security, worst-case and E2E cases, traceability from every AC to its cases | Spec, analyst report, testing techniques, E2E guide (never the plan or code) | `testing-plan.md` | Invent expected results, design around an implementation, write test code |
+| **Implementer** | `general-purpose` · sonnet (haiku if mechanical, opus if risky) | Production code for the approved plan only, to the quality standard. Self-review against the critic's checklist before the quality gate, so review finds little to rework. Runs the existing tests; **writes no tests** (Lite is the exception). Makes the Tester's reproducing tests pass when resumed for fixes. | Handoff, plan, testing plan, quality standard, design patterns, registry | Production code, `implementation-report.md`, handoff to testing, Lite card result | Write tests (outside Lite), drift from the plan silently, add comments, leave quality violations unreported, expand scope |
+| **Tester** | `general-purpose` · sonnet (haiku for re-runs, opus for hard state) | The only author of tests: implements every designed case, runs functional, regression and E2E testing, explores beyond the plan, mutation testing if decided, validation against the spec. Keeps failing tests as reproductions for fixes. Resumed to re-run after fixes. | Handoff, testing plan, spec, testing techniques, E2E guide | Tests, case statuses in `testing-plan.md`, `reports/e2e/`, `validation-report.md`, handoff | Change a designed expected result, decide one the spec leaves open, weaken or skip failing tests, report a test it did not run as passed |
 | **Clean Code Critic** | `general-purpose` · opus (never haiku) | Maximally critical review from scratch: names, responsibilities, function design, structure, patterns misused, registry violations; each finding with a concrete case | Code, `git diff <base>`, project conventions, quality standard, registry | `reports/review/round-<n>-critic.md` | Read the spec, plan, handoffs or earlier rounds; be reused across rounds |
 | **Phase runner** (phased mode) | `general-purpose` · sonnet (opus if Critical; never haiku) | Orchestrating one phase of one feature: delegating its steps, choosing models, verifying returns, relaying agent questions, writing the gate's Pending decisions | Its brief, `SKILL.md` §4, the workflow steps in range, intensity and agent-questions protocols | `delegations.md`, `decisions/` (Pending), `handoff.md` | Talk to the programmer, pass a gate, run startup or integration, be reused for the next phase |
 | **Finding Verifier** | `general-purpose` · sonnet (never haiku) | Trying to refute each finding against the code: VALID, INVALID or AMBIGUOUS; fix class; recurring findings marked as candidates | The critic's report, the code | `reports/review/round-<n>-verification.md` | Read the spec or plan, fix code, accept a finding without checking it |
@@ -373,6 +376,8 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 **Shared rules for every subagent:**
 - **Location:** run without `isolation`. Confirm the feature branch first, and work through absolute paths (`cd <worktree> && …`). Never call `EnterWorktree`.
 - **No delegation:** feature roles never spawn further agents.
+- **Headless:** every subagent runs in the background. The programmer sees one line when an agent starts or finishes, and the full content only at gates.
+- **Reuse:** when work returns to a role that already ran for the feature (fixes, re-tests, spec changes, the next increment), the same agent is resumed with `SendMessage`, and its ID is recorded in `handoff.md`. Critics and verifiers are never resumed.
 - **Questions:** questions only the programmer can answer follow the agent-questions protocol. A blocking one stops the agent; it never guesses.
 - **Return:** a `STATUS` line, a summary within the word limit, the questions, and any decision in the neutral format.
 
@@ -384,7 +389,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
     ├── request.md               orchestrator        request verbatim + answers by Q-ID
     ├── specification.md         Specification Writer  versioned; change log
     ├── implementation-plan.md   orchestrator        approved approach only
-    ├── testing-plan.md          Tester
+    ├── testing-plan.md          Test Designer (cases) · Tester (statuses)
     ├── decisions/D-NNN-*.md     orchestrator        Pending → decided, full option block
     ├── reports/
     │   ├── implementation-report.md   Implementer

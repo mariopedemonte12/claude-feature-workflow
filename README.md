@@ -25,7 +25,7 @@ In every other session each skill costs, at most, a one-line description (~70 to
 
 ## `/feature-lean`
 
-See [`skills/feature-lean/SKILL.md`](skills/feature-lean/SKILL.md). One feature per session, in its own git worktree; several features means several sessions, which can run in parallel. The only artifacts are a one-page card and the critic's review. Gate 1 settles behavior and approach, gate 2 the critic's findings, then acceptance, integration and cleanup.
+How it works, step by step, with examples and the measured cost: [`docs/lean.md`](docs/lean.md). The behavior itself is defined in [`skills/feature-lean/SKILL.md`](skills/feature-lean/SKILL.md). One feature per session, in its own git worktree; several features means several sessions, which can run in parallel. The only artifacts are a one-page card and the critic's review. Gate 1 settles behavior and approach, gate 2 the critic's findings, then acceptance, integration and cleanup.
 
 ## `/feature-kit`
 
@@ -38,7 +38,10 @@ When you work on a feature by hand, `/feature-kit` makes the workflow's knowledg
   - **SDD Direct:** for well-understood features.
   - **Evolutionary Spec-Driven Development (ESDD):** for features with open requirements or technical unknowns.
   - **Hybrid:** ESDD only for the uncertain part.
-- **Specialized subagents.** Repository Analyst, Specification Writer, Planner, Implementer, Tester, Clean Code Critic and Finding Verifier, each driven by its own role file.
+- **Specialized subagents.** Repository Analyst, Specification Writer, Planner, Test Designer, Implementer, Tester, Clean Code Critic and Finding Verifier, each driven by its own role file.
+  - **Tests:** the Test Designer derives the test cases from the approved spec, in parallel with the Planner and without seeing the plan. Only the Tester writes tests. The Implementer writes production code to the quality standard and reviews its own diff against the critic's checklist first, so review finds little to rework.
+  - **Headless:** agents run in the background. You see one line when an agent starts or finishes, and the full content at gates.
+  - **Reuse:** when work goes back to a role (fixes, re-tests, spec changes), the same agent is resumed with its context. Critics and verifiers are always new.
 - **Agents ask you, through the orchestrator.** When an agent needs an answer only you can give, it stops instead of guessing and returns its questions (blocking or not, with evidence and neutral options). The orchestrator records them in the spec or in `decisions/`, puts them to you, and resumes the same agent with your answers and its context intact. This is what keeps specification and planning from building on invented requirements.
 - **Per-task model selection.** Every role has a standard model, and the orchestrator picks the cheapest sufficient model for *each* delegation. That can be higher or lower than the standard, with floors so architecture and review are never downgraded. Every non-standard choice is announced, and every delegation is logged.
 - **Neutral decision gates.** Options are never recommended or ranked: they are sorted alphabetically, given symmetric pros and cons, described with verifiable facts instead of adjectives, and excluded options are listed with the constraint they violate. The agent gives an opinion only if you explicitly insist on one.
@@ -98,9 +101,9 @@ A typical SDD Direct run:
 
 1. **Workflow selection.** The orchestrator assesses uncertainty per dimension, with evidence, and you choose the workflow.
 2. **Specification.** The Specification Writer turns your request (kept verbatim in `request.md`) into intent, requirements, constraints, invariants and acceptance criteria, each traced to its source. Its questions come to you through the orchestrator. You approve it and set the criticality.
-3. **Planning.** The Planner subagent maps the viable approaches, which are presented neutrally. You choose, and you decide mutation testing; the orchestrator recommends a review level (R0 gate only · R1 single critic · R2 review cycle) and you validate it.
-4. **Implementation.** The Implementer follows the approved plan. Any deviation comes back to you as a decision.
-5. **Testing and review.** The Tester and a clean critic run in parallel. At R2, a verifier refutes false findings, behavior-preserving fixes are applied automatically and listed at the next gate with a revert option, and a new clean critic reviews only those fixes (3 critic rounds per feature at most, across every path). At R1, every finding goes to you. Defects come back to you as decisions.
+3. **Planning and test design.** In parallel, the Planner maps the viable approaches and the Test Designer derives the test cases from the spec. Both are presented at the same gate: you choose an approach, approve the testing plan, and decide mutation testing; the orchestrator recommends a review level (R0 gate only · R1 single critic · R2 review cycle) and you validate it.
+4. **Implementation.** The Implementer writes production code for the approved plan, without tests. Any deviation comes back to you as a decision.
+5. **Testing and review.** The Tester implements the designed cases and runs them, and a clean critic reviews in parallel. Fixes go back to the same Implementer, which makes the Tester's failing tests pass. At R2, a verifier refutes false findings, behavior-preserving fixes are applied automatically and listed at the next gate with a revert option, and a new clean critic reviews only those fixes (3 critic rounds per feature at most, across every path). At R1, every finding goes to you. Defects come back to you as decisions.
 6. **Final report.** Built only from evidence. You decide acceptance.
 7. **Integration and cleanup.** You choose how the feature branch is integrated and whether its worktree is removed.
 
@@ -125,7 +128,7 @@ skills/feature/
 ├── SKILL.md             orchestrator: principles, startup, roles & model selection, gates
 ├── workflows/           sdd-direct.md · esdd.md (incl. hybrid)
 ├── protocols/           neutral-decisions.md · agent-questions.md · context-handoff.md · multi-feature.md · …
-├── roles/               repository-analyst · spec-writer · planner · implementer · tester · reviewer (critic) · verifier
+├── roles/               repository-analyst · spec-writer · planner · test-designer · implementer · tester · reviewer (critic) · verifier
 ├── knowledge/           specification-guide · testing-techniques · code-quality · design-patterns · e2e-testing · anti-patterns/
 ├── scripts/             quality_gate.py
 └── templates/           specification · implementation-plan · testing-plan · decision-record · handoff · final-report · feature-card
