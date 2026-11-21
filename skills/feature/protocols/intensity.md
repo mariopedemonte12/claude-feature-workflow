@@ -29,7 +29,7 @@ Every feature runs at one of three intensities: **Lite**, **Medium** or **High**
 | Artifacts | one `feature.md` card (`templates/feature-card.md`), at most 500 lines, plus `decisions/` | spec, plan, handoff and reports, each within the size budget below | the full set |
 | Anti-pattern registry | read and respected; candidates only listed in the card | full loop | full loop |
 
-**Size budgets at Medium:** specification at most 60 lines, plan at most 50, handoff at most 30, each report at most 60. At High, the templates apply without a budget.
+**Size budgets at Medium:** specification and plan at most 500 lines each, enough room for requirements, options and design decisions; handoff at most 30 lines; each report at most 60. At High, the templates apply without a budget.
 
 ## Efficiency rules for every level
 
