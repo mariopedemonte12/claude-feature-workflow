@@ -42,7 +42,7 @@ The session does all the work itself. The only subagent is the critic. There is 
 ### 1. Worktree and card
 
 - **Worktree:** the session calls `EnterWorktree` with the feature's slug and **stays in it**: it is the one working there, not an orchestrator. It records the path, the branch and the base commit. If the worktree cannot be created, it stops and asks; it never falls back to the shared checkout.
-- **Card:** the feature's only artifact is created from the template at `docs/features/<slug>/feature.md`, or the project's own docs convention. It is limited to 500 lines, enough room for the plan and design decisions, and later the critic's `review.md` sits beside it. The card holds:
+- **Card:** the feature's only artifact is created from the template at `docs/features/<slug>/feature.md`, or the project's own docs convention. Its target is 500 lines, enough room for the plan and design decisions, and later the critic's `review.md` sits beside it. The card holds: The target is never a cut: when a feature needs more, the card stays as the summary and the overflow goes to `decisions/D-NNN-<topic>.md` or `feature-appendix.md`, linked by section, with the total size reported at the next gate.
   - intent and scope;
   - requirements and acceptance criteria;
   - decisions, with your answers and their dates;

@@ -26,10 +26,18 @@ Every feature runs at one of three intensities: **Lite**, **Medium** or **High**
 | Gates | one **spec + plan** gate, then acceptance (defects go into the acceptance gate) | spec gate, plan gate, defects gate, acceptance | every gate in the workflow |
 | Spec questions | blocking ones only; the rest are written as out of scope | blocking and those that change observable behavior | all |
 | Agent questions (`protocols/agent-questions.md`) | yes | yes | yes |
-| Artifacts | one `feature.md` card (`templates/feature-card.md`), at most 500 lines, plus `decisions/` | spec, plan, handoff and reports, each within the size budget below | the full set |
+| Artifacts | one `feature.md` card (`templates/feature-card.md`), target 500 lines, plus `decisions/` | spec, plan, handoff and reports, each within the size budget below | the full set |
 | Anti-pattern registry | read and respected; candidates only listed in the card | full loop | full loop |
 
-**Size budgets at Medium:** specification and plan at most 500 lines each, enough room for requirements, options and design decisions; handoff at most 30 lines; each report at most 60. At High, the templates apply without a budget.
+**Size budgets at Medium:** specification and plan, target 500 lines each; handoff, target 30 lines; each report, target 60. The Lite and Lean card has a target of 500 lines.
+
+**Size budgets are targets, never cuts.** Each budget is the size a document should normally fit. When the content needs more, do not drop or compress anything that matters:
+1. keep the main document within the target, as a readable summary;
+2. move the overflow to linked files next to it: design decisions to `decisions/D-NNN-<topic>.md`, long case tables, option analyses and evidence to an appendix such as `feature-appendix.md` or `spec-appendix.md`;
+3. link each moved part from the place it belongs, by section;
+4. report the total size as a fact at the next gate, for example "spec 420 lines + appendix 310".
+
+A requirement, case, decision or risk is never left out to stay within a budget, and work is never stopped because of size. At High, the templates apply without a budget.
 
 ## Efficiency rules for every level
 

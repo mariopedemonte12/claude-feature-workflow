@@ -33,7 +33,7 @@ The programmer wants the pieces of the feature workflow that showed value at the
 **1. Worktree.**
 - **Create and stay:** call `EnterWorktree` with `name: "<slug>"` (load it with ToolSearch if deferred) and **stay in it**: you are the one who works there. Record its path, branch and base commit (`git rev-parse --short HEAD`).
 - **On failure:** if it cannot be created, stop and present the situation neutrally. Never work in the shared checkout on your own.
-- **Card:** create `docs/features/<slug>/feature.md` from `templates/feature-card.md`, or use the project's docs convention. Write "Lean" in its title line, and keep the card within 500 lines.
+- **Card:** create `docs/features/<slug>/feature.md` from `templates/feature-card.md`, or use the project's docs convention. Write "Lean" in its title line, with a target of 500 lines. The target is never a cut: when the feature needs more, keep the card as the summary and move the overflow to `decisions/D-NNN-<topic>.md` or `feature-appendix.md` next to it, linked by section. Never leave out a requirement, case or decision because of size, and report the total size at the next gate.
 
 **2. Read only what the feature needs:**
 - CLAUDE.md, the code of the affected area, its tests, and the build, test and lint commands;
