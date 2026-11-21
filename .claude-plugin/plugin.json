@@ -9,6 +9,7 @@
   "license": "MIT",
   "repository": "https://github.com/mariopedemonte12/claude-feature-workflow",
   "skills": [
-    "./skills/feature"
+    "./skills/feature",
+    "./skills/feature-kit"
   ]
 }

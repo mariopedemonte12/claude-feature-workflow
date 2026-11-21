@@ -37,6 +37,14 @@ Commands, counts, results.
 | AC | Status (Met · Not met · Not verified) | Evidence |
 | --- | --- | --- |
 
+## End-to-end
+
+Harness · environment (real vs. faked) · scenarios by AC · flaky tests · evidence paths · status.
+
+## Code quality
+
+Quality gate result · remaining violations with decision references · `shortcut:` markers added (location, limit, upgrade trigger) · registry changes (AP entries added, occurrences recorded, rules automated, candidates rejected).
+
 ## Black-box techniques
 
 | Technique | Status | Justification / result |
@@ -46,9 +54,9 @@ Commands, counts, results.
 
 Scope · tool · score · surviving mutants · gaps · limitations, or "Not performed (D-NNN)".
 
-## Independent review
+## Review
 
-Findings and how each was resolved, or "Not performed (D-NNN)".
+Level (R0 / R1 / R2, D-NNN) · rounds run and why the cycle stopped · per round: findings raised, VALID / INVALID / AMBIGUOUS, fixed automatically, sent to the gate · how each remaining finding was resolved · Nits not applied · share of INVALID findings.
 
 ## Remaining hypotheses (ESDD)
 

@@ -18,7 +18,8 @@ Applies to the orchestrator and to every subagent that produces options. It cove
 10. **Informing is not steering.** If the chosen option conflicts with a confirmed constraint or carries a risk not yet discussed, state that fact once, neutrally and with evidence, then follow the programmer's decision.
 11. **Severity is not preference.** Ordering defects by severity, risks by impact or tests by failure is allowed, provided the ordering criterion is stated. A factual statement ("Option C requires Node ≥ 20; the project pins Node 18 at `package.json:5`") is information, not bias.
 12. **If the programmer asks "what would you do?"**, first offer a criteria mapping: ask which criteria matter to them (time, cost, reversibility, risk, maintenance, performance…) and show how each option fares on those criteria, without a verdict. Give a personal recommendation only if the programmer explicitly insists. Label it *"Opinion (requested)"*, give the reasoning and the facts that would change it, and do not carry it forward into later presentations.
-13. **Relaying.** When the orchestrator relays subagent output, it removes preference language, re-sorts if needed and adds no ranking of its own.
+13. **Standing exception: review level.** The programmer asked the orchestrator to recommend the review level (R0 / R1 / R2, `protocols/review-cycle.md`) for each feature and to validate it themselves. That recommendation is labeled *Recommendation*, carries its evidence (size, complexity, criticality) and is still a question the programmer answers. The exception covers only the review level; every other decision, including mutation testing, stays neutral.
+14. **Relaying.** When the orchestrator relays subagent output, it removes preference language, re-sorts if needed and adds no ranking of its own.
 
 ## Presentation format
 
