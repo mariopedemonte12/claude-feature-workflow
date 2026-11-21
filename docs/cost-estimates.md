@@ -28,6 +28,10 @@ The same 3 Django features ran with `/feature-lean`: one session per feature, in
 | Hidden tests | 42/43 | 42/43 | 41/43 |
 | `__eq__` raising inside `{% switch %}` | raises | renders the default | raises |
 
+**Lean v2** (adds the nearest-analog comparison and the testing techniques): USD 5.64 (5.0× baseline), 2.73M eq, 4 turns per feature, hidden tests 42/43.
+- **Both misses were turned into questions:** both v1 misses (the `__eq__` case and the whitespace case) appeared at gate 1 as explicit questions, each with the analog's behavior as a fact: `{% if %}` catches the exception, and `CharField` strips whitespace.
+- **The simulated programmer departed from the analog both times:** it let the exception propagate and rejected the whitespace. So the remaining hidden-test miss and the probe's result are programmer decisions, not oversights.
+
 Lean failed "surrounding whitespace stripped" because the programmer chose to reject whitespace, a legitimate reading of "rejects anything else". It passed "trailing newline rejected", which High and the baseline failed. This is n=1, with the same caveats as the calibration run.
 
 ## Model
