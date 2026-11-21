@@ -38,11 +38,15 @@ When you work on a feature by hand, `/feature-kit` makes the workflow's knowledg
   - **SDD Direct:** for well-understood features.
   - **Evolutionary Spec-Driven Development (ESDD):** for features with open requirements or technical unknowns.
   - **Hybrid:** ESDD only for the uncertain part.
-- **Specialized subagents.** Repository Analyst, Specification Writer, Planner, Test Designer, Implementer, Tester, Clean Code Critic, Finding Verifier and Security Auditor, each driven by its own role file.
-  - **Security audit:** a clean agent follows every source of input to every sink in the diff (escaping, injection, authorization, paths, deserialization, resource limits), and proves each finding with an executed exploit. You decide per feature, from the trust boundaries it touches. It is mandatory for Critical features, and available in `/feature-lean` too.
+- **Specialized subagents.** Repository Analyst, Specification Writer, Planner, Test Designer, Implementer, Tester, Clean Code Critic and Finding Verifier, each driven by its own role file.
   - **Tests:** the Test Designer derives the test cases from the approved spec, in parallel with the Planner and without seeing the plan. Only the Tester writes tests. The Implementer writes production code to the quality standard and reviews its own diff against the critic's checklist first, so review finds little to rework.
   - **Headless:** agents run in the background. You see one line when an agent starts or finishes, and the full content at gates.
   - **Reuse:** when work goes back to a role (fixes, re-tests, spec changes), the same agent is resumed with its context. Critics and verifiers are always new.
+- **Specialists you can extend.** Domain experts join the phases they are useful in: `spec` (questions), `plan` (facts per option), `test-design` (cases) and `audit` (a clean review with executed evidence).
+  - **Built in:** `security`, `ux-ui`, `database`, `network`, `performance` and `observability`.
+  - **Your own:** add them in `~/.claude/feature-specialists/` (all your projects) or `<repo>/.claude/feature-specialists/` (one project, versioned). For the same name, the project's file wins over yours, and yours over the built-in one.
+  - **Activation:** the orchestrator or Lean session detects which specialists match the feature (paths, spec terms, trust boundaries) and presents them as facts; you confirm which run. `--with database,ux-ui` activates them directly. `security` is mandatory for Critical features it matches.
+  - **Cost:** only an index of one line per specialist is loaded until one is activated. Available in `/feature`, `/feature-lean` and `/feature-kit`.
 - **Agents ask you, through the orchestrator.** When an agent needs an answer only you can give, it stops instead of guessing and returns its questions (blocking or not, with evidence and neutral options). The orchestrator records them in the spec or in `decisions/`, puts them to you, and resumes the same agent with your answers and its context intact. This is what keeps specification and planning from building on invented requirements.
 - **Per-task model selection.** Every role has a standard model, and the orchestrator picks the cheapest sufficient model for *each* delegation. That can be higher or lower than the standard, with floors so architecture and review are never downgraded. Every non-standard choice is announced, and every delegation is logged.
 - **Neutral decision gates.** Options are never recommended or ranked: they are sorted alphabetically, given symmetric pros and cons, described with verifiable facts instead of adjectives, and excluded options are listed with the constraint they violate. The agent gives an opinion only if you explicitly insist on one.
@@ -86,6 +90,7 @@ Then start a new Claude Code session.
 ```
 /feature-lean add CSV export                      # main mode: one session, two gates, one clean critic
 /feature-lean resume csv-export                   # continue it in a new session
+/feature-lean add bulk import --with database,performance   # activate specialists up front
 /feature add CSV export to the reports page       # new feature; you choose the workflow after an uncertainty assessment
 /feature migrate auth to OAuth --esdd             # choose the workflow up front (--sdd | --esdd)
 /feature add audit log --high --phased            # intensity, and phased mode instead of direct
@@ -130,6 +135,7 @@ skills/feature/
 ├── workflows/           sdd-direct.md · esdd.md (incl. hybrid)
 ├── protocols/           neutral-decisions.md · agent-questions.md · context-handoff.md · multi-feature.md · …
 ├── roles/               repository-analyst · spec-writer · planner · test-designer · implementer · tester · reviewer (critic) · verifier
+├── specialists/         security · ux-ui · database · network · performance · observability (extensible)
 ├── knowledge/           specification-guide · testing-techniques · code-quality · design-patterns · e2e-testing · anti-patterns/
 ├── scripts/             quality_gate.py
 └── templates/           specification · implementation-plan · testing-plan · decision-record · handoff · final-report · feature-card
