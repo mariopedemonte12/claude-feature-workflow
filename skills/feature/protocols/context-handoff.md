@@ -4,7 +4,7 @@
 
 ## Who writes it
 
-The outgoing agent writes it. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator checks every handoff before the next delegation.
+The outgoing agent writes it. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation.
 
 `handoff.md` lives in the feature folder and is overwritten at each transition. History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
 
@@ -21,20 +21,23 @@ Structure: `templates/handoff.md`.
 
 ## What each transition must carry
 
+**Request → Specification**
+`request.md` path · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · intensity and its size budget.
+
 **Specification → Planning**
 Intent · confirmed FR/AC IDs · constraints · invariants · open questions (blocking ones flagged) · repository references (analyst report) · areas of technical uncertainty.
 
 **Planning → Implementation**
-Approved approach (D ref) · alternatives not chosen, with the reason only when that prevents re-litigating · technical decisions · affected files and components · dependencies · implementation sequence · risks · required tests · decisions still pending and what must not be touched until they are made · verification depth (mutation testing / independent review: yes or no).
+Approved approach (D ref) · alternatives not chosen, with the reason only when that prevents re-litigating · technical decisions · affected files and components · dependencies · implementation sequence · risks · required tests · decisions still pending and what must not be touched until they are made · verification depth (mutation testing yes or no · review level R0 / R1 / R2) · end-to-end harness · registry entries (AP IDs) relevant to the change.
 
-**Implementation → Testing (and Review)**
-Implemented functionality by FR/AC · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · suggested testing focus.
+**Implementation → Testing** (critics and verifiers never read handoffs: `protocols/review-cycle.md` §Clean context)
+Implemented functionality by FR/AC · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · how to start the system for end-to-end tests · quality gate result · suggested testing focus.
 
 **Testing → Specification / Evolution (ESDD)**
 Tests executed, with results and evidence · failures · uncovered scenarios · discrepancies between spec and implementation · newly discovered requirements (as hypotheses) · invalidated assumptions · risks · possible spec or plan changes, phrased as options for the programmer rather than recommendations.
 
 **Testing → Finalization**
-Validation results · status of each acceptance criterion · black-box technique statuses · mutation testing results · known defects · remaining risks · limitations.
+Validation results · status of each acceptance criterion · end-to-end status and evidence · black-box technique statuses · mutation testing results · known defects · remaining risks · limitations.
 
 ## Incoming agent
 

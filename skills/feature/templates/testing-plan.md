@@ -11,6 +11,13 @@ In scope: … Out of scope: …
 | ID | Scenario | Type (positive · negative · error · integration · regression) | Covers (AC/FR/INV) | Technique |
 | --- | --- | --- | --- | --- |
 
+## End-to-end
+
+Status (Applied · Not applicable · Blocked) and basis. Harness and version · how the system is started · what is real and what is faked · evidence location (`reports/e2e/`).
+
+| ID | User path | Covers (AC) | Expected observable result |
+| --- | --- | --- | --- |
+
 ## Black-box technique applicability
 
 | Technique | Planned status | Justification |

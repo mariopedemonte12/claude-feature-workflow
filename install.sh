@@ -1,30 +1,36 @@
 #!/usr/bin/env bash
-# Installs the /feature skill as a standalone Claude Code skill.
-#   ./install.sh            -> ~/.claude/skills/feature   (all your projects)
-#   ./install.sh --project  -> ./.claude/skills/feature   (current project only)
+# Installs the /feature and /feature-kit skills as standalone Claude Code skills.
+#   ./install.sh            -> ~/.claude/skills/{feature,feature-kit,feature-lean}   (all your projects)
+#   ./install.sh --project  -> ./.claude/skills/{feature,feature-kit,feature-lean}   (current project only)
 #   add --force to replace an existing installation
 set -euo pipefail
 
-SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/skills/feature"
-DEST="$HOME/.claude/skills/feature"
+SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/skills"
+DEST="$HOME/.claude/skills"
 FORCE=0
 
 for arg in "$@"; do
   case "$arg" in
-    --project) DEST="$PWD/.claude/skills/feature" ;;
+    --project) DEST="$PWD/.claude/skills" ;;
     --force)   FORCE=1 ;;
     -h|--help) sed -n '2,5p' "$0"; exit 0 ;;
     *) echo "Unknown option: $arg" >&2; exit 2 ;;
   esac
 done
 
-if [[ -e "$DEST" && $FORCE -ne 1 ]]; then
-  echo "Already exists: $DEST (re-run with --force to replace it)" >&2
-  exit 1
-fi
+for skill in feature feature-kit feature-lean; do
+  if [[ -e "$DEST/$skill" && $FORCE -ne 1 ]]; then
+    echo "Already exists: $DEST/$skill (re-run with --force to replace it)" >&2
+    exit 1
+  fi
+done
 
-mkdir -p "$(dirname "$DEST")"
-rm -rf "$DEST"
-cp -R "$SRC" "$DEST"
-echo "Installed to $DEST"
+mkdir -p "$DEST"
+for skill in feature feature-kit feature-lean; do
+  rm -rf "${DEST:?}/$skill"
+  cp -R "$SRC/$skill" "$DEST/$skill"
+  echo "Installed to $DEST/$skill"
+done
 echo "Start a new Claude Code session and type: /feature <what you want to build>"
+echo "or, to work by hand with the workflow's skills on demand: /feature-kit"
+echo "or, for the lean pipeline (spec + edge cases, your answers, code and tests, one clean critic): /feature-lean <feature>"
