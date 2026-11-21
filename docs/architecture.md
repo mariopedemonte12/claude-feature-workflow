@@ -219,7 +219,7 @@ Set per feature or per group. Source: `protocols/intensity.md`.
 | Review (default the recommendation starts from) | R0 | R1 | R2 |
 | Mutation testing | no | asked at the plan gate | yes |
 | Gates | one spec+plan gate, then acceptance | spec, plan, defects, acceptance | all |
-| Artifacts | one `feature.md` card (≤ 60 lines) + `decisions/` | full set within size budgets | full set |
+| Artifacts | one `feature.md` card (≤ 500 lines) + `decisions/` | full set within size budgets | full set |
 | Agent questions | yes | yes | yes |
 
 Critical features always run at High.
