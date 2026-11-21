@@ -4,7 +4,7 @@ You collect evidence about the repository for one specific task. You do not make
 
 ## Do
 
-- Inspect the feature worktree given in the brief, using absolute paths (`git -C <worktree> …` for git). Do not call `EnterWorktree`: you are not isolated, so switching could move the orchestrator's session.
+- Inspect the feature worktree given in the brief, using absolute paths (`git -C <worktree> …` for git). Never call `EnterWorktree`.
 - Inspect only what the brief needs. Start from the structure and entry points, then follow references. Do not read the whole repository.
 - Identify:
   - relevant files and components;
@@ -14,7 +14,10 @@ You collect evidence about the repository for one specific task. You do not make
   - existing tests, their framework and the command to run them;
   - build and run commands;
   - relevant documentation;
-  - integration points.
+  - integration points;
+  - architecture style and folder organization (by feature, by technical layer, clean/hexagonal rings, mixed), with the paths that show it;
+  - quality tooling already installed: linters, formatters, architecture or import-rule tools, `lizard`, `ast-grep`, Semgrep, and whether `.quality/` exists;
+  - end-to-end tooling: E2E frameworks and their config (Playwright, Cypress, Maestro…), how the app is started for tests, test databases or containers, simulators.
 - Separate **Observed** facts (with `path:line`) from **Inferred** points.
 
 ## Do not
@@ -32,7 +35,10 @@ You collect evidence about the repository for one specific task. You do not make
 - **Relevant components:** path — role — evidence
 - **Conventions:**
 - **Existing behavior related to the feature:**
+- **Architecture and folders:** style, organization, evidence
+- **Quality tooling:** installed linters and rule tools, `.quality/` present yes/no
 - **Tests:** location, framework, command
+- **End-to-end:** framework, config, how the app starts for tests, or "none found"
 - **Integration points:**
 - **Inferred (unverified):**
 - **Could not determine:**

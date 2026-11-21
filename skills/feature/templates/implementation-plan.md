@@ -7,7 +7,7 @@
 | Decision | D-NNN |
 | Spec version | vN |
 | Base commit | `abc1234` |
-| Verification depth | Mutation testing: yes/no (basis) · Independent review: yes/no (basis) |
+| Verification depth | Mutation testing: yes/no (basis) · Review level: R0 / R1 / R2 (recommended vs. validated, basis) |
 
 ## Objective
 
@@ -33,9 +33,15 @@ New or changed dependencies, each with its approval reference.
 
 1. … (each step independently verifiable)
 
+## Code organization
+
+Where new code lives in the project's existing structure (feature folders where the project uses them) · design patterns used, each with the present problem that justifies it · registry entries (AP IDs) especially relevant to this change.
+
 ## Testing implications
 
 Tests to add or adjust; areas needing special attention.
+
+End-to-end harness: existing one, or the approved installation (decision reference).
 
 ## Risks
 

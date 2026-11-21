@@ -21,7 +21,9 @@ On `/feature status`, when the programmer asks, or when the state of several fea
 
 Rows are alphabetical by slug.
 
-**One orchestrator per feature.** Never resume a feature that another live session is orchestrating. If the programmer asks for that, point out the risk of conflicting edits and let them decide.
+**One orchestrator per feature.** Never resume a feature that another live orchestrator claims (`protocols/hierarchy.md` §Claims). If the programmer asks for that, point out the risk of conflicting edits and let them decide.
+
+**Several orchestrators.** When the portfolio is split across sessions, either independently or under a principal orchestrator, follow `protocols/hierarchy.md`.
 
 ## Communication
 
@@ -66,4 +68,4 @@ Many features in one session consume your context.
 - When switching to a feature, re-read its `handoff.md` instead of relying on memory.
 - Keep subagent returns short.
 
-If context pressure starts to threaten correctness, tell the programmer and present the options neutrally, for example: pause some features, or continue some in another session with `/feature resume <slug>`.
+If context pressure starts to threaten correctness, tell the programmer and present the options neutrally, for example: pause some features, continue some in another session with `/feature resume <slug>`, or move to the hierarchical mode, where each group of features keeps its own context (`protocols/hierarchy.md`).

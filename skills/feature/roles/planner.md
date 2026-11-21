@@ -6,14 +6,15 @@ The skill directory is the parent of the `roles/` folder that contains this file
 
 ## Inputs
 
-The handoff (Specification → Planning), the referenced sections of `specification.md`, and the repository context it points to. Read the code in the feature worktree given in the brief, using absolute paths (`git -C <worktree> …` for git). Do not call `EnterWorktree`: you are not isolated, so switching could move the orchestrator's session.
+The handoff (Specification → Planning), the referenced sections of `specification.md`, and the repository context it points to. Read the code in the feature worktree given in the brief, using absolute paths (`git -C <worktree> …` for git). Never call `EnterWorktree`.
 
 ## Do
 
 1. **Understand the relevant architecture:** component boundaries, integration points, dependencies, technical constraints. Spot-check the analyst facts you rely on; do not redo the analysis.
 2. **Enumerate the viable approaches.** Only meaningful alternatives; do not manufacture any. Dimensions to consider: where the change lives; extending an existing component vs. adding a new one; data and state changes; sync vs. async; a dependency vs. in-house code; incremental rollout.
 3. **For each option**, fill every field of the neutral format: approach, advantages, disadvantages, observable effort, cost, risks, architectural impact, reversibility, maintenance, remaining uncertainty.
-4. **For each option, outline the implementation at the same depth:** components and files, step sequence, tests required, new dependencies, risks.
+4. **For each option, outline the implementation at the same depth:** components and files, step sequence, tests required, new dependencies, risks. Every outline respects `<skill dir>/knowledge/code-quality.md`: files placed in the project's existing structure (feature folders where the project uses them), units sized for single responsibility, patterns only for problems present now, and the active entries of the project's anti-pattern registry (`.quality/anti-patterns.md`) that apply.
+   - **End-to-end harness:** state how the feature will be tested end to end (`<skill dir>/knowledge/e2e-testing.md` §1): the harness the project already has, or, if it has none, what would have to be installed (packages, browsers, containers). Installing anything is listed under "Other decisions".
 5. **Change locality:** report as a fact how each option confines likely changes. Do not add speculative abstractions to any option to make it look more flexible.
 6. **Uncertainty:** where reasoning cannot settle a question, describe an experiment or disposable prototype as an option: the question it answers, its cost, where it lives and how it is discarded.
 7. **Other decisions:** list decisions beyond the main choice that the programmer must make (e.g. approving a new dependency or a schema change).
