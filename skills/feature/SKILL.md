@@ -1,7 +1,7 @@
 ---
 name: feature
 description: Multi-agent feature workflow (SDD Direct or Evolutionary Spec-Driven Development) for one or several concurrent features, each in its own git worktree, with human decision gates, neutral option presentation, per-delegation model selection, shared artifacts and context handoffs. Manual invocation only.
-argument-hint: "<feature description> [--sdd | --esdd] [--lite | --medium | --high] | continue <answer> | resume <slug>... | status | hub | join <hub> <group>"
+argument-hint: "<feature description> [--sdd | --esdd] [--lite | --medium | --high] [--phased] | continue <answer> | resume <slug>... | status | hub | join <hub> <group>"
 disable-model-invocation: true
 ---
 
@@ -36,7 +36,7 @@ The programmer has deliberately activated this workflow. From now until they say
    - `hub`: become the **principal orchestrator** of a hierarchy of sub-orchestrators. Read `protocols/hierarchy.md` and follow its principal role; ask the programmer for the groups and the transport.
    - `join <hub> <group>`: become the **sub-orchestrator** of `<group>`, reporting to the principal session `<hub>` through cross-session messaging. Read `protocols/hierarchy.md` §Sub-orchestrator and follow it.
    - `resume <slug> [<slug>…]`: for each slug, locate its worktree (`.claude/worktrees/<slug>`, shown by `git worktree list`) and the feature folder inside it, read its `handoff.md`, check freshness (`protocols/context-handoff.md` §Freshness), and report the current state and next step, tagged `[slug]`. Then continue.
-   - `<description> [--sdd | --esdd]`: a **new feature**. Give it a short kebab-case slug, unique among the features in progress, and state it. A workflow flag means the programmer has already chosen this feature's workflow; an intensity flag sets its intensity (`protocols/intensity.md`).
+   - `<description> [--sdd | --esdd]`: a **new feature**. Give it a short kebab-case slug, unique among the features in progress, and state it. A workflow flag means the programmer has already chosen this feature's workflow; an intensity flag sets its intensity (`protocols/intensity.md`); `--phased` runs it in phased mode (`protocols/phase-runners.md`). Without it, the feature runs in direct mode: you orchestrate every phase yourself.
    - Empty: if features are in progress, show the board and ask what to do; otherwise ask what feature to work on.
    - As soon as more than one feature is in progress, read `protocols/multi-feature.md` and follow it from then on.
    - **Claims, in every mode:** before creating or resuming a feature, check and write its claim (`protocols/hierarchy.md` §Claims). Never orchestrate a feature another live orchestrator claims.
@@ -73,6 +73,7 @@ The programmer has deliberately activated this workflow. From now until they say
 | Writing the approved plan | `templates/implementation-plan.md` |
 | Project without `.quality/`, or anti-pattern candidates to present | `protocols/anti-pattern-registry.md`, then the matching `knowledge/anti-patterns/*.md` seeds |
 | Recommending the review level, and running review | `protocols/review-cycle.md` |
+| A feature runs in phased mode, or the programmer asks about it | `protocols/phase-runners.md` |
 | `hub`, `join`, another orchestrator's claim found, or the programmer mentions several orchestrators | `protocols/hierarchy.md` |
 | Finalization | `templates/final-report.md` |
 
@@ -82,7 +83,7 @@ If the conversation was compacted and you lost details of this workflow, re-read
 
 ## 4. Roles, executors and models
 
-You handle everything that needs dialogue with the programmer: workflow selection, recording the request, relaying agent questions, presenting decisions, recording approvals, finalization. The Specification Writer writes the spec; you own the conversation that feeds it (`request.md`) and its gate. Subagents cannot talk to the programmer: they ask through you, following `protocols/agent-questions.md`. Claude Code lets subagents spawn their own up to a depth limit (3 by default), but **feature roles never delegate**: all delegation goes through the orchestrator. If you are a sub-orchestrator (`protocols/hierarchy.md`), "the programmer" in this skill means your channel to them: the principal, unless the programmer writes to you directly.
+You handle everything that needs dialogue with the programmer: workflow selection, recording the request, relaying agent questions, presenting decisions, recording approvals, finalization. The Specification Writer writes the spec; you own the conversation that feeds it (`request.md`) and its gate. Subagents cannot talk to the programmer: they ask through you, following `protocols/agent-questions.md`. Claude Code lets subagents spawn their own up to a depth limit (3 by default), but **feature roles never delegate**: all delegation goes through the orchestrator, or through a phase runner in phased mode (`protocols/phase-runners.md`). If you are a sub-orchestrator (`protocols/hierarchy.md`), "the programmer" in this skill means your channel to them: the principal, unless the programmer writes to you directly.
 
 | Role | Executor (`subagent_type`) | Standard `model` | Role file |
 | --- | --- | --- | --- |
@@ -93,6 +94,7 @@ You handle everything that needs dialogue with the programmer: workflow selectio
 | Testing | `general-purpose` | `sonnet` | `roles/tester.md` |
 | Clean Code Critic | `general-purpose` | `opus` | `roles/reviewer.md` |
 | Finding Verifier | `general-purpose` | `sonnet` | `roles/verifier.md` |
+| Phase runner (phased mode only) | `general-purpose` | `sonnet` | `protocols/phase-runners.md` §The phase runner |
 
 ### Model selection per delegation
 
@@ -117,7 +119,7 @@ Typical deviations (illustrative, not exhaustive):
   - Implementer on concurrency, security, data migration or cross-cutting changes, or after a failed attempt → `opus`.
   - Tester doing symbolic/concolic analysis or reasoning about hard state → `opus`.
 
-**Floors.** Never use `haiku` for the specification, planning, the critic or the verifier. For **Critical** features, the specification, planning and the critic use `opus`. These floors exist so that consequential architectural judgment is never downgraded to save cost.
+**Floors.** Never use `haiku` for the specification, planning, the critic, the verifier or a phase runner. For **Critical** features, the specification, planning, the critic and phase runners use `opus`. These floors exist so that consequential architectural judgment is never downgraded to save cost.
 
 **Rules:**
 - You may use any model alias the Agent tool accepts in this session.

@@ -15,7 +15,7 @@ Diagrams use Mermaid and render on GitHub.
 7. [Agent questions](#7-agent-questions)
 8. [Review cycle](#8-review-cycle)
 9. [Anti-pattern registry and quality gate](#9-anti-pattern-registry-and-quality-gate)
-10. [Several features and several orchestrators](#10-several-features-and-several-orchestrators)
+10. [Several features and several orchestrators](#10-several-features-and-several-orchestrators), including phased mode
 11. [Responsibilities per agent](#11-responsibilities-per-agent)
 12. [Artifacts and state](#12-artifacts-and-state)
 13. [Design principles](#13-design-principles)
@@ -319,6 +319,24 @@ flowchart TB
   - Each gate of a sub-orchestrator travels up as a `DECISION-REQUEST`.
   - The queue is ordered by how much work a request blocks, then by arrival.
   - The principal never prioritizes features: that stays the programmer's decision.
+### Phased mode (optional)
+
+Source: `protocols/phase-runners.md`. Direct mode is the default.
+
+```mermaid
+flowchart LR
+    P(["Programmer"]) <--> O["Orchestrator<br/>startup, request.md, gates from disk,<br/>question relay, portfolio, integration"]
+    O -->|"brief: phase, steps, decisions in force"| PR["Phase runner<br/>one per feature and phase,<br/>dies at the first gate"]
+    PR -->|"briefs, verifies, relays questions"| RO["Role agents of that phase"]
+    PR -->|"Pending decisions, handoff"| DK[("feature folder")]
+    PR -->|"PHASE … ended at GATE · QUESTIONS · FAILED"| O
+    O -->|"reads the gate from disk + consistency check"| DK
+```
+
+- **Phases:** SDD Direct has Specification, Planning, Build and Fixes. ESDD has Initial specification, Exploration, Increment and Evolution.
+- **Decisions are the same:** the runner cannot reach the programmer, so it must stop at each gate.
+- **What changes:** you see results at the gates instead of agent by agent, and you can stop a whole runner but not steer it mid-phase.
+
 - **Project memory** (`memory.md`, ≤ 80 lines) carries the project context and the portfolio across sessions. Before every stop, pending decisions are written to `decisions/` with their option labels, so an answer like "B" still resolves in a fresh session.
 
 ## 11. Responsibilities per agent
@@ -334,6 +352,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 | **Implementer** | `general-purpose` · sonnet (haiku if mechanical, opus if risky) | Code for the approved plan only; tests the plan requires (at Lite, all tests including E2E); quality gate and project lint; anti-pattern candidates; stopping on plan-invalidating discoveries | Handoff, plan, quality standard, design patterns, registry | Code and tests in the worktree, `implementation-report.md`, handoff to testing, Lite card result | Drift from the plan silently, add comments, leave quality violations unreported, expand scope |
 | **Tester** | `general-purpose` · sonnet (haiku for re-runs, opus for hard state) | Testing plan, functional and regression tests, E2E through the real entry point, black-box techniques with a status each, mutation testing if decided, validation against the spec | Handoff, spec, testing techniques, E2E guide | `testing-plan.md`, tests, `reports/e2e/`, `validation-report.md`, handoff | Decide an expected result the spec leaves open, weaken or skip failing tests, report a test it did not run as passed |
 | **Clean Code Critic** | `general-purpose` · opus (never haiku) | Maximally critical review from scratch: names, responsibilities, function design, structure, patterns misused, registry violations; each finding with a concrete case | Code, `git diff <base>`, project conventions, quality standard, registry | `reports/review/round-<n>-critic.md` | Read the spec, plan, handoffs or earlier rounds; be reused across rounds |
+| **Phase runner** (phased mode) | `general-purpose` · sonnet (opus if Critical; never haiku) | Orchestrating one phase of one feature: delegating its steps, choosing models, verifying returns, relaying agent questions, writing the gate's Pending decisions | Its brief, `SKILL.md` §4, the workflow steps in range, intensity and agent-questions protocols | `delegations.md`, `decisions/` (Pending), `handoff.md` | Talk to the programmer, pass a gate, run startup or integration, be reused for the next phase |
 | **Finding Verifier** | `general-purpose` · sonnet (never haiku) | Trying to refute each finding against the code: VALID, INVALID or AMBIGUOUS; fix class; recurring findings marked as candidates | The critic's report, the code | `reports/review/round-<n>-verification.md` | Read the spec or plan, fix code, accept a finding without checking it |
 
 **Floors:** no haiku for specification, planning, critic or verifier. Critical features use opus for specification, planning and the critic.
