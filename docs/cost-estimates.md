@@ -15,6 +15,21 @@ One complete run: 3 large features on Django 6.1, High intensity, SDD Direct, So
 
 Input-equivalent weights: input ×1, cache write ×1.25, cache read ×0.1, output ×5.
 
+## Lean pipeline (measured)
+
+The same 3 Django features ran with `/feature-lean`: one session per feature, in parallel, with the same simulated programmer.
+
+| | Lean | High (direct) | Baseline |
+| --- | --- | --- | --- |
+| Cost | USD 5.30 | USD 15.16 | USD 1.12 |
+| × baseline | 4.7 | 13.5 | 1 |
+| Tokens eq | 2.57M (sessions 2.08M, 3 critics 0.48M) | 8.23M | 0.63M |
+| Programmer turns | 4 per feature | 13 | 0 |
+| Hidden tests | 42/43 | 42/43 | 41/43 |
+| `__eq__` raising inside `{% switch %}` | raises | renders the default | raises |
+
+Lean failed "surrounding whitespace stripped" because the programmer chose to reject whitespace, a legitimate reading of "rejects anything else". It passed "trailing newline rejected", which High and the baseline failed. This is n=1, with the same caveats as the calibration run.
+
 ## Model
 
 - **Direct.**
