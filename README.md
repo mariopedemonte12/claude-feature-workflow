@@ -24,9 +24,9 @@ It loads **only when you call it** (`/feature`). In every other session it costs
 - **A per-project anti-pattern registry that learns.** Seeded from catalogs matching the project's architecture (general, feature folders, layered/hexagonal, component UIs, back ends, tests). Agents read it before coding and record new anti-patterns they find as candidates; you approve what enters it, and entries that can be detected mechanically become lint rules (ast-grep, Semgrep, import-rule tools or the stack's own linter: your choice).
 - **End-to-end testing by the Tester.** Every user-facing acceptance criterion is exercised through the real entry point: Playwright for web UIs, real HTTP requests, CLI processes, mobile and desktop drivers, or a deterministic simulation harness when there is no interactive surface.
 - **A lean pipeline: `/feature-lean`.** For one feature per session, without an orchestrator relay:
-  - the session itself specifies the feature, with its edge, error, security and worst-case behavior;
+  - the session itself specifies the feature, with its edge, error, security and worst-case behavior, each case compared with how the project's nearest existing analog handles it;
   - one gate with your answers and the approach, where options carry their security consequence and their probed worst case;
-  - code with tests and the quality gate;
+  - code with tests, testing techniques applied or justified, fuzz or property tests at trust boundaries, and the quality gate;
   - one clean critic, whose every finding comes to you.
 - **The skills without the workflow: `/feature-kit`.** When you work on a feature by hand, `/feature-kit` makes the workflow's knowledge available as a catalog of modules (explore, spec, plan, decide, quality/ponytail, patterns, anti-patterns, test, e2e, gate, review, card) that the agent loads only when the task needs one, or when you name it. No phases, gates, artifacts, worktrees or subagents, except a clean critic when you ask for a review.
 - **Testing discipline.** Boundary value analysis, fuzz/property-based, symbolic/concolic, decision tables and state machines, each reported as *Applied*, *Not applicable* (with a reason) or *Blocked* (with an explanation). Mutation testing is mandatory for features you mark as critical.

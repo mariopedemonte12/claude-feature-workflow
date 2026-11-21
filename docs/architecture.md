@@ -102,9 +102,9 @@ flowchart LR
 | `/feature-kit` | Separate skill. It exposes the roles and knowledge as modules (explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, card) without phases, gates, artifacts or worktrees. Only `review` launches subagents: a clean critic and, if asked, a verifier. |
 
 **`/feature-lean` steps:**
-1. A specification pass covers edge, error, security and worst-case behavior.
+1. A specification pass covers edge, error, security and worst-case behavior. Each case states what the project's nearest existing analog does with it.
 2. ⛔ Gate 1: questions and approach. Options carry their security consequence and their probed worst case.
-3. Code, tests and the quality gate.
+3. Code and tests: every case, a status for each testing technique, and fuzz or property tests at trust boundaries. Then the quality gate.
 4. One clean critic (opus). Each finding is checked against the code.
 5. ⛔ Gate 2: every finding, each with fix · accept · change behavior.
 6. ⛔ Acceptance, integration and cleanup.
