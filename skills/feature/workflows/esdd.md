@@ -23,7 +23,7 @@ This workflow runs **per feature**, at Medium or High intensity (`protocols/inte
 **6. ⛔ Collaborative exploration and decision.** Present the options following `protocols/neutral-decisions.md`. The programmer chooses among: continue exploring · validate a hypothesis · build a prototype · select an approach · modify requirements · defer the decision. Record the choice in `decisions/`.
 - Prototypes live outside production code paths (e.g. a `spikes/` folder or a separate branch). They are discarded, or promoted only by an explicit programmer decision.
 
-**7. Plan the next increment.** Write or update `implementation-plan.md`: the approved approach plus an **Increments** section (goal, hypothesis it validates if any, done criteria). Plan only the next increment in detail. At the first gate, also settle verification depth and the end-to-end harness as in SDD Direct step 6 (mutation testing and R2 mandatory when Critical; otherwise a neutral question for mutation testing and a recommended review level the programmer validates), and bootstrap the anti-pattern registry if the project has none (`protocols/anti-pattern-registry.md`). Write the Planning → Implementation handoff.
+**7. Plan the next increment.** Write or update `implementation-plan.md`: the approved approach plus an **Increments** section (goal, hypothesis it validates if any, done criteria). Plan only the next increment in detail. At the first gate, also settle verification depth, the security audit and the end-to-end harness as in SDD Direct step 6 (mutation testing and R2 mandatory when Critical; otherwise a neutral question for mutation testing and a recommended review level the programmer validates), and bootstrap the anti-pattern registry if the project has none (`protocols/anti-pattern-registry.md`). Write the Planning → Implementation handoff.
 
 ## Phase 3: Incremental implementation
 
@@ -37,7 +37,7 @@ This workflow runs **per feature**, at Medium or High intensity (`protocols/inte
 
 **11. Black-box techniques.** Each of BVA, Fuzz, Symbolic/Concolic, Decision Table and FSM gets a status: Applied / Not applicable + justification / Blocked + explanation.
 
-**12. Mutation testing.** Mandatory if Critical or requested; otherwise only if decided at the gate. Report scope, score, surviving mutants and gaps. Run the review at the validated level (`protocols/review-cycle.md`), re-checking the level against each increment's real diff; the first critic runs in parallel with testing.
+**12. Mutation testing.** Mandatory if Critical or requested; otherwise only if decided at the gate. Report scope, score, surviving mutants and gaps. Run the review at the validated level (`protocols/review-cycle.md`), re-checking the level against each increment's real diff; the first critic, and the Security Auditor if decided, run in parallel with testing. Re-check at each increment whether it reaches a trust boundary the audit decision did not consider; if so, ask again.
 
 **13. ⛔ Collaborative validation.** Present the findings, separating observed facts from interpretations and hypotheses. Present the increment's anti-pattern candidates in the same gate (`protocols/anti-pattern-registry.md` §The learning loop).
 

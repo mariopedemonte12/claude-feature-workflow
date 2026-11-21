@@ -24,6 +24,10 @@ This is the one verification decision where the orchestrator **recommends**: the
 
 **Re-check after implementation.** Before review starts, compare the real diff (`git diff --shortstat <base>`, the files touched, the risk areas reached) with the estimate. If it crosses into another level, state the facts and recommend again; the programmer validates.
 
+## Security audit
+
+The Security Auditor (`roles/security-auditor.md`) is a separate clean agent. It is decided per feature at the plan gate and mandatory for Critical features. It follows the same clean-context rules as the critic, runs in parallel with it, and is never resumed. Its findings are never fixed automatically, at any level: they all go to the defects gate.
+
 ## Clean context
 
 A critic's brief contains only: the feature worktree, the base commit, its role file and the output path. It does **not** receive, and must not open: the specification, the plan, decisions, handoffs, the implementation report, delegations, earlier review rounds, or anything else in the feature folder. It reads the code, `git diff <base>`, the project's own conventions (CLAUDE.md, lint configuration), the quality standard and the anti-pattern registry.

@@ -48,6 +48,7 @@ flowchart TB
         A5["Tester"]
         A6["Clean Code Critic"]
         A7["Finding Verifier"]
+        A9["Security Auditor"]
     end
 
     subgraph Repo["Project repository"]
@@ -106,7 +107,7 @@ flowchart LR
 1. A specification pass covers edge, error, security and worst-case behavior. Each case states what the project's nearest existing analog does with it.
 2. ⛔ Gate 1: questions and approach. Options carry their security consequence and their probed worst case.
 3. Code and tests: every case, a status for each testing technique, and fuzz or property tests at trust boundaries. Then the quality gate.
-4. One clean critic (opus). Each finding is checked against the code.
+4. One clean critic (opus), plus a clean Security Auditor (opus) if you chose it or the feature is Critical. Each finding is checked against the code.
 5. ⛔ Gate 2: every finding, each with fix · accept · change behavior.
 6. ⛔ Acceptance, integration and cleanup.
 
@@ -152,7 +153,7 @@ flowchart TB
     end
     subgraph F3["Phase 3 · Testing and validation"]
         TE["8–11 · Test<br/>Tester: implements the designed cases, functional, E2E,<br/>exploration, mutation if decided, validation report"]
-        RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature"]
+        RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature<br/>+ Security Auditor if decided"]
         TE & RV --> G3{"⛔ Defects and anti-pattern candidates gate<br/>fix now · accept as limitation · change spec"}
         G3 -->|"fix"| FX["same Implementer resumed: makes the Tester's failing test pass<br/>→ same Tester re-runs → new clean critic at R1/R2"]
         FX --> G3
@@ -217,9 +218,10 @@ Set per feature or per group. Source: `protocols/intensity.md`.
 | Implementer | code **and** its unit and E2E tests | production code only | same as Medium |
 | Tester | no | implements and runs the designed cases, with E2E | same, plus every technique and mutation testing |
 | Review (default the recommendation starts from) | R0 | R1 | R2 |
+| Security audit | you decide at the spec + plan gate | you decide at the plan gate | you decide at the plan gate (mandatory if Critical) |
 | Mutation testing | no | asked at the plan gate | yes |
 | Gates | one spec+plan gate, then acceptance | spec, plan, defects, acceptance | all |
-| Artifacts | one `feature.md` card (≤ 500 lines) + `decisions/` | full set within size budgets | full set |
+| Artifacts | one `feature.md` card (target 500 lines) + `decisions/` | full set, with size targets (overflow goes to linked files, never cut) | full set |
 | Agent questions | yes | yes | yes |
 
 Critical features always run at High.
@@ -370,6 +372,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 | **Clean Code Critic** | `general-purpose` · opus (never haiku) | Maximally critical review from scratch: names, responsibilities, function design, structure, patterns misused, registry violations; each finding with a concrete case | Code, `git diff <base>`, project conventions, quality standard, registry | `reports/review/round-<n>-critic.md` | Read the spec, plan, handoffs or earlier rounds; be reused across rounds |
 | **Phase runner** (phased mode) | `general-purpose` · sonnet (opus if Critical; never haiku) | Orchestrating one phase of one feature: delegating its steps, choosing models, verifying returns, relaying agent questions, writing the gate's Pending decisions | Its brief, `SKILL.md` §4, the workflow steps in range, intensity and agent-questions protocols | `delegations.md`, `decisions/` (Pending), `handoff.md` | Talk to the programmer, pass a gate, run startup or integration, be reused for the next phase |
 | **Finding Verifier** | `general-purpose` · sonnet (never haiku) | Trying to refute each finding against the code: VALID, INVALID or AMBIGUOUS; fix class; recurring findings marked as candidates | The critic's report, the code | `reports/review/round-<n>-verification.md` | Read the spec or plan, fix code, accept a finding without checking it |
+| **Security Auditor** | `general-purpose` · opus (never haiku) | Vulnerability audit from scratch, when decided at the plan gate or Critical: maps sources and sinks in the diff, follows each path, runs installed security tools, and proves each finding with an exploit run outside the repository | Diff, the code it reaches, project security conventions, registry (never the spec, plan or feature folder) | `reports/review/security.md` (Lean: `security.md` beside the card) | Report a theoretical concern as confirmed, install tools, fix code, be resumed |
 
 **Floors:** no haiku for specification, planning, critic, verifier or phase runner. Critical features use opus for specification, planning, the critic and phase runners.
 

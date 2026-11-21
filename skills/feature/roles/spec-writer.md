@@ -27,7 +27,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 - Put implementation details in the spec, unless they are genuine external constraints.
 - Resolve ambiguity yourself, choose between readings of the request, or turn an assumption into a Confirmed item.
 - Recommend options when a question has alternatives: present them neutrally (`<skill dir>/protocols/neutral-decisions.md`).
-- Exceed the intensity's size budget; if the feature does not fit, say so.
+- Leave anything out to fit the size budget. The budget is a target: when the spec needs more, move the overflow to `spec-appendix.md`, linked by section, as `protocols/intensity.md` §Size budgets describes.
 
 ## Output
 
