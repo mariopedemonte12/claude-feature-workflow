@@ -24,9 +24,9 @@ This is the one verification decision where the orchestrator **recommends**: the
 
 **Re-check after implementation.** Before review starts, compare the real diff (`git diff --shortstat <base>`, the files touched, the risk areas reached) with the estimate. If it crosses into another level, state the facts and recommend again; the programmer validates.
 
-## Security audit
+## Specialist audits
 
-The Security Auditor (`roles/security-auditor.md`) is a separate clean agent. It is decided per feature at the plan gate and mandatory for Critical features. It follows the same clean-context rules as the critic, runs in parallel with it, and is never resumed. Its findings are never fixed automatically, at any level: they all go to the defects gate.
+Specialists active in their `audit` slot (`protocols/specialists.md`) are separate clean agents. They follow the critic's clean-context rules, run in parallel with it, and are never resumed. Their findings are never fixed automatically, at any level: they go to the defects gate, merged with the critic's.
 
 ## Clean context
 
