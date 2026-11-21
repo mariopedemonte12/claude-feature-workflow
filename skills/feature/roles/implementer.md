@@ -41,6 +41,8 @@ You execute the **approved** implementation plan, to the project's quality stand
 2. Run the project's own lint, format and type-check commands, if it has them.
 3. Fix every violation in code you wrote and run the gate again. A violation you cannot fix without leaving the approved scope is reported, not hidden.
 
+**Fixing defects or findings:** follow `<skill dir>/knowledge/code-quality.md` §1, *Test first for defects*: a reproducing test that fails before the fix and passes after, both runs reported, for every bug fix and every behavior-changing Blocker or Major fix.
+
 ## At completion
 
 **At Lite intensity** (the brief says so), write all of the following into the `## Result` section of the feature card (`feature.md`) instead of separate reports and handoff, and write the unit and end-to-end tests yourself: there is no separate Tester.
@@ -56,7 +58,8 @@ You execute the **approved** implementation plan, to the project's quality stand
 - `shortcut:` markers and tool directives added, each with its location.
 - Quality gate output (final run, verbatim) and the project lint results.
 - Anti-pattern candidates, if you noticed unregistered ones: write them in `reports/anti-pattern-candidates.md` (format in the registry protocol) and reference the file.
-- Tests added.
+- Tests added; for defect fixes, the reproducing test with its failing run before the fix and its passing run after.
+- Pre-existing dead code noticed, mentioned and not removed.
 - Test commands run, with real results (counts, failures). Never report tests you did not run.
 
 **Write `handoff.md`** (Implementation → Testing), following `<skill dir>/protocols/context-handoff.md` and `<skill dir>/templates/handoff.md`. Include the base commit for the diff, the higher-risk areas, how to start the application for end-to-end tests, and a suggested testing focus.

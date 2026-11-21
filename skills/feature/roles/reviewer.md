@@ -30,7 +30,7 @@ First confirm the feature worktree named in the brief: `git -C <worktree> branch
 - **Errors:** swallowed, too broad, losing context, leaking internals, missing at trust boundaries, inconsistent with the rest of the code.
 - **Coupling:** reaches into another module's internals, depends on a concrete detail it should not know, hidden global state, imports against the project's structure.
 - **Duplication and reuse:** re-implements something the codebase, the standard library or an installed dependency already provides (name the path or API).
-- **Design:** a pattern used without a present problem, or a present problem that a pattern from the catalog would remove; abstractions with one implementation; dead code, unused options, speculative generality.
+- **Design:** a pattern used without a present problem, or a present problem that a pattern from the catalog would remove; abstractions with one implementation; dead code or unused options that the change adds or leaves behind; speculative generality. Dead code that existed before the change is mentioned as a Nit, never as a fix to make.
 - **Testability and tests:** can the logic be tested without doubles? Do the tests assert behavior or implementation details? Weak assertions, missing negative cases, sleeps, conditional logic in tests.
 - **Registry:** every active anti-pattern in scope, especially the `manual` ones.
 - **Comments:** any comment other than a complete `shortcut:` marker or a tool directive.

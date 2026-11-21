@@ -4,7 +4,7 @@ Binding for every line of code an agent writes in this workflow: production code
 
 The order of priority is: **correct → safe → holds under the expected load → tested → readable → lean.** No rule below justifies cutting the first four.
 
-Part of this standard adapts the "smallest complete change" discipline of Ponytail (github.com/DietrichGebert/ponytail, MIT). It is stricter than Ponytail on comments (no "why" comments; only `shortcut:` markers and tool directives): the rules here win.
+Part of this standard adapts the "smallest complete change" discipline of Ponytail (github.com/DietrichGebert/ponytail, MIT), and the surgical-change and test-first rules of the Karpathy-inspired guidelines (github.com/forrestchang/andrej-karpathy-skills, MIT). It is stricter than Ponytail on comments (no "why" comments; only `shortcut:` markers and tool directives): the rules here win.
 
 ## 1. The smallest complete change
 
@@ -23,6 +23,14 @@ Then take the first rung that fully works:
 - Code you move or merge keeps its error handling and validation.
 - Bug fix: find every caller of the function you touch and fix the root cause once, in the shared code.
 - Between options of equal size, take the one that is correct on edge cases.
+- No handling for scenarios that cannot happen: a value that the type, a prior check or the caller's contract already guarantees. Input at a trust boundary is never in that category: user, network, file and environment input can always be anything.
+- Before reporting, re-read your diff: if the same behavior fits in a fraction of the code, rewrite it.
+
+**Surgical changes.** Every changed line traces to the approved spec or plan.
+- Do not "improve" adjacent code, formatting or names you were not asked to touch, and do not refactor what is not broken.
+- Remove the imports, variables and functions that **your** change made unused. Dead code that existed before the change is mentioned in the report, never deleted: it may be reachable in ways the diff does not show.
+
+**Test first for defects.** A bug fix, and every fix of a Blocker or Major finding that changes behavior, starts with a test that reproduces the defect. Run it, see it fail for the stated reason, then fix the code and see it pass. Report both runs. A behavior-preserving fix instead runs the affected tests before and after, and both runs pass.
 
 **Never cut:** validation at trust boundaries, error handling that prevents data loss, security, accessibility, anything the spec requires.
 
@@ -47,6 +55,8 @@ What replaces a comment:
 2. **Tool directives** that a tool requires in comment syntax: a shebang, `eslint-disable-next-line`, `@ts-expect-error`, `# noqa`, `# type: ignore`, `// nolint`, encoding or SPDX license headers when the project requires them. Each directive is listed in the implementation report with its reason.
 
 Existing comments in code you do not otherwise change stay as they are: removing them is unrelated refactoring.
+
+**Existing style wins, except for comments.** New code matches the surrounding code's formatting, idioms, error-handling style, naming conventions and test style, even where this standard would choose differently. The one exception is this section's rule against comments, which is the programmer's standing instruction; docstrings follow the project as stated above.
 
 ## 3. Size limits
 

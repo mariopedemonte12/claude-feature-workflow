@@ -17,7 +17,7 @@ First confirm the feature worktree named in the brief: `git -C <worktree> branch
    - **INVALID:** a premise is false; cite what disproves it.
    - **AMBIGUOUS:** it depends on intent or on information outside the code; say what would decide it.
 4. For each VALID finding, check the severity (you may lower or raise it, with the reason) and classify its fix:
-   - **behavior-preserving:** rename, extract, split by responsibility, remove dead code or duplication, simplify control flow, move to the right folder; observable behavior and public interfaces unchanged;
+   - **behavior-preserving:** rename, extract, split by responsibility, remove duplication, remove code that this change itself left unused, simplify control flow, move to the right folder; observable behavior and public interfaces unchanged. Removing code that was already unused before the change is never behavior-preserving here: it may be reachable through registration, reflection or templates, so classify it as behavior-changing;
    - **behavior-changing:** changes outputs, errors, side effects, public interfaces, the spec or the plan.
 5. Mark `candidate` on VALID findings that describe a mistake likely to recur, or that match an `automated` registry entry whose rule missed this case.
 

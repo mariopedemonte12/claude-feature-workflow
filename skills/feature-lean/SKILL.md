@@ -103,7 +103,7 @@ Discard nothing: the programmer sees every finding.
 - **Findings:** every one, with severity, concrete case and your check result. Options for each: fix · accept as a known limitation · change the behavior. Accepting a reproduced Blocker requires the programmer's stated reason, recorded in the card and repeated at acceptance.
 - **Unresolved items:** anything you could not settle.
 
-**9. Fix** what the programmer chose, then run the tests and the gate again. A second critic runs only if the programmer asks: same brief, task "review `git diff <commit before fixes>` (later round)".
+**9. Fix** what the programmer chose. For each Blocker or Major that changes behavior, first write a test that reproduces it and run it to see it fail; then fix and see it pass (`knowledge/code-quality.md` §1, *Test first for defects*). Run the tests and the gate again. A second critic runs only if the programmer asks: same brief, task "review `git diff <commit before fixes>` (later round)".
 
 **10. ⛔ Acceptance, integration and cleanup.**
 - **Card:** write its *Result*: files changed, test commands with real results, testing technique statuses, gate result, `shortcut:` markers, known limitations, accepted findings.
