@@ -22,7 +22,7 @@ This workflow runs **per feature**, at the feature's intensity: `protocols/inten
 - Check that the planner's output follows `protocols/neutral-decisions.md` (fix ordering or wording if needed) and present it.
 - In the same gate, settle verification depth:
   - **Critical feature:** mutation testing and the R2 review cycle are mandatory. State this; do not ask.
-  - **Standard feature:** ask neutrally whether to run mutation testing, stating what it adds (what it can detect) and what it costs (time, tooling, possible new dev dependency). For review, **recommend** a level (R0 / R1 / R2) with its evidence, as `protocols/review-cycle.md` §Recommending the level describes; the programmer validates or changes it.
+  - **Standard feature:** ask neutrally whether to run mutation testing, stating what it adds (what it can detect) and what it costs (time, tooling, possible new dev dependency). For review, **recommend** a level (R0 / R1 / R2) starting from the intensity default, with its evidence, as `protocols/review-cycle.md` §Recommending the level describes; the programmer validates or changes it.
 - In the same gate, settle the **end-to-end harness** when the project has none for this surface: present what installing it involves (packages, browser downloads, containers) and the alternatives (a simulation harness, Blocked with its residual risk) as neutral options. End-to-end testing itself is not optional for user-facing features; only how it runs is decided here.
 - Record the decision in `decisions/` (`templates/decision-record.md`).
 - Write `implementation-plan.md` (`templates/implementation-plan.md`) for the approved approach only, with a one-line mention of each alternative not chosen and the decision reference.
@@ -41,7 +41,7 @@ This workflow runs **per feature**, at the feature's intensity: `protocols/inten
 
 **Review**, at the validated level (`protocols/review-cycle.md`). First re-check the level against the real diff. R1: one clean critic (`roles/reviewer.md`) **in parallel** with testing. R2: the first critic runs in parallel with testing, then the verify → fix → new-critic cycle; after it ends, the Tester re-runs the regression and E2E scenarios the fixes affect. R0: no review agent.
 
-**Defects and discrepancies.** ⛔ Present them to the programmer, including review findings that the cycle does not fix automatically. Fix now / accept as a known limitation / change the spec are options under the neutral protocol. Fixes go back to the Implementer with a focused handoff, followed by a re-run of the affected tests (and a new clean critic on the fix when the level is R1 or R2).
+**Defects and discrepancies.** ⛔ Present them to the programmer, including review findings that the cycle does not fix automatically. Fix now / accept as a known limitation / change the spec are options under the neutral protocol. Fixes go back to the Implementer with a focused handoff, followed by a re-run of the affected tests, and, when the level is R1 or R2, a new clean critic on the fix diff within the feature's cap of 3 critic rounds (`protocols/review-cycle.md`).
 
 **Anti-pattern candidates.** ⛔ In the same gate (or before acceptance if there were no defects), present `reports/anti-pattern-candidates.md` as described in `protocols/anti-pattern-registry.md` §The learning loop, steps 3–4. Update the registry with what the programmer approves; approved rule automation goes to the Implementer.
 

@@ -28,7 +28,7 @@ This is the one verification decision where the orchestrator **recommends**: the
 - **Complexity:** new branching logic, state machines, parsers, concurrency, money, security, data writes or migrations, public interfaces, changes across several features or layers.
 - **Criticality.**
 
-R0 needs all of: mechanical change, no new branching logic, none of the risk areas above, and a small diff (on the order of 50 changed lines). R2 is recommended for Critical, or for Standard features with several risk areas or a large diff. Everything else is R1. The programmer validates or changes the level; record it in `decisions/` and in the plan's verification depth.
+**Start from the default:** the intensity default (Lite R0 · Medium R1 · High R2; Critical always R2) (`protocols/intensity.md`). Recommend a different level only with evidence: lower to R0 only for a mechanical change with no new branching logic, none of the risk areas above and a small diff (on the order of 50 changed lines); raise to R2 for several risk areas or a large diff. The recommendation always states the default and why it deviates, if it does. A standing acceptance of recommendations covers only the default; a deviation is asked every time (`protocols/neutral-decisions.md` rule 13). The programmer validates or changes the level; record it in `decisions/` and in the plan's verification depth.
 
 **Re-check after implementation.** Before review starts, compare the real diff (`git diff --shortstat <base>`, the files touched, the risk areas reached) with the estimate. If it crosses into another level, state the facts and recommend again; the programmer validates.
 
@@ -49,18 +49,22 @@ round n:  Critic(n) ──► Verifier(n) ──► VALID behavior-preserving fi
 1. **Critic** (`roles/reviewer.md`) writes `reports/review/round-<n>-critic.md`.
 2. **Verifier** (`roles/verifier.md`), also clean, receives that report and tries to refute each finding against the code. Verdicts: VALID, INVALID, AMBIGUOUS. It classifies each VALID finding's fix as **behavior-preserving** (rename, extract, split by responsibility, remove dead code or duplication, simplify control flow, move to the right folder, without changing observable behavior or public interfaces) or **behavior-changing** (anything that changes outputs, errors, interfaces, the spec or the plan). It writes `reports/review/round-<n>-verification.md`.
 3. **Fixes.** VALID behavior-preserving findings of severity Blocker, Major or Minor go to the Implementer without a gate. It fixes them, runs the affected tests and the quality gate, and records what it changed per finding ID. Behavior-changing findings, AMBIGUOUS findings and every Blocker that touches correctness or security go to the ⛔ defects gate. Nits are collected for the final report, not fixed in the loop.
-4. **Next round** with a new critic on the **whole** diff from the base, not only on the fixes.
+4. **Next round** with a new critic on the **diff since the previous round** (the fixes), reporting only Blocker and Major findings. Round 1 is the only one that reviews the whole diff from the base.
 
 **Stop when:**
-- a round produces no VALID finding to fix automatically; or
-- 3 rounds have run; or
+- a round produces no new Blocker or Major finding; or
+- the feature has had 3 critic rounds in total, counting every path (R1, R2 and the critics after defect fixes); or
 - the loop oscillates: a finding asks to undo an earlier fix, or the same location is flagged again for the same problem after being fixed. Present the oscillation at the ⛔ defects gate.
 
 After the loop, the Tester re-runs the regression suite and the E2E scenarios affected by the fixes.
 
 ## R1 · Single critic
 
-The critic runs once, in parallel with the Tester, with the same clean context. It double-checks each finding itself before reporting. All findings go to the ⛔ defects gate as today.
+The critic runs once, in parallel with the Tester, with the same clean context. It double-checks each finding itself before reporting. All findings go to the ⛔ defects gate. **At R1 nothing is fixed automatically**, not even behavior-preserving findings: the orchestrator checks the validated level before routing any fix.
+
+## Automatic fixes are visible
+
+At R2, every automatic fix is listed at the next gate: finding ID, files and hunks changed, and a revert option. The orchestrator never originates a fix itself: a problem it notices in the diff becomes a finding like any other.
 
 ## Round log and feedback
 

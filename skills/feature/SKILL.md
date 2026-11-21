@@ -26,6 +26,7 @@ The programmer has deliberately activated this workflow. From now until they say
 6. **Evidence over assertion.** Report only what was actually executed. A test that was not run is never "passed".
 7. **No silent drift.** No scope expansion, plan deviation or behavior change without telling the programmer, and without their approval when it touches their decisions.
 8. **Correctness over economy.** Saving cost, context or transitions never justifies skipping necessary verification.
+9. **You never change project code.** Every code change goes through the Implementer. A problem you notice in a diff is reported as a finding, never fixed by you.
 
 ## 2. Startup (runs on every invocation)
 
@@ -36,7 +37,7 @@ The programmer has deliberately activated this workflow. From now until they say
    - `hub`: become the **principal orchestrator** of a hierarchy of sub-orchestrators. Read `protocols/hierarchy.md` and follow its principal role; ask the programmer for the groups and the transport.
    - `join <hub> <group>`: become the **sub-orchestrator** of `<group>`, reporting to the principal session `<hub>` through cross-session messaging. Read `protocols/hierarchy.md` §Sub-orchestrator and follow it.
    - `resume <slug> [<slug>…]`: for each slug, locate its worktree (`.claude/worktrees/<slug>`, shown by `git worktree list`) and the feature folder inside it, read its `handoff.md`, check freshness (`protocols/context-handoff.md` §Freshness), and report the current state and next step, tagged `[slug]`. Then continue.
-   - `<description> [--sdd | --esdd]`: a **new feature**. Give it a short kebab-case slug, unique among the features in progress, and state it. A workflow flag means the programmer has already chosen this feature's workflow; an intensity flag sets its intensity (`protocols/intensity.md`); `--phased` runs it in phased mode (`protocols/phase-runners.md`). Without it, the feature runs in direct mode: you orchestrate every phase yourself.
+   - `<description> [--sdd | --esdd]`: a **new feature**. Give it a short kebab-case slug, unique among the features in progress, and state it. A workflow flag means the programmer has already chosen this feature's workflow; an intensity flag sets its intensity (`protocols/intensity.md`); `--phased` runs it in phased mode, which is **experimental and has never been run** (`protocols/phase-runners.md`): say so when it is chosen. Without it, the feature runs in direct mode: you orchestrate every phase yourself.
    - Empty: if features are in progress, show the board and ask what to do; otherwise ask what feature to work on.
    - As soon as more than one feature is in progress, read `protocols/multi-feature.md` and follow it from then on.
    - **Claims, in every mode:** before creating or resuming a feature, check and write its claim (`protocols/hierarchy.md` §Claims). Never orchestrate a feature another live orchestrator claims.
@@ -73,7 +74,7 @@ The programmer has deliberately activated this workflow. From now until they say
 | Writing the approved plan | `templates/implementation-plan.md` |
 | Project without `.quality/`, or anti-pattern candidates to present | `protocols/anti-pattern-registry.md`, then the matching `knowledge/anti-patterns/*.md` seeds |
 | Recommending the review level, and running review | `protocols/review-cycle.md` |
-| A feature runs in phased mode, or the programmer asks about it | `protocols/phase-runners.md` |
+| A feature runs in phased mode (experimental), or the programmer asks about it | `protocols/phase-runners.md` |
 | `hub`, `join`, another orchestrator's claim found, or the programmer mentions several orchestrators | `protocols/hierarchy.md` |
 | Finalization | `templates/final-report.md` |
 
@@ -151,7 +152,7 @@ If you need an answer only the programmer can give, stop and ask as <absolute pa
 Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in neutral format.
 ```
 
-**Critic and Verifier briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature, its intent or its implementation. The Task line gives only the base commit, the round number and, for the verifier, the critic report path. Scope and Output as usual.
+**Critic and Verifier briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature, its intent or its implementation. The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
 
 Never paste conversation history, whole artifacts or another feature's context into a brief.
 
@@ -171,7 +172,7 @@ The escalation brief carries the problem, the evidence, the work already done, t
 
 ## 5. Human decision gates
 
-Gates are **per feature**: a pending gate blocks only its own feature. Stop that feature at every gate marked ⛔ in its workflow file. At a gate: summarize that feature's state, present what needs deciding per the neutral protocol (tagged `[slug]`, decision ID `slug/D-NNN`), and ask a neutral question. Silence is not approval. While a decision is pending, continue only with work that does not depend on it, in that feature or in others.
+Gates are **per feature**: a pending gate blocks only its own feature. Stop that feature at every gate marked ⛔ in its workflow file. At a gate: summarize that feature's state, present what needs deciding per the neutral protocol (tagged `[slug]`, decision ID `slug/D-NNN`), and ask a neutral question. **Every pending item is shown in the message itself with its full options**, never by ID or topic only; an answer to an item whose options were not shown in that message is re-asked. Silence is not approval. While a decision is pending, continue only with work that does not depend on it, in that feature or in others.
 
 ## 6. Feature folder layout
 

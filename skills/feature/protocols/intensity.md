@@ -20,14 +20,13 @@ Every feature runs at one of three intensities: **Lite**, **Medium** or **High**
 | Planner | no; the orchestrator writes one approach and lists alternatives in a line each | yes, briefed for the main decision only | yes, full solution space |
 | Implementer | writes the code **and** its tests (unit and end-to-end) | writes the code and the tests the plan requires | same as Medium |
 | Tester | no; the Implementer's tests are the evidence | yes, including end-to-end | yes, all black-box techniques evaluated |
-| Review level (`protocols/review-cycle.md`) | R0, or R1 if the programmer asks | R1 | R2 |
+| Review level: the default the recommendation starts from (`protocols/review-cycle.md`) | R0 | R1 | R2 |
 | Mutation testing | no | asked at the plan gate | yes |
 | Gates | one **spec + plan** gate, then acceptance (defects go into the acceptance gate) | spec gate, plan gate, defects gate, acceptance | every gate in the workflow |
 | Spec questions | blocking ones only; the rest are written as out of scope | blocking and those that change observable behavior | all |
 | Agent questions (`protocols/agent-questions.md`) | yes | yes | yes |
 | Artifacts | one `feature.md` card (`templates/feature-card.md`), at most 60 lines, plus `decisions/` | spec, plan, handoff and reports, each within the size budget below | the full set |
 | Anti-pattern registry | read and respected; candidates only listed in the card | full loop | full loop |
-| Agents per role across features | one agent may handle every Lite feature of the same role, each in its own worktree | one per feature | one per feature |
 
 **Size budgets at Medium:** specification at most 60 lines, plan at most 50, handoff at most 30, each report at most 60. At High, the templates apply without a budget.
 

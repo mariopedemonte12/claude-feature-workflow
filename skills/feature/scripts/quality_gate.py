@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import argparse
+import ast
 import fnmatch
+import io
 import json
 import re
 import shutil
 import subprocess
 import sys
+import tokenize
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -15,10 +18,10 @@ HASH_COMMENT = r"^#"
 C_COMMENT = r"^(//|/\*|\*(\s|/|$))"
 DASH_COMMENT = r"^--"
 MARKUP_COMMENT = r"^<!--"
-PY_DOCSTRING = r"^[rRbBuU]?(\"\"\"|''')"
+PYTHON_SUFFIXES = (".py", ".pyi")
 
 COMMENT_SYNTAX = {
-    **{ext: [HASH_COMMENT, PY_DOCSTRING] for ext in (".py", ".pyi")},
+    **{ext: [HASH_COMMENT] for ext in PYTHON_SUFFIXES},
     **{ext: [HASH_COMMENT] for ext in (".rb", ".sh", ".bash", ".zsh", ".ex", ".exs", ".pl", ".r", ".jl", ".nim")},
     **{ext: [C_COMMENT] for ext in (
         ".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts", ".java", ".kt", ".kts", ".scala",
@@ -79,13 +82,14 @@ def run_git(repo, *arguments):
 def load_config(repo, explicit_path):
     path = Path(explicit_path) if explicit_path else repo / ".quality" / "config.json"
     if not path.is_file():
-        return {"limits": dict(DEFAULT_LIMITS), "exclude": [], "allowedCommentPatterns": [], "checks": []}
+        return {"limits": dict(DEFAULT_LIMITS), "exclude": [], "allowedCommentPatterns": [], "checks": [], "allowDocstrings": False}
     raw = json.loads(path.read_text(encoding="utf-8"))
     return {
         "limits": {**DEFAULT_LIMITS, **raw.get("limits", {})},
         "exclude": raw.get("exclude", []),
         "allowedCommentPatterns": raw.get("allowedCommentPatterns", []),
         "checks": raw.get("checks", []),
+        "allowDocstrings": raw.get("allowDocstrings", False),
     }
 
 
@@ -137,6 +141,9 @@ def check_file_length(repo, base, path, limit, result):
     if previous is not None and current <= previous:
         result.notes.append(f"`{path}` has {current} lines (limit {limit}); already over the limit at base and did not grow.")
         return
+    if previous is not None and previous > limit:
+        result.notes.append(f"`{path}` grew from {previous} to {current} lines; already over the limit ({limit}) at base. A fact to report: the project's structure puts this code here.")
+        return
     origin = "new file" if previous is None else f"grew from {previous}"
     result.violations.append(Violation("file length", path, f"{current} lines > {limit} ({origin})"))
 
@@ -163,12 +170,53 @@ def classify_comment(location, content, extra_patterns, result):
         result.violations.append(Violation("comment", location, f"`{content[:80]}`"))
 
 
-def check_comments(path, lines, extra_patterns, result):
+def python_comments(text):
+    comments = {}
+    for token in tokenize.generate_tokens(io.StringIO(text).readline):
+        if token.type == tokenize.COMMENT:
+            comments[token.start[0]] = token.string
+    return comments
+
+
+def python_docstring_spans(text):
+    holders = (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)
+    spans = {}
+    for node in ast.walk(ast.parse(text)):
+        first = node.body[0] if isinstance(node, holders) and node.body else None
+        if isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant) and isinstance(first.value.value, str):
+            spans[first.lineno] = range(first.lineno, first.end_lineno + 1)
+    return spans
+
+
+def check_python_comments(repo, path, lines, config, result):
+    text = (repo / path).read_text(encoding="utf-8", errors="replace")
+    try:
+        comments, docstrings = python_comments(text), python_docstring_spans(text)
+    except (SyntaxError, tokenize.TokenError):
+        result.notes.append(f"`{path}` does not parse; its comments were checked by pattern only.")
+        return check_pattern_comments(path, lines, config["allowedCommentPatterns"], result)
+    for number, content in sorted(comments.items()):
+        if number in lines:
+            classify_comment(f"{path}:{number}", content.strip(), config["allowedCommentPatterns"], result)
+    if config["allowDocstrings"]:
+        return
+    for start, span in sorted(docstrings.items()):
+        if any(number in lines for number in span):
+            result.violations.append(Violation("docstring", f"{path}:{start}", "docstrings are off for this project (`allowDocstrings`)"))
+
+
+def check_pattern_comments(path, lines, extra_patterns, result):
     patterns = comment_patterns_for(path)
     for number, raw in sorted(lines.items()):
         content = raw.strip()
         if content and is_comment(content, patterns):
             classify_comment(f"{path}:{number}", content, extra_patterns, result)
+
+
+def check_comments(repo, path, lines, config, result):
+    if Path(path).suffix.lower() in PYTHON_SUFFIXES:
+        return check_python_comments(repo, path, lines, config, result)
+    return check_pattern_comments(path, lines, config["allowedCommentPatterns"], result)
 
 
 def lizard_command(limits, paths):
@@ -210,9 +258,13 @@ def record_function_warning(warning, added_by_path, result):
 
 
 def run_project_check(repo, check):
-    completed = subprocess.run(check["command"], shell=True, cwd=repo, capture_output=True, text=True, timeout=900)
+    name = check.get("name", check["command"])
+    try:
+        completed = subprocess.run(check["command"], shell=True, cwd=repo, capture_output=True, text=True, timeout=900)
+    except subprocess.TimeoutExpired:
+        return {"name": name, "passed": False, "covers": check.get("covers", []), "output": ["timed out after 900 s"]}
     output = (completed.stdout + completed.stderr).strip().splitlines()[-20:]
-    return {"name": check.get("name", check["command"]), "passed": completed.returncode == 0,
+    return {"name": name, "passed": completed.returncode == 0,
             "covers": check.get("covers", []), "output": output}
 
 
@@ -230,11 +282,11 @@ def evaluate(repo, base, config):
     added_by_path = {path: added_lines(repo, base, path) for path in result.files}
     for path in result.files:
         check_file_length(repo, base, path, config["limits"]["fileLines"], result)
-        check_comments(path, added_by_path[path], config["allowedCommentPatterns"], result)
+        check_comments(repo, path, added_by_path[path], config, result)
     if result.files:
         check_functions(repo, result.files, added_by_path, config["limits"], result)
     run_project_checks(repo, config["checks"], result)
-    result.not_checked.append("Trailing comments after code are not detected; an ast-grep `kind: comment` rule detects them exactly.")
+    result.not_checked.append("Trailing comments after code are detected in Python only; elsewhere an ast-grep `kind: comment` rule detects them exactly.")
     result.not_checked.append("Nesting depth, naming and single responsibility: manual review.")
     return result
 

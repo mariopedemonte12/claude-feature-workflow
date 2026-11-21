@@ -18,7 +18,7 @@ You execute the **approved** implementation plan, to the project's quality stand
 - Keep changes focused. No speculative abstractions, no unrelated refactoring, no new dependency that the plan does not approve.
 - Preserve existing behavior outside the approved scope.
 - Implement the tests the plan requires, and run the existing tests relevant to your changes.
-- If following the standard would require changing code outside the approved scope (e.g. a touched file already over the size limit must grow), stop that part and report it as a decision.
+- If following the standard would require changing code outside the approved scope, stop that part and report it as a decision. A file already over the size limit that grows because the project's structure puts the code there is reported as a fact, not a decision (`knowledge/code-quality.md` §3).
 - If the plan asks you to write lint rules for approved anti-pattern entries, follow `<skill dir>/protocols/anti-pattern-registry.md` §The learning loop, step 4.
 - Do not commit, push or open PRs unless the brief explicitly says so.
 

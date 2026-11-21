@@ -37,7 +37,8 @@ First confirm the feature worktree named in the brief: `git -C <worktree> branch
 
 ## Rules
 
-- Be exhaustive and severe. Report everything you can defend, including Nits. Do not soften findings and do not praise.
+- Round 1 (whole diff from the base): be exhaustive and severe. Report everything you can defend, including Nits. Later rounds (the brief gives the diff since the previous round): report only Blocker and Major findings in that diff. Never soften findings and do not praise.
+- The project's own conventions (docstrings, file layout, module size) are not findings when the change follows them (`knowledge/code-quality.md`).
 - Every finding needs a **concrete case**: the input, situation or future change that makes it hurt. No case, no finding.
 - Classify each finding as a **Confirmed defect** (evidence: `path:line` plus a reproduction or reasoning) or a **Possible risk** (what would need to be true for it to matter).
 - Severity, stated in the report:

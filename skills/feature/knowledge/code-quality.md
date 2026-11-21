@@ -28,7 +28,7 @@ Then take the first rung that fully works:
 
 ## 2. No comments in code
 
-New and modified code contains **no comments**: no line comments, block comments, docstrings, commented-out code or TODO/FIXME notes.
+New and modified code contains **no comments**: no line comments, block comments, commented-out code or TODO/FIXME notes. **Docstrings follow the project:** where the project documents its public units with docstrings or a tool renders them (API docs, admin docs, `help()`), new public units follow that convention (`allowDocstrings: true` in `.quality/config.json`, set at bootstrap from evidence); otherwise none.
 
 What replaces a comment:
 
@@ -62,7 +62,7 @@ Defaults; the project may override them in `.quality/config.json`:
 
 The limits are **signals of mixed responsibilities**, not targets. When a unit crosses one, split it **by responsibility**, never by line count, and never into helpers that exist only to make a function shorter. A cohesive 35-line function beats three fragments that must be read together.
 
-A file that already exceeded a limit before the feature must not grow. If the change needs to grow it, splitting it is a refactor outside the approved scope: report it as a decision for the programmer.
+**Existing structure wins here too.** A file that already exceeded a limit before the feature may grow when the project's structure puts the new code there (a registry of filters, a module of fields); report the growth as a fact in the implementation report, not as a decision. Splitting it is a refactor outside the approved scope, proposed only if the programmer asks.
 
 ## 4. Names
 

@@ -2,7 +2,7 @@
 
 A Claude Code skill that turns a session into an orchestrated, multi-agent software engineering process (specification → planning → implementation → testing → validation) in which **the programmer makes every consequential decision**.
 
-It loads **only when you call it** (`/feature`). In every other session it costs, at most, a one-line description (~70 tokens). The workflow itself (~3.3k tokens for the entry point) loads only on invocation.
+It loads **only when you call it** (`/feature`). In every other session it costs, at most, a one-line description (~70 tokens). The workflow itself (~4k tokens for the entry point) loads only on invocation.
 
 ## What you get
 
@@ -16,7 +16,7 @@ It loads **only when you call it** (`/feature`). In every other session it costs
 - **Neutral decision gates.** Options are never recommended or ranked: they are sorted alphabetically, given symmetric pros and cons, described with verifiable facts instead of adjectives, and excluded options are listed with the constraint they violate. The agent gives an opinion only if you explicitly insist on one.
 - **One git worktree per feature.** Every feature, even a lone one, lives in its own worktree created with Claude Code's built-in worktree support (`.claude/worktrees/<slug>`, on its own branch). Its code and artifacts travel on that branch. How it is integrated (merge, pull request…) and whether the worktree is removed are your decisions.
 - **Several features in parallel.** One orchestrator acts as the single intermediary between you and the agents of every feature. Each feature has its own workflow, gates, artifacts and agents. A gate in one feature does not block the others. Overlaps between features (files changed on several branches, shared test resources) are reported early.
-- **Optional phased mode for large portfolios.** By default the orchestrator runs every phase itself. With `--phased`, it keeps only what needs you (gates, questions, decisions, the portfolio) and hands each phase of a feature to a short-lived phase runner that orchestrates that phase's agents and stops at its first gate. Same gates and decisions; less visibility inside a phase; an orchestrator context that grows far more slowly. Estimated costs are in [`docs/cost-estimates.md`](docs/cost-estimates.md).
+- **Optional phased mode for large portfolios (experimental, never run).** By default the orchestrator runs every phase itself. With `--phased`, it keeps only what needs you (gates, questions, decisions, the portfolio) and hands each phase of a feature to a short-lived phase runner that orchestrates that phase's agents and stops at its first gate. Same gates and decisions; less visibility inside a phase; an orchestrator context that grows far more slowly. Estimated costs are in [`docs/cost-estimates.md`](docs/cost-estimates.md).
 - **Several orchestrators, if you want them.** Three modes, none mandatory: a single orchestrator; independent orchestrators in separate sessions that see each other's features through shared claims; or a hierarchy, where a principal orchestrator (`/feature hub`) is your only channel and coordinates sub-orchestrators, one per group of features, each with its own context. The principal collects every sub-orchestrator's decision requests into one queue, ordered by how much work each one blocks, and routes your answers back. Sub-orchestrators can run as an agent team, as separate sessions with cross-session messaging, or as subagents: you choose.
 - **Artifacts as source of truth.** Specification, plan, testing plan, decision records, reports and a handoff file per feature. Any feature can be resumed in a new session.
 - **Three intensity levels per feature or group: Lite, Medium, High.** Lite runs one implementer that writes code and tests, a single spec-and-plan gate and a one-page feature card. Medium adds a tester, a clean critic and separate spec, plan and defects gates with size budgets. High runs every agent, gate and artifact, including the review cycle and mutation testing. Critical features always run at High.
@@ -71,7 +71,7 @@ A typical SDD Direct run:
 2. **Specification.** The Specification Writer turns your request (kept verbatim in `request.md`) into intent, requirements, constraints, invariants and acceptance criteria, each traced to its source. Its questions come to you through the orchestrator. You approve it and set the criticality.
 3. **Planning.** The Planner subagent maps the viable approaches, which are presented neutrally. You choose, and you decide mutation testing; the orchestrator recommends a review level (R0 gate only · R1 single critic · R2 review cycle) and you validate it.
 4. **Implementation.** The Implementer follows the approved plan. Any deviation comes back to you as a decision.
-5. **Testing and review.** The Tester and a clean critic run in parallel. At R2, a verifier refutes false findings, behavior-preserving fixes are applied, and a new critic reviews again (up to 3 rounds). Defects come back to you as decisions.
+5. **Testing and review.** The Tester and a clean critic run in parallel. At R2, a verifier refutes false findings, behavior-preserving fixes are applied automatically and listed at the next gate with a revert option, and a new clean critic reviews only those fixes (3 critic rounds per feature at most, across every path). At R1, every finding goes to you. Defects come back to you as decisions.
 6. **Final report.** Built only from evidence. You decide acceptance.
 7. **Integration and cleanup.** You choose how the feature branch is integrated and whether its worktree is removed.
 
@@ -95,8 +95,9 @@ skills/feature/
 ├── workflows/           sdd-direct.md · esdd.md (incl. hybrid)
 ├── protocols/           neutral-decisions.md · agent-questions.md · context-handoff.md · multi-feature.md · …
 ├── roles/               repository-analyst · spec-writer · planner · implementer · tester · reviewer (critic) · verifier
-├── knowledge/           specification-guide.md · testing-techniques.md
-└── templates/           specification · implementation-plan · testing-plan · decision-record · handoff · final-report
+├── knowledge/           specification-guide · testing-techniques · code-quality · design-patterns · e2e-testing · anti-patterns/
+├── scripts/             quality_gate.py
+└── templates/           specification · implementation-plan · testing-plan · decision-record · handoff · final-report · feature-card
 ```
 
 Artifacts created per feature in your project (default `docs/features/<slug>/`, or your project's own convention):

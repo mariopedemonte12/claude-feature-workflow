@@ -1,5 +1,7 @@
 # Phase Runners (optional orchestration mode)
 
+> **Experimental: never run.** Nothing in this mode has been measured, including whether a resumed runner can resume its own agents. Tell the programmer this when they choose it.
+
 The orchestrator's cost grows with the square of its work: each call re-reads a context that every agent return, brief and verification makes longer. In **phased** mode, the orchestrator keeps only what needs the programmer and hands each **phase** of a feature to a **phase runner**: a subagent that orchestrates that phase's agents and ends at the phase's first ⛔ gate. Its context dies with the phase, so the orchestrator's own context grows several times more slowly.
 
 **Direct** mode (the orchestrator runs every phase itself, as in `SKILL.md`) remains the default. Phased mode is chosen by the programmer, per feature or per group, with `--phased` or in their request ("run billing phased"), and can change at any gate. Features in the same portfolio may use different modes.
@@ -15,7 +17,7 @@ Neutral facts, to present when the programmer asks which mode to use:
 | Stopping or redirecting mid-phase | Direct, agent by agent | Stop the whole runner (`TaskStop`), then relaunch the phase from its handoff |
 | Agent questions | Agent → orchestrator → programmer | Agent → runner → orchestrator → programmer, and back |
 | Who verifies agents' claims | The orchestrator the programmer talks to | The runner; the orchestrator adds a cheap consistency check at each gate |
-| Estimated orchestration cost | Grows with the square of the work | Grows roughly linearly; costs more than direct below about 4 simultaneous features (estimate: `docs/cost-estimates.md` in the skill's repository) |
+| Orchestration cost | Measured once (3 features) | Not measured. A model in the skill repository's `docs/cost-estimates.md` gives estimates, built on assumed parameters |
 
 ## Phases
 

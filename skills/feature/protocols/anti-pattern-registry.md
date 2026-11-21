@@ -52,7 +52,8 @@ When the registry passes 400 lines, split it by area (`anti-patterns/<area>.md`)
 2. The orchestrator selects the seed catalogs from `knowledge/anti-patterns/` that match that evidence: `general.md` always, plus whichever of `feature-folders.md`, `layered.md`, `frontend-ui.md`, `backend-api.md` and `tests.md` apply.
 3. ⛔ Present to the programmer, following `protocols/neutral-decisions.md`:
    - the seed entries, so they choose which to adopt (all, some, none);
-   - the limits in `config.json`, with the defaults stated as defaults;
+   - the limits in `config.json`, with the defaults stated as defaults, next to the repository's own figures (how many files already exceed each limit);
+   - `allowDocstrings`, with the evidence of whether the project documents its public units with docstrings;
    - how detection is automated (options below).
 4. Write `.quality/` in the feature worktree with only what was approved, and record the decision in `decisions/`.
 

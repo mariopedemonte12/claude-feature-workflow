@@ -141,7 +141,7 @@ flowchart TB
     end
     subgraph F3["Phase 3 · Testing and validation"]
         TE["8–11 · Test<br/>Tester: testing plan, functional, E2E,<br/>black-box techniques, mutation if decided, validation report"]
-        RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle"]
+        RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature"]
         TE & RV --> G3{"⛔ Defects and anti-pattern candidates gate<br/>fix now · accept as limitation · change spec"}
         G3 -->|"fix"| FX["Implementer fixes → affected tests re-run<br/>→ new clean critic at R1/R2"]
         FX --> G3
@@ -204,7 +204,7 @@ Set per feature or per group. Source: `protocols/intensity.md`.
 | Planner | no: the orchestrator writes one approach | main decision only | full solution space |
 | Implementer | code **and** its unit and E2E tests | code and the planned tests | same as Medium |
 | Tester | no | yes, with E2E | yes, every black-box technique |
-| Review | R0 (R1 on request) | R1 | R2 |
+| Review (default the recommendation starts from) | R0 | R1 | R2 |
 | Mutation testing | no | asked at the plan gate | yes |
 | Gates | one spec+plan gate, then acceptance | spec, plan, defects, acceptance | all |
 | Artifacts | one `feature.md` card (≤ 60 lines) + `decisions/` | full set within size budgets | full set |
@@ -250,7 +250,7 @@ Source: `protocols/review-cycle.md`. The orchestrator **recommends** the level w
 | --- | --- | --- |
 | R0 | Quality gate and project lint only | Mechanical change, about 50 changed lines, no risk areas |
 | R1 | One clean critic, in parallel with the Tester | Standard feature with new logic |
-| R2 | Critic → verifier → automatic fixes → new critic, up to 3 rounds | Critical, or large or complex |
+| R2 | Critic → verifier → automatic fixes → new critic on the fixes only, 3 critic rounds per feature at most | Critical, or large or complex |
 
 ```mermaid
 flowchart LR
@@ -258,11 +258,14 @@ flowchart LR
     V -->|"VALID + behavior-preserving<br/>Blocker/Major/Minor"| I["Implementer fixes<br/>tests + quality gate"]
     V -->|"behavior-changing · AMBIGUOUS ·<br/>correctness or security Blockers"| G{"⛔ Defects gate"}
     V -->|"Nits"| FRP["Final report"]
-    I --> STOP{"Stop?<br/>no auto-fixable finding ·<br/>3 rounds · oscillation"}
+    I --> STOP{"Stop?<br/>no new Blocker or Major ·<br/>3 critic rounds · oscillation"}
     STOP -->|"no"| C
     STOP -->|"yes"| RT["Tester re-runs affected<br/>regression and E2E"]
 ```
 
+- **Review level:** the recommendation starts from the intensity default (Lite R0, Medium R1, High R2, Critical R2). A standing "accept your recommendation" covers only that default; a deviation is asked every time.
+- **Automatic fixes** happen only at R2. Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
+- **Convergence:** round 1 reviews the whole diff. Later rounds review only the fixes, and report only Blocker and Major findings.
 - **Clean context:** the critic and the verifier never read the spec, plan, decisions, handoffs, implementation report or earlier rounds. Each round launches a **new** critic on the whole diff from the base.
 - **Round log** in `reports/review/rounds.md`. Findings that recur become anti-pattern candidates. The INVALID rate shows how noisy the critic is.
 - **Why it is built this way:** self-attribution and self-preference bias in LLM evaluators, adversarial refutation, and diminishing returns after three or four repair iterations. The papers are cited in `review-cycle.md` §References.
@@ -319,7 +322,7 @@ flowchart TB
   - Each gate of a sub-orchestrator travels up as a `DECISION-REQUEST`.
   - The queue is ordered by how much work a request blocks, then by arrival.
   - The principal never prioritizes features: that stays the programmer's decision.
-### Phased mode (optional)
+### Phased mode (optional, experimental)
 
 Source: `protocols/phase-runners.md`. Direct mode is the default.
 
@@ -334,7 +337,7 @@ flowchart LR
 ```
 
 - **Phases:** SDD Direct has Specification, Planning, Build and Fixes. ESDD has Initial specification, Exploration, Increment and Evolution.
-- **Decisions are the same:** the runner cannot reach the programmer, so it must stop at each gate.
+- **Experimental, never run.** By design the decisions are the same: the runner cannot reach the programmer, so it must stop at each gate. That has not been tested.
 - **What changes:** you see results at the gates instead of agent by agent, and you can stop a whole runner but not steer it mid-phase.
 
 - **Project memory** (`memory.md`, ≤ 80 lines) carries the project context and the portfolio across sessions. Before every stop, pending decisions are written to `decisions/` with their option labels, so an answer like "B" still resolves in a fresh session.
@@ -355,7 +358,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 | **Phase runner** (phased mode) | `general-purpose` · sonnet (opus if Critical; never haiku) | Orchestrating one phase of one feature: delegating its steps, choosing models, verifying returns, relaying agent questions, writing the gate's Pending decisions | Its brief, `SKILL.md` §4, the workflow steps in range, intensity and agent-questions protocols | `delegations.md`, `decisions/` (Pending), `handoff.md` | Talk to the programmer, pass a gate, run startup or integration, be reused for the next phase |
 | **Finding Verifier** | `general-purpose` · sonnet (never haiku) | Trying to refute each finding against the code: VALID, INVALID or AMBIGUOUS; fix class; recurring findings marked as candidates | The critic's report, the code | `reports/review/round-<n>-verification.md` | Read the spec or plan, fix code, accept a finding without checking it |
 
-**Floors:** no haiku for specification, planning, critic or verifier. Critical features use opus for specification, planning and the critic.
+**Floors:** no haiku for specification, planning, critic, verifier or phase runner. Critical features use opus for specification, planning, the critic and phase runners.
 
 **Shared rules for every subagent:**
 - **Location:** run without `isolation`. Confirm the feature branch first, and work through absolute paths (`cd <worktree> && …`). Never call `EnterWorktree`.
