@@ -48,7 +48,7 @@ Rules:
 3. Read the `handoff.md` only of the features the programmer's message concerns.
 
 **At every stop** (a gate, a pending question, the end of the turn):
-1. Write every decision you are about to present to the feature's `decisions/D-NNN-<topic>.md` with status **Pending**, including the full option block with its labels (A, B, T1…), exactly as presented. An answer such as "B" must be resolvable from disk. Open questions go to the artifact that owns them (spec §Open questions) with their labels.
+1. Write every decision you are about to present to the feature's `decisions/D-NNN-<topic>.md` with status **Pending**, including the full option block with its labels (A, B, T1…), exactly as presented. An answer such as "B" must be resolvable from disk. Open questions go to the artifact that owns them (spec §Open questions) with their labels. Questions an agent is waiting on also record the agent's ID in `handoff.md` (`protocols/agent-questions.md`).
 2. Update each touched feature's `handoff.md` (`protocols/context-handoff.md`).
 3. Rewrite `memory.md` within its limit: portfolio rows, pending questions and decisions with pointers to their files, standing instructions.
 4. Then present the gate. Everything needed to continue is now on disk.

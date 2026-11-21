@@ -30,7 +30,7 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 | Module | Load when | Read |
 | --- | --- | --- |
 | `explore` | mapping unfamiliar code, finding conventions, build and test commands | `roles/repository-analyst.md` |
-| `spec` | the requirement is vague, contradictory or missing acceptance criteria | `knowledge/specification-guide.md` |
+| `spec` | the requirement is vague, contradictory or missing acceptance criteria | `knowledge/specification-guide.md`; the method of `roles/spec-writer.md` (every item traced to a source; gaps become questions to the programmer) |
 | `plan` | choosing how to implement something with more than one viable approach | `roles/planner.md`, then `protocols/neutral-decisions.md` before presenting options |
 | `decide` | any choice that belongs to the programmer | `protocols/neutral-decisions.md` |
 | `quality` (alias `ponytail`) | writing or changing code | `knowledge/code-quality.md`, plus the project's `.quality/anti-patterns.md` if present |

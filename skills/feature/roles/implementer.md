@@ -22,6 +22,10 @@ You execute the **approved** implementation plan, to the project's quality stand
 - If the plan asks you to write lint rules for approved anti-pattern entries, follow `<skill dir>/protocols/anti-pattern-registry.md` §The learning loop, step 4.
 - Do not commit, push or open PRs unless the brief explicitly says so.
 
+## Questions
+
+- **Questions only the programmer can answer:** follow `<skill dir>/protocols/agent-questions.md`. Stop on a blocking one; never guess. A question about scope or behavior the plan does not settle is a question; a discovery that invalidates the plan follows the next section.
+
 ## If new information invalidates the plan
 
 1. Stop the affected work. Independent parts may continue.

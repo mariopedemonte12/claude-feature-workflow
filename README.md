@@ -10,7 +10,8 @@ It loads **only when you call it** (`/feature`). In every other session it costs
   - **SDD Direct:** for well-understood features.
   - **Evolutionary Spec-Driven Development (ESDD):** for features with open requirements or technical unknowns.
   - **Hybrid:** ESDD only for the uncertain part.
-- **Specialized subagents.** Repository Analyst, Planner, Implementer, Tester, Clean Code Critic and Finding Verifier, each driven by its own role file.
+- **Specialized subagents.** Repository Analyst, Specification Writer, Planner, Implementer, Tester, Clean Code Critic and Finding Verifier, each driven by its own role file.
+- **Agents ask you, through the orchestrator.** When an agent needs an answer only you can give, it stops instead of guessing and returns its questions (blocking or not, with evidence and neutral options). The orchestrator records them in the spec or in `decisions/`, puts them to you, and resumes the same agent with your answers and its context intact. This is what keeps specification and planning from building on invented requirements.
 - **Per-task model selection.** Every role has a standard model, and the orchestrator picks the cheapest sufficient model for *each* delegation. That can be higher or lower than the standard, with floors so architecture and review are never downgraded. Every non-standard choice is announced, and every delegation is logged.
 - **Neutral decision gates.** Options are never recommended or ranked: they are sorted alphabetically, given symmetric pros and cons, described with verifiable facts instead of adjectives, and excluded options are listed with the constraint they violate. The agent gives an opinion only if you explicitly insist on one.
 - **One git worktree per feature.** Every feature, even a lone one, lives in its own worktree created with Claude Code's built-in worktree support (`.claude/worktrees/<slug>`, on its own branch). Its code and artifacts travel on that branch. How it is integrated (merge, pull request…) and whether the worktree is removed are your decisions.
@@ -65,7 +66,7 @@ Then start a new Claude Code session.
 A typical SDD Direct run:
 
 1. **Workflow selection.** The orchestrator assesses uncertainty per dimension, with evidence, and you choose the workflow.
-2. **Specification.** Intent, requirements, constraints, invariants and acceptance criteria. You approve it and set the criticality.
+2. **Specification.** The Specification Writer turns your request (kept verbatim in `request.md`) into intent, requirements, constraints, invariants and acceptance criteria, each traced to its source. Its questions come to you through the orchestrator. You approve it and set the criticality.
 3. **Planning.** The Planner subagent maps the viable approaches, which are presented neutrally. You choose, and you decide mutation testing; the orchestrator recommends a review level (R0 gate only · R1 single critic · R2 review cycle) and you validate it.
 4. **Implementation.** The Implementer follows the approved plan. Any deviation comes back to you as a decision.
 5. **Testing and review.** The Tester and a clean critic run in parallel. At R2, a verifier refutes false findings, behavior-preserving fixes are applied, and a new critic reviews again (up to 3 rounds). Defects come back to you as decisions.
@@ -90,8 +91,8 @@ skills/feature-kit/
 skills/feature/
 ├── SKILL.md             orchestrator: principles, startup, roles & model selection, gates
 ├── workflows/           sdd-direct.md · esdd.md (incl. hybrid)
-├── protocols/           neutral-decisions.md · context-handoff.md · multi-feature.md
-├── roles/               repository-analyst · planner · implementer · tester · reviewer (critic) · verifier
+├── protocols/           neutral-decisions.md · agent-questions.md · context-handoff.md · multi-feature.md · …
+├── roles/               repository-analyst · spec-writer · planner · implementer · tester · reviewer (critic) · verifier
 ├── knowledge/           specification-guide.md · testing-techniques.md
 └── templates/           specification · implementation-plan · testing-plan · decision-record · handoff · final-report
 ```
@@ -99,7 +100,7 @@ skills/feature/
 Artifacts created per feature in your project (default `docs/features/<slug>/`, or your project's own convention):
 
 ```
-specification.md  implementation-plan.md  testing-plan.md
+request.md  specification.md  implementation-plan.md  testing-plan.md
 decisions/D-NNN-*.md  reports/*.md  delegations.md  handoff.md
 ```
 

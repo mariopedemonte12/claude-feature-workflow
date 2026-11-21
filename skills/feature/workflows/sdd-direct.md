@@ -6,9 +6,9 @@ This workflow runs **per feature**, at the feature's intensity: `protocols/inten
 
 ## Phase 1: Specification (orchestrator)
 
-**1. Understand.** Feature intent; existing behavior in the area; requirements; constraints; invariants; ambiguities; contradictions; missing information. Delegate broad inspection to the Repository Analyst. Read `knowledge/specification-guide.md`.
+**1. Understand.** Write the programmer's request, verbatim, to `request.md` in the feature folder. Delegate broad inspection of the affected area to the Repository Analyst (existing behavior, constraints, conventions).
 
-**2. Specify.** Write `specification.md` from `templates/specification.md`. Keep it minimal but sufficient: no implementation details unless they are genuine external constraints, no invented requirements, and every open question marked blocking or non-blocking. Ask the programmer for the feature's **criticality** (Critical / Standard). It determines whether mutation testing and the R2 review cycle are mandatory.
+**2. Specify.** Brief the Specification Writer (`roles/spec-writer.md`) with the Request → Specification handoff. Relay its questions as `protocols/agent-questions.md` describes, append every answer to `request.md`, and resume the same agent until it returns `STATUS: DONE`. Then check the draft against `knowledge/specification-guide.md`: every item has a source, no implementation details unless they are genuine external constraints, no invented requirements, every open question marked blocking or non-blocking. Ask the programmer for the feature's **criticality** (Critical / Standard). It determines whether mutation testing and the R2 review cycle are mandatory.
 
 **3. ⛔ Review.** Present a summary of the spec and its blocking questions. Resolve blocking ambiguity. Once the programmer approves, set the spec status to `Approved (YYYY-MM-DD)`. An unapproved spec never feeds planning.
 
@@ -16,7 +16,7 @@ This workflow runs **per feature**, at the feature's intensity: `protocols/inten
 
 **4. Analyze.** Brief the Repository Analyst: architecture evidence, folder organization, affected components, integration points, conventions, existing tests, E2E tooling, quality tooling, build/test commands. Skip this if the orchestrator already holds enough evidence. If the project has no `.quality/` registry, run the bootstrap in `protocols/anti-pattern-registry.md` (⛔ its own gate; it may share the step 6 gate). Write the Specification → Planning handoff.
 
-**5. Plan.** Brief the Planner (`roles/planner.md`). It returns implementation options, or a single option with the excluded alternatives when only one is viable.
+**5. Plan.** Brief the Planner (`roles/planner.md`). It returns implementation options, or a single option with the excluded alternatives when only one is viable. If it returns questions (a spec gap, a constraint only the programmer knows), relay them and resume it as `protocols/agent-questions.md` describes before presenting options; an answer that changes the approved spec goes back to the Specification Writer as a spec change.
 
 **6. ⛔ Decide.**
 - Check that the planner's output follows `protocols/neutral-decisions.md` (fix ordering or wording if needed) and present it.

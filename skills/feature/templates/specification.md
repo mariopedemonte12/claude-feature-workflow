@@ -42,8 +42,8 @@ Why this feature exists and what outcome it produces (2–5 sentences).
 
 ## Open questions
 
-| ID | Question | Blocking? | Status |
-| --- | --- | --- | --- |
+| ID | Question | Asked by | Blocking? | Status (Pending · Answered · Deferred) | Answer (programmer's words, date) |
+| --- | --- | --- | --- | --- | --- |
 
 ## Hypotheses (ESDD)
 

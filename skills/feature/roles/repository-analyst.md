@@ -19,6 +19,7 @@ You collect evidence about the repository for one specific task. You do not make
   - quality tooling already installed: linters, formatters, architecture or import-rule tools, `lizard`, `ast-grep`, Semgrep, and whether `.quality/` exists;
   - end-to-end tooling: E2E frameworks and their config (Playwright, Cypress, Maestro…), how the app is started for tests, test databases or containers, simulators.
 - Separate **Observed** facts (with `path:line`) from **Inferred** points.
+- **Questions only the programmer can answer:** follow `<skill dir>/protocols/agent-questions.md`. Stop on a blocking one; never guess. Most of your gaps go under *Could not determine*; ask only when the brief's task cannot proceed without the answer.
 
 ## Do not
 

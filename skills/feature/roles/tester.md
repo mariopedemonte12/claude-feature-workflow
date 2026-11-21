@@ -22,7 +22,7 @@ The handoff (Implementation → Testing), the acceptance criteria and invariants
 
 - Do not modify production code. A defect is reported with a reproduction (input or steps, expected result per spec ID, actual result, evidence path) and the failing test is kept.
 - Never weaken, skip or delete a test, change an assertion, or add sleeps or retries, to make it pass against buggy behavior.
-- Where the spec is silent or ambiguous about an outcome, raise a spec question. Do not decide the expected result yourself.
+- Where the spec is silent or ambiguous about an outcome, raise a spec question (`<skill dir>/protocols/agent-questions.md`). Do not decide the expected result yourself.
 - Report only tests you actually executed. A flaky test is re-run once and reported as flaky.
 - Coverage is not effectiveness. Do not present coverage as proof of correctness.
 - Test code follows `<skill dir>/knowledge/code-quality.md` (no comments, short functions, declarative names) and must pass `scripts/quality_gate.py`.

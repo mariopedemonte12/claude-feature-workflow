@@ -66,7 +66,8 @@ The programmer has deliberately activated this workflow. From now until they say
 | Lite feature: writing its card | `templates/feature-card.md` |
 | Before presenting the first programmer decision | `protocols/neutral-decisions.md` |
 | More than one feature in progress, `status`, or a multi-slug `resume` | `protocols/multi-feature.md` |
-| Writing or evolving a specification | `knowledge/specification-guide.md`, `templates/specification.md` |
+| Before the first delegation of the session, and whenever an agent returns `STATUS: QUESTIONS` | `protocols/agent-questions.md` |
+| Checking a specification draft before its gate | `knowledge/specification-guide.md` |
 | Before any phase transition or delegation | `protocols/context-handoff.md`, `templates/handoff.md` |
 | Recording a decision | `templates/decision-record.md` |
 | Writing the approved plan | `templates/implementation-plan.md` |
@@ -81,12 +82,12 @@ If the conversation was compacted and you lost details of this workflow, re-read
 
 ## 4. Roles, executors and models
 
-You handle everything that needs dialogue with the programmer: workflow selection, specification, presenting decisions, recording approvals, finalization. Subagents cannot talk to the programmer. Claude Code lets subagents spawn their own up to a depth limit (3 by default), but **feature roles never delegate**: all delegation goes through the orchestrator. If you are a sub-orchestrator (`protocols/hierarchy.md`), "the programmer" in this skill means your channel to them: the principal, unless the programmer writes to you directly.
+You handle everything that needs dialogue with the programmer: workflow selection, recording the request, relaying agent questions, presenting decisions, recording approvals, finalization. The Specification Writer writes the spec; you own the conversation that feeds it (`request.md`) and its gate. Subagents cannot talk to the programmer: they ask through you, following `protocols/agent-questions.md`. Claude Code lets subagents spawn their own up to a depth limit (3 by default), but **feature roles never delegate**: all delegation goes through the orchestrator. If you are a sub-orchestrator (`protocols/hierarchy.md`), "the programmer" in this skill means your channel to them: the principal, unless the programmer writes to you directly.
 
 | Role | Executor (`subagent_type`) | Standard `model` | Role file |
 | --- | --- | --- | --- |
 | Repository Analyst | `Explore` (read-only) | `haiku` | `roles/repository-analyst.md` |
-| Specification Analyst | you | (session model) | `knowledge/specification-guide.md` |
+| Specification Writer | `general-purpose` | `opus` | `roles/spec-writer.md` |
 | Architecture & Planning | `Plan` (read-only) | `opus` | `roles/planner.md` |
 | Implementation | `general-purpose` | `sonnet` | `roles/implementer.md` |
 | Testing | `general-purpose` | `sonnet` | `roles/tester.md` |
@@ -110,12 +111,13 @@ Typical deviations (illustrative, not exhaustive):
   - Implementer on a mechanical, fully specified change (rename, configuration, boilerplate that follows an existing pattern) → `haiku`.
   - Tester only re-running existing suites and reporting → `haiku`.
   - Planner when the analyst's evidence shows a single mechanical approach → `sonnet`.
+  - Specification Writer on a short, unambiguous request that mirrors existing behavior → `sonnet`.
 - **Up:**
   - Analyst on large or unfamiliar code → `sonnet`.
   - Implementer on concurrency, security, data migration or cross-cutting changes, or after a failed attempt → `opus`.
   - Tester doing symbolic/concolic analysis or reasoning about hard state → `opus`.
 
-**Floors.** Never use `haiku` for planning, the critic or the verifier. For **Critical** features, planning and the critic use `opus`. These floors exist so that consequential architectural judgment is never downgraded to save cost.
+**Floors.** Never use `haiku` for the specification, planning, the critic or the verifier. For **Critical** features, the specification, planning and the critic use `opus`. These floors exist so that consequential architectural judgment is never downgraded to save cost.
 
 **Rules:**
 - You may use any model alias the Agent tool accepts in this session.
@@ -130,7 +132,7 @@ Typical deviations (illustrative, not exhaustive):
 
 **Launching subagents into the feature worktree.**
 - **Every role** is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
-- Write-capable roles (Implementer, Tester, Critic, Verifier) write only inside their feature worktree, plus temporary files outside the repository when their role allows it.
+- Write-capable roles (Specification Writer, Implementer, Tester, Critic, Verifier) write only inside their feature worktree, plus temporary files outside the repository when their role allows it.
 
 **Briefing a subagent.** Set the Agent `description` to `[<slug>] <Role>: <task>`. The prompt contains this, and only this:
 
@@ -143,10 +145,11 @@ Work only through absolute paths into that worktree: start every shell command w
 Task: <one concrete paragraph>
 Scope: <in scope / out of scope>
 Output: <absolute path(s) to write>   (Analyst and Planner are read-only: they return their output instead)
-Return to the orchestrator: a summary of at most 250 words, open questions, and any decision the programmer must make, as options in neutral format.
+If you need an answer only the programmer can give, stop and ask as <absolute path to protocols/agent-questions.md> says; never guess.
+Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in neutral format.
 ```
 
-**Critic and Verifier briefs are clean:** omit line 2 (the handoff) and give no summary of the feature, its intent or its implementation. The Task line gives only the base commit, the round number and, for the verifier, the critic report path. Scope and Output as usual.
+**Critic and Verifier briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature, its intent or its implementation. The Task line gives only the base commit, the round number and, for the verifier, the critic report path. Scope and Output as usual.
 
 Never paste conversation history, whole artifacts or another feature's context into a brief.
 
@@ -173,6 +176,7 @@ Gates are **per feature**: a pending gate blocks only its own feature. Stop that
 ```
 <repo>/.claude/worktrees/<slug>/       # the feature's worktree (own branch)
 └── <features-root>/<slug>/             # e.g. docs/features/<slug>/
+├── request.md                        # the programmer's request verbatim + every answer, by Q-ID
 ├── specification.md
 ├── implementation-plan.md
 ├── testing-plan.md

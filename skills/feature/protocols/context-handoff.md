@@ -4,7 +4,7 @@
 
 ## Who writes it
 
-The outgoing agent writes it. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator checks every handoff before the next delegation.
+The outgoing agent writes it. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation.
 
 `handoff.md` lives in the feature folder and is overwritten at each transition. History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
 
@@ -20,6 +20,9 @@ The outgoing agent writes it. The Repository Analyst and the Planner are read-on
 Structure: `templates/handoff.md`.
 
 ## What each transition must carry
+
+**Request → Specification**
+`request.md` path · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · intensity and its size budget.
 
 **Specification → Planning**
 Intent · confirmed FR/AC IDs · constraints · invariants · open questions (blocking ones flagged) · repository references (analyst report) · areas of technical uncertainty.

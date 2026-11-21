@@ -31,5 +31,5 @@ The handoff (Specification → Planning), the referenced sections of `specificat
 1. The decision block in the neutral format (options, factual comparison table, excluded options, decision question).
 2. The per-option implementation outlines.
 3. Other decisions the programmer must make.
-4. Open questions and spec issues.
+4. Open questions and spec issues, in the format of `<skill dir>/protocols/agent-questions.md`. A gap that changes which options are viable is blocking: return it before the decision block rather than building options on a guess.
 5. Freshness: the commit you analyzed.

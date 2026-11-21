@@ -8,15 +8,15 @@ This workflow runs **per feature**, at Medium or High intensity (`protocols/inte
 
 ## Phase 1: Initial specification (orchestrator)
 
-**1. Understand and explore.** Separate known from unknown requirements, product from technical uncertainties, and existing system constraints from candidate exploration areas. Classify each uncertainty as *blocking now* or *investigable later*. Delegate broad inspection to the Repository Analyst.
+**1. Understand and explore.** Write the programmer's request, verbatim, to `request.md`. Separate known from unknown requirements, product from technical uncertainties, and existing system constraints from candidate exploration areas. Classify each uncertainty as *blocking now* or *investigable later*. Delegate broad inspection to the Repository Analyst.
 
-**2. Initial specification.** Write `specification.md` (`templates/specification.md`, `knowledge/specification-guide.md`) with: intent, known requirements, constraints, invariants, initial acceptance criteria, open questions and hypotheses. Every item carries a status: Confirmed / Hypothesis / Under exploration / Rejected. Ask the programmer for the feature's **criticality** (Critical / Standard) and for the **completion criteria**: what "done" means for this feature, so the loop has an agreed exit.
+**2. Initial specification.** Brief the Specification Writer (`roles/spec-writer.md`), relaying its questions and resuming it until it returns `STATUS: DONE` (`protocols/agent-questions.md`). It writes `specification.md` with: intent, known requirements, constraints, invariants, initial acceptance criteria, open questions and hypotheses. Every item carries a status: Confirmed / Hypothesis / Under exploration / Rejected. Ask the programmer for the feature's **criticality** (Critical / Standard) and for the **completion criteria**: what "done" means for this feature, so the loop has an agreed exit.
 
 **3. ⛔ Collaborative review.** Resolve blocking questions only. The initial spec does not need to anticipate future discoveries.
 
 ## Phase 2: Solution exploration and planning
 
-**4. Analyze the solution space.** Brief the Planner (`roles/planner.md`) with the Specification → Planning handoff: possible approaches, architectural alternatives, feasibility, integration challenges, dependencies, risks.
+**4. Analyze the solution space.** Brief the Planner (`roles/planner.md`) with the Specification → Planning handoff, relaying any questions it returns (`protocols/agent-questions.md`): possible approaches, architectural alternatives, feasibility, integration challenges, dependencies, risks.
 
 **5. Explore alternatives.** Each option includes reversibility and remaining uncertainty. Where reasoning alone cannot settle a question, the planner describes a **disposable prototype or experiment** as an option: the question it answers, its cost, where it would live and how it would be discarded.
 
@@ -45,7 +45,7 @@ This workflow runs **per feature**, at Medium or High intensity (`protocols/inte
 
 **14. Classify each relevant discovery:** Confirmed (evidence or programmer approval) · Hypothesis · Under exploration · Rejected.
 
-**15. ⛔ Evolve the specification.** Requirements may be Added, Clarified, Modified, Replaced or Retired. Each change bumps the spec version and adds a change-log row with its rationale and approval. Prefer additive, traceable evolution, but move obsolete requirements to Retired rather than keeping contradictions active. The programmer approves every requirement change.
+**15. ⛔ Evolve the specification.** The Specification Writer applies the approved changes. Requirements may be Added, Clarified, Modified, Replaced or Retired. Each change bumps the spec version and adds a change-log row with its rationale and approval. Prefer additive, traceable evolution, but move obsolete requirements to Retired rather than keeping contradictions active. The programmer approves every requirement change.
 
 **16. Evolve the plan.** Update `implementation-plan.md` (plan change log). Keep spec and plan separate: a technical change does not imply a requirement change, while a functional change requires reassessing the plan and the tests.
 
