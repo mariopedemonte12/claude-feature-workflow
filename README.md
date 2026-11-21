@@ -1,10 +1,38 @@
 # Feature Workflow for Claude Code
 
-A Claude Code skill that turns a session into an orchestrated, multi-agent software engineering process (specification → planning → implementation → testing → validation) in which **the programmer makes every consequential decision**.
+Claude Code skills for building features with the programmer in control of every consequential decision. They come in three entry points, all **manual-only**: each loads only when you type its command.
 
-It loads **only when you call it** (`/feature`). In every other session it costs, at most, a one-line description (~70 tokens). The workflow itself (~4k tokens for the entry point) loads only on invocation.
+| Command | What it is | Measured cost (one Django case, 3 large features) |
+| --- | --- | --- |
+| **`/feature-lean`** | **The main mode.** One session per feature, with no orchestrator relay. It runs a specification pass (edge, error, security and worst-case behavior, each compared with the nearest existing analog), one gate for your answers and the approach, code with tests and the quality gate, and one clean critic whose every finding comes to you. | **5× a plain session** (USD 5.6) |
+| `/feature` | The full multi-agent workflow: SDD Direct or ESDD, specialized subagents, every gate and artifact, review cycle, several features and orchestrators. Opt-in, for when you want its process and can afford it. | 13.5× a plain session (USD 15.2) at High |
+| `/feature-kit` | No pipeline: the workflow's knowledge (planning, quality, testing, review…) as modules the agent loads on demand while you work by hand. | not measured; close to a plain session, plus the modules it reads |
 
-## What you get
+In every other session each skill costs, at most, a one-line description (~70 tokens).
+
+## Evidence so far
+
+| | Plain session | `/feature-lean` | `/feature` High |
+| --- | --- | --- | --- |
+| Hidden tests (Django, 3 large features) | 41/43 | 42/43 | 42/43 |
+| Cost | USD 1.1 | USD 5.6 | USD 15.2 |
+| Input-equivalent tokens | 0.6M | 2.7M | 8.2M |
+
+- **Smaller cases:** across four experiments (a toy project, Python-Markdown, two Django runs), the full workflow passed 120/121 hidden tests against the plain session's 114/121, at about 12× the cost.
+- **What helped quality was cheap:** enumerating edge cases before coding, one clean critic, and comparing with the nearest analog. Those are what `/feature-lean` keeps. The full workflow's extra machinery (orchestrator relay, verifier, extra review rounds) showed no proportional gain.
+- **Limits of this evidence.** Each configuration ran once (n=1). The hidden tests were written by the same people who designed the workflow, the programmer was simulated, and none of this is real day-to-day use. Treat it as a direction, not a result. Details: [`docs/cost-estimates.md`](docs/cost-estimates.md).
+- **Usage budgets.** The full workflow spends millions of tokens per feature group. On plans with a usage limit, such as Pro, it can exhaust the limit within one run; `/feature-lean` fits far better.
+
+## `/feature-lean`
+
+See [`skills/feature-lean/SKILL.md`](skills/feature-lean/SKILL.md). One feature per session, in its own git worktree; several features means several sessions, which can run in parallel. The only artifacts are a one-page card and the critic's review. Gate 1 settles behavior and approach, gate 2 the critic's findings, then acceptance, integration and cleanup.
+
+## `/feature-kit`
+
+When you work on a feature by hand, `/feature-kit` makes the workflow's knowledge available as a catalog of modules (explore, spec, plan, decide, quality/ponytail, patterns, anti-patterns, test, e2e, gate, review, card) that the agent loads only when the task needs one, or when you name it. No phases, gates, artifacts, worktrees or subagents, except a clean critic when you ask for a review.
+
+## `/feature`: the full workflow
+
 
 - **Two workflows, chosen per feature by uncertainty, not size.**
   - **SDD Direct:** for well-understood features.
@@ -23,12 +51,6 @@ It loads **only when you call it** (`/feature`). In every other session it costs
 - **Code quality standard for every agent that writes code.** The smallest complete change (reuse → standard library → installed dependency → minimum new code), no comments except `shortcut: <limit>, <when to upgrade>` markers and tool directives, files up to 400 lines and short functions as signals of mixed responsibilities, declarative names, single responsibility, feature folders where the project uses them, and classic design patterns only for problems present now. A dependency-free quality gate (`scripts/quality_gate.py`) checks the feature's changes; with `lizard` installed it also checks function size and complexity.
 - **A per-project anti-pattern registry that learns.** Seeded from catalogs matching the project's architecture (general, feature folders, layered/hexagonal, component UIs, back ends, tests). Agents read it before coding and record new anti-patterns they find as candidates; you approve what enters it, and entries that can be detected mechanically become lint rules (ast-grep, Semgrep, import-rule tools or the stack's own linter: your choice).
 - **End-to-end testing by the Tester.** Every user-facing acceptance criterion is exercised through the real entry point: Playwright for web UIs, real HTTP requests, CLI processes, mobile and desktop drivers, or a deterministic simulation harness when there is no interactive surface.
-- **A lean pipeline: `/feature-lean`.** For one feature per session, without an orchestrator relay:
-  - the session itself specifies the feature, with its edge, error, security and worst-case behavior, each case compared with how the project's nearest existing analog handles it;
-  - one gate with your answers and the approach, where options carry their security consequence and their probed worst case;
-  - code with tests, testing techniques applied or justified, fuzz or property tests at trust boundaries, and the quality gate;
-  - one clean critic, whose every finding comes to you.
-- **The skills without the workflow: `/feature-kit`.** When you work on a feature by hand, `/feature-kit` makes the workflow's knowledge available as a catalog of modules (explore, spec, plan, decide, quality/ponytail, patterns, anti-patterns, test, e2e, gate, review, card) that the agent loads only when the task needs one, or when you name it. No phases, gates, artifacts, worktrees or subagents, except a clean critic when you ask for a review.
 - **Testing discipline.** Boundary value analysis, fuzz/property-based, symbolic/concolic, decision tables and state machines, each reported as *Applied*, *Not applicable* (with a reason) or *Blocked* (with an explanation). Mutation testing is mandatory for features you mark as critical.
 
 ## Install
@@ -58,6 +80,8 @@ Then start a new Claude Code session.
 ## Usage
 
 ```
+/feature-lean add CSV export                      # main mode: one session, two gates, one clean critic
+/feature-lean resume csv-export                   # continue it in a new session
 /feature add CSV export to the reports page       # new feature; you choose the workflow after an uncertainty assessment
 /feature migrate auth to OAuth --esdd             # choose the workflow up front (--sdd | --esdd)
 /feature add audit log --high --phased            # intensity, and phased mode instead of direct
@@ -65,7 +89,6 @@ Then start a new Claude Code session.
 /feature resume csv-export                        # continue a feature (or several) from its handoff
 /feature hub                                      # become the principal orchestrator of several groups
 /feature join main-hub billing                    # in another session: run the "billing" group for hub "main-hub"
-/feature-lean add CSV export                      # lean pipeline: one session, two gates, one clean critic
 /feature-kit                                      # work by hand; the agent loads modules on demand
 /feature-kit plan quality                         # same, loading the plan and quality modules now
 /feature-kit off                                  # stop applying the kit
@@ -147,7 +170,7 @@ The review cycle (clean critics, a refuting verifier, a limit of three rounds) d
   - Subagents run without isolation and work through absolute paths into their feature's worktree.
   - New worktrees branch from `origin/<default-branch>` by default. To branch from your local HEAD instead, set `"worktree": { "baseRef": "head" }` in your Claude Code settings.
 - Uses the built-in subagent types `Explore`, `Plan` and `general-purpose`, and the model aliases `haiku`, `sonnet` and `opus`.
-- Early version: the structure is validated, but the workflow has not yet been exercised across many real projects. Issues and pull requests are welcome.
+- Early version. Measured only in controlled experiments with a simulated programmer (see *Evidence so far*), not in real day-to-day use. Phased mode and the orchestrator hierarchy have never been run. Issues and pull requests are welcome.
 
 ## License
 

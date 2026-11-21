@@ -1,6 +1,6 @@
 {
   "name": "feature-workflow",
-  "description": "On-demand multi-agent feature workflow for Claude Code (SDD Direct / ESDD).",
+  "description": "On-demand feature skills for Claude Code: /feature-lean (one session, spec with edge cases, one gate, code and tests, one clean critic), the full multi-agent /feature workflow, and /feature-kit for hand-driven work.",
   "owner": {
     "name": "mariopedemonte12"
   },
@@ -8,7 +8,7 @@
     {
       "name": "feature-workflow",
       "source": "./",
-      "description": "On-demand multi-agent feature workflow (SDD Direct / ESDD) with neutral decision gates and per-task model selection."
+      "description": "On-demand feature skills for Claude Code: /feature-lean (one session, spec with edge cases, one gate, code and tests, one clean critic), the full multi-agent /feature workflow, and /feature-kit for hand-driven work."
     }
   ]
 }

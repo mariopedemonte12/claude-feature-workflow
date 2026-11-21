@@ -1,6 +1,6 @@
 # Architecture of the Feature Workflow
 
-This document describes how the `/feature` workflow is built: who takes part, how a feature moves from request to integration, which files hold the state, and what each agent is responsible for. The behavior itself is defined by the files under `skills/feature/`. When this document and those files disagree, the files win, and each section names the file it summarizes.
+There are three entry points: `/feature-lean`, the main mode (§2), the full `/feature` workflow, and `/feature-kit`. Most of this document describes how the full `/feature` workflow is built: who takes part, how a feature moves from request to integration, which files hold the state, and what each agent is responsible for. The behavior itself is defined by the files under `skills/feature/`. When this document and those files disagree, the files win, and each section names the file it summarizes.
 
 Diagrams use Mermaid and render on GitHub.
 
