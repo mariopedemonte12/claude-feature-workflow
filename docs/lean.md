@@ -111,7 +111,7 @@ Example from the measured run, on the `{% switch %}` template tag:
 
 - **Launch:** one new subagent (`general-purpose`, Opus), in the background. Its brief has only the worktree, the branch, the base commit, its role file and the output path. It gets no summary of the feature, no card and no conversation, and it is told not to open the feature folder.
 - **Review:** it reviews `git diff <base>` from scratch against the quality standard and the project's conventions, and writes `review.md`.
-- **Why a separate agent:** a model reviewing its own output misses more problems than a fresh one, per the self-attribution research cited in `skills/feature/protocols/review-cycle.md`.
+- **Why a separate agent:** a model reviewing its own output misses more problems than a fresh one, per the self-attribution research cited in [`references.md`](references.md).
 
 ### 7. Checking the findings
 

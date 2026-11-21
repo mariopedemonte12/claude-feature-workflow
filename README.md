@@ -163,7 +163,7 @@ The workflow was derived from a longer design document, included as [`docs/maste
 
 Part of the code quality standard and of the review checklist adapts [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (MIT): the smallest-complete-change ladder, `shortcut:` markers, splitting by responsibility rather than line count, and findings that require a concrete case. This workflow is stricter on comments and does not install Ponytail's hooks. The surgical-change rules (every changed line traces to the request, match the existing style, mention pre-existing dead code instead of deleting it) and test-first defect fixes adapt the [Karpathy-inspired guidelines](https://github.com/forrestchang/andrej-karpathy-skills) by Forrest Chang (MIT).
 
-The review cycle (clean critics, a refuting verifier, a limit of three rounds) draws on research on self-attribution and self-preference bias in LLM evaluators, adversarial multi-agent review and iterative repair loops. The papers are cited where each piece is justified, in [`protocols/review-cycle.md` §References](skills/feature/protocols/review-cycle.md#references). Most are recent arXiv preprints.
+The review cycle (clean critics, a refuting verifier, a limit of three rounds) draws on research on self-attribution and self-preference bias in LLM evaluators, adversarial multi-agent review and iterative repair loops. The papers, and which piece each one justifies, are in [`docs/references.md`](docs/references.md), outside the skills, so no citation is loaded into an agent's context. Most are recent arXiv preprints.
 
 ## Requirements and status
 

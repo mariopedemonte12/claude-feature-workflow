@@ -280,7 +280,7 @@ flowchart LR
 - **Convergence:** round 1 reviews the whole diff. Later rounds review only the fixes, and report only Blocker and Major findings.
 - **Clean context:** the critic and the verifier never read the spec, plan, decisions, handoffs, implementation report or earlier rounds. Each round launches a **new** critic on the whole diff from the base.
 - **Round log** in `reports/review/rounds.md`. Findings that recur become anti-pattern candidates. The INVALID rate shows how noisy the critic is.
-- **Why it is built this way:** self-attribution and self-preference bias in LLM evaluators, adversarial refutation, and diminishing returns after three or four repair iterations. The papers are cited in `review-cycle.md` §References.
+- **Why it is built this way:** self-attribution and self-preference bias in LLM evaluators, adversarial refutation, and diminishing returns after three or four repair iterations. The papers are cited in [`references.md`](references.md).
 
 ## 9. Anti-pattern registry and quality gate
 
