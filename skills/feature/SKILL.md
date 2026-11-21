@@ -96,6 +96,7 @@ You handle everything that needs dialogue with the programmer: workflow selectio
 | Testing | `general-purpose` | `sonnet` | `roles/tester.md` |
 | Clean Code Critic | `general-purpose` | `opus` | `roles/reviewer.md` |
 | Finding Verifier | `general-purpose` | `sonnet` | `roles/verifier.md` |
+| Security Auditor | `general-purpose` | `opus` | `roles/security-auditor.md` |
 | Phase runner (phased mode only) | `general-purpose` | `sonnet` | `protocols/phase-runners.md` §The phase runner |
 
 ### Model selection per delegation
@@ -121,7 +122,7 @@ Typical deviations (illustrative, not exhaustive):
   - Implementer on concurrency, security, data migration or cross-cutting changes, or after a failed attempt → `opus`.
   - Tester doing symbolic/concolic analysis or reasoning about hard state → `opus`.
 
-**Floors.** Never use `haiku` for the specification, planning, test design, the critic, the verifier or a phase runner. For **Critical** features, the specification, planning, test design, the critic and phase runners use `opus`. These floors exist so that consequential architectural judgment is never downgraded to save cost.
+**Floors.** Never use `haiku` for the specification, planning, test design, the critic, the verifier, the security auditor or a phase runner. For **Critical** features, the specification, planning, test design, the critic, the security auditor and phase runners use `opus`. These floors exist so that consequential architectural judgment is never downgraded to save cost.
 
 **Rules:**
 - You may use any model alias the Agent tool accepts in this session.
@@ -149,11 +150,11 @@ Launch a new agent only when:
 - its context is close to the window limit;
 - a different model was decided for the task.
 
-The new agent's brief then includes the earlier agent's last report. Critics and verifiers are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
+The new agent's brief then includes the earlier agent's last report. Critics, verifiers and security auditors are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
 
 **Launching subagents into the feature worktree.**
 - **Every role** is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
-- Write-capable roles (Specification Writer, Test Designer, Implementer, Tester, Critic, Verifier) write only inside their feature worktree, plus temporary files outside the repository when their role allows it.
+- Write-capable roles (Specification Writer, Test Designer, Implementer, Tester, Critic, Verifier, Security Auditor) write only inside their feature worktree, plus temporary files outside the repository when their role allows it.
 
 **Briefing a subagent.** Set the Agent `description` to `[<slug>] <Role>: <task>`. The prompt contains this, and only this:
 
@@ -170,7 +171,7 @@ If you need an answer only the programmer can give, stop and ask as <absolute pa
 Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in neutral format.
 ```
 
-**Critic and Verifier briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature, its intent or its implementation. The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
+**Critic, Verifier and Security Auditor briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature, its intent or its implementation. The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
 
 Never paste conversation history, whole artifacts or another feature's context into a brief.
 

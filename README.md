@@ -38,7 +38,8 @@ When you work on a feature by hand, `/feature-kit` makes the workflow's knowledg
   - **SDD Direct:** for well-understood features.
   - **Evolutionary Spec-Driven Development (ESDD):** for features with open requirements or technical unknowns.
   - **Hybrid:** ESDD only for the uncertain part.
-- **Specialized subagents.** Repository Analyst, Specification Writer, Planner, Test Designer, Implementer, Tester, Clean Code Critic and Finding Verifier, each driven by its own role file.
+- **Specialized subagents.** Repository Analyst, Specification Writer, Planner, Test Designer, Implementer, Tester, Clean Code Critic, Finding Verifier and Security Auditor, each driven by its own role file.
+  - **Security audit:** a clean agent follows every source of input to every sink in the diff (escaping, injection, authorization, paths, deserialization, resource limits), and proves each finding with an executed exploit. You decide per feature, from the trust boundaries it touches. It is mandatory for Critical features, and available in `/feature-lean` too.
   - **Tests:** the Test Designer derives the test cases from the approved spec, in parallel with the Planner and without seeing the plan. Only the Tester writes tests. The Implementer writes production code to the quality standard and reviews its own diff against the critic's checklist first, so review finds little to rework.
   - **Headless:** agents run in the background. You see one line when an agent starts or finishes, and the full content at gates.
   - **Reuse:** when work goes back to a role (fixes, re-tests, spec changes), the same agent is resumed with its context. Critics and verifiers are always new.

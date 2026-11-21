@@ -6,7 +6,7 @@ Every feature runs at one of three intensities: **Lite**, **Medium** or **High**
 
 - The programmer sets it per feature or **per group of features**, with a flag (`--lite`, `--medium`, `--high`) or in their request: "these three at Lite", "group billing at Medium". A group level applies to each member; a feature-level setting overrides it. In the hierarchical mode (`protocols/hierarchy.md`), a group's level is the default for every feature its sub-orchestrator runs.
 - If it is not set, ask at the first gate, as a neutral decision (`protocols/neutral-decisions.md`), with the facts that bear on it: estimated size, files and components touched, risk areas (security, money, data writes, concurrency, public interfaces), criticality.
-- **Critical features always run at High.** State it; do not ask.
+- **Critical features always run at High,** and with the security audit. State it; do not ask.
 - The level can change at any later gate, by the programmer's decision, recorded in `decisions/`. Raising it adds the missing steps from the current point; lowering it never removes evidence already produced.
 - Record the level in the feature's handoff and in the project memory portfolio.
 
@@ -22,6 +22,7 @@ Every feature runs at one of three intensities: **Lite**, **Medium** or **High**
 | Implementer | writes the code **and** its tests (unit and end-to-end) | writes the code only, no tests | same as Medium |
 | Tester | no; the Implementer's tests are the evidence | implements and runs the designed cases, including end-to-end | same, plus every black-box technique and mutation testing |
 | Review level: the default the recommendation starts from (`protocols/review-cycle.md`) | R0 | R1 | R2 |
+| Security audit (`roles/security-auditor.md`) | the programmer decides at the spec + plan gate | the programmer decides at the plan gate | the programmer decides at the plan gate |
 | Mutation testing | no | asked at the plan gate | yes |
 | Gates | one **spec + plan** gate, then acceptance (defects go into the acceptance gate) | spec gate, plan gate, defects gate, acceptance | every gate in the workflow |
 | Spec questions | blocking ones only; the rest are written as out of scope | blocking and those that change observable behavior | all |

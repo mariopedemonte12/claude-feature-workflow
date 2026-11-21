@@ -85,6 +85,7 @@ One message, with every item shown in full:
   - **Probes:** for parsers, regular expressions, escaping or safe-marking, the session runs a quick probe before the gate: a timing loop that doubles the input, and an injection string. The worst case it reports is measured, not guessed.
   - **Single approach:** if only one approach is viable, it is stated with the excluded alternatives and the constraint each violates.
 - **Choices by convention:** small implementation details settled by following the project's conventions, one line each, so you can override any of them.
+- **Security audit:** the session lists, as facts, the trust boundaries the feature touches. For a Standard feature you decide whether a security auditor runs. For a Critical feature it always runs.
 - **Criticality:** Critical or Standard. Critical makes mutation testing mandatory. For Standard, you decide whether to run it. If no mutation tool is installed, you choose between installing one and leaving mutation testing *Blocked*, with its residual risk.
 - **Approval:** approve, change (what), or reject.
 
@@ -107,15 +108,16 @@ Example from the measured run, on the `{% switch %}` template tag:
 - **Checks:** the tests, the project's lint and type checks, and `scripts/quality_gate.py`. The session fixes what it wrote.
 - **Discoveries:** a discovery that changes approved behavior becomes a new question to you.
 
-### 6. The clean critic
+### 6. The clean critic, and the security auditor if decided
 
 - **Launch:** one new subagent (`general-purpose`, Opus), in the background. Its brief has only the worktree, the branch, the base commit, its role file and the output path. It gets no summary of the feature, no card and no conversation, and it is told not to open the feature folder.
 - **Review:** it reviews `git diff <base>` from scratch against the quality standard and the project's conventions, and writes `review.md`.
+- **Security auditor:** when decided, a second clean Opus agent runs in parallel with the critic and writes `security.md`. It maps every source of input and every sink in the diff, follows each path, runs the project's installed security tools, and proves each finding with an exploit it runs outside the repository. A finding it cannot reproduce is reported as a *Possible risk*.
 - **Why a separate agent:** a model reviewing its own output misses more problems than a fresh one, per the self-attribution research cited in [`references.md`](references.md).
 
 ### 7. Checking the findings
 
-The session checks every finding against the code and marks it **Reproduced** (with evidence), **Not reproduced** (with what it tried) or **Unclear**. Nothing is discarded: you see every finding.
+The session checks every finding of the critic and the auditor against the code, re-running the auditor's exploits, and marks it **Reproduced** (with evidence), **Not reproduced** (with what it tried) or **Unclear**. Nothing is discarded: you see every finding.
 
 ### 8. Gate 2: findings and results
 
@@ -161,7 +163,7 @@ Measured on Django 6.1, with 3 large features (a `{% switch %}` tag, a `ColorFie
 ## What Lean does not do
 
 - **No separate roles:** there is no separate specification, planning, test-design or testing agent. The same session that writes the code writes its tests. That is the main trade-off against `/feature`, where only the Tester writes tests and the cases come from a Test Designer who never sees the plan.
-- **Review:** there is no verifier, no automatic fixes and no multi-round cycle. You decide every finding.
+- **Review:** there is no verifier, no automatic fixes and no multi-round cycle. You decide every finding, including the security auditor's.
 - **Testing depth:** mutation testing runs only for Critical features or when you choose it. There are no ESDD increments or prototypes.
 - **Coordination:** there is no portfolio, no claims and no overlap detection across sessions.
 - **Registry:** no anti-pattern registry bootstrap. If `.quality/` exists, Lean reads and respects it, but does not create or extend it.

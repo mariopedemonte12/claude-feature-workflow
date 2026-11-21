@@ -30,6 +30,7 @@ The Planner returns implementation options, or a single option with the excluded
 - In the same gate, settle verification depth:
   - **Critical feature:** mutation testing and the R2 review cycle are mandatory. State this; do not ask.
   - **Standard feature:** ask neutrally whether to run mutation testing, stating what it adds (what it can detect) and what it costs (time, tooling, possible new dev dependency). For review, **recommend** a level (R0 / R1 / R2) starting from the intensity default, with its evidence, as `protocols/review-cycle.md` §Recommending the level describes; the programmer validates or changes it.
+- In the same gate, settle the **security audit** (`roles/security-auditor.md`): state, as facts, the trust boundaries the feature touches, from the spec and the analyst's evidence: external input, escaping or safe-marking, authentication and authorization, files, network, subprocesses, serialization, raw SQL, cryptography, secrets, resource limits. **Critical feature:** the audit is mandatory; state this, do not ask. **Standard feature:** ask neutrally whether to run it, with those facts and its cost (one Opus agent, in parallel with testing). Record the answer in `decisions/`.
 - In the same gate, settle the **end-to-end harness** when the project has none for this surface: present what installing it involves (packages, browser downloads, containers) and the alternatives (a simulation harness, Blocked with its residual risk) as neutral options. End-to-end testing itself is not optional for user-facing features; only how it runs is decided here.
 - Record the decision in `decisions/` (`templates/decision-record.md`).
 - Write `implementation-plan.md` (`templates/implementation-plan.md`) for the approved approach only, with a one-line mention of each alternative not chosen and the decision reference.
@@ -45,6 +46,8 @@ The Planner returns implementation options, or a single option with the excluded
 - evaluation of each black-box technique (Boundary Value Analysis, Fuzz, Symbolic/Concolic, Decision Table, Finite State Machine), with status Applied / Not applicable + justification / Blocked + explanation;
 - mutation testing, if mandatory or decided at step 6;
 - validation against the approved spec, in `reports/validation-report.md`, plus the Testing → Finalization handoff.
+
+**Security audit**, if decided at step 6: one clean Security Auditor (`roles/security-auditor.md`), launched in parallel with the Tester and the first critic, writing `reports/review/security.md`. Its findings go to the defects gate; none is fixed automatically. After a security finding is fixed, a **new** clean auditor reviews only the fix diff.
 
 **Review**, at the validated level (`protocols/review-cycle.md`). First re-check the level against the real diff. R1: one clean critic (`roles/reviewer.md`) **in parallel** with testing. R2: the first critic runs in parallel with testing, then the verify → fix → new-critic cycle; after it ends, the Tester re-runs the regression and E2E scenarios the fixes affect. R0: no review agent.
 

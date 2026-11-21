@@ -65,6 +65,7 @@ Do not read the rest of the library.
   - For options involving parsers, regular expressions, escaping or safe-marking, run a quick probe before the gate: a timing loop that doubles the input size, and an injection string. Report what it printed.
   - If only one approach is viable, state it with the excluded alternatives and the constraint each violates.
 - **Choices by convention.** Implementation details you will settle by following the project's existing conventions, one line each. The programmer may override any of them.
+- **Security audit:** state, as facts, the trust boundaries the feature touches, from the spec and the analyst's evidence: external input, escaping or safe-marking, authentication and authorization, files, network, subprocesses, serialization, raw SQL, cryptography, secrets, resource limits, from the specification pass. A Critical feature gets the audit always: state this, do not ask. For a Standard feature, ask neutrally whether to run it, with those facts and its cost (one Opus agent, in parallel with the critic).
 - **Criticality:** ask whether the feature is Critical or Standard. Critical makes mutation testing **mandatory**: state that, do not ask whether to run it. For a Standard feature, ask neutrally whether to run it, stating what it can detect and what it costs. When it will run and the project has no mutation tool, present installing one (a new dev dependency) and leaving it *Blocked* with its residual risk as neutral options.
 - **Approval:** end with approve · change (what) · reject.
 
@@ -88,7 +89,9 @@ Record every answer in the card's *Decisions*, with the date.
 - **Checks:** run the tests, the project's lint and type checks, and `python3 <library>/scripts/quality_gate.py --repo <worktree> --base <base>`. Fix what you wrote.
 - **New questions:** a discovery that changes approved behavior is a new ⛔ question.
 
-**6. Clean critic.** Launch one subagent in the background (`run_in_background: true` where the Agent tool offers it), `general-purpose`, model `opus`, with this brief and nothing else (no summary of the feature, no card). Tell the programmer in one line that it started, and wait for its notification. If the programmer asks for a second critic later, launch a **new** one: critics are never resumed.
+**6. Clean critic, and the security auditor if decided.** Launch them together, both in the background, both clean. The auditor gets the same brief as the critic below, except: `Read and follow your role file: <library>/roles/security-auditor.md` and output `<worktree>/docs/features/<slug>/security.md`. Never resume either; a later round is a new agent.
+
+The critic: launch one subagent in the background (`run_in_background: true` where the Agent tool offers it), `general-purpose`, model `opus`, with this brief and nothing else (no summary of the feature, no card). Tell the programmer in one line that it started, and wait for its notification. If the programmer asks for a second critic later, launch a **new** one: critics are never resumed.
 
 ```
 You are the Clean Code Critic for a code change.
@@ -99,7 +102,7 @@ Output: <worktree>/docs/features/<slug>/review.md
 Return: a summary of at most 150 words.
 ```
 
-**7. Check every finding** against the code, and add your result to `review.md` next to it:
+**7. Check every finding** of the critic and the auditor against the code, and add your result next to it in `review.md` or `security.md`. For security findings, re-run the auditor's exploit:
 - **Reproduced**, with evidence;
 - **Not reproduced**, with what you tried;
 - **Unclear**.
@@ -108,13 +111,13 @@ Discard nothing: the programmer sees every finding.
 
 **8. ⛔ Gate 2: findings and results.** In one message:
 - **Test and gate results:** commands and real output, summarized, including the mutation score and the surviving mutants when mutation testing ran.
-- **Findings:** every one, with severity, concrete case and your check result. Options for each: fix · accept as a known limitation · change the behavior. Accepting a reproduced Blocker requires the programmer's stated reason, recorded in the card and repeated at acceptance.
+- **Findings:** every finding of the critic and of the auditor, with severity, concrete case or exploit, and your check result. Security findings are never fixed without your choice. Options for each: fix · accept as a known limitation · change the behavior. Accepting a reproduced Blocker requires the programmer's stated reason, recorded in the card and repeated at acceptance.
 - **Unresolved items:** anything you could not settle.
 
-**9. Fix** what the programmer chose. For each Blocker or Major that changes behavior, first write a test that reproduces it and run it to see it fail; then fix and see it pass (`knowledge/code-quality.md` §1, *Test first for defects*). Run the tests and the gate again. A second critic runs only if the programmer asks: same brief, task "review `git diff <commit before fixes>` (later round)".
+**9. Fix** what the programmer chose. After a security finding is fixed, launch a **new** auditor on the fix diff only. For each Blocker or Major that changes behavior, first write a test that reproduces it and run it to see it fail; then fix and see it pass (`knowledge/code-quality.md` §1, *Test first for defects*). Run the tests and the gate again. A second critic runs only if the programmer asks: same brief, task "review `git diff <commit before fixes>` (later round)".
 
 **10. ⛔ Acceptance, integration and cleanup.**
-- **Card:** write its *Result*: files changed, test commands with real results, testing technique statuses, mutation testing results (or *not run*, with the reason), gate result, `shortcut:` markers, known limitations, accepted findings.
+- **Card:** write its *Result*: files changed, test commands with real results, testing technique statuses, security audit results (or *not run*, with the decision), mutation testing results (or *not run*, with the reason), gate result, `shortcut:` markers, known limitations, accepted findings.
 - **Acceptance:** the programmer decides.
 - **Integration:** present it neutrally: merge, rebase then merge, pull request, or leave the branch unmerged. Include the facts: uncommitted changes, commits ahead and behind, and files also changed on the target since the base.
 - **Cleanup:** then ask whether to remove the worktree and branch. Execute only what is chosen. Commit the work on its branch only as part of the chosen integration.
