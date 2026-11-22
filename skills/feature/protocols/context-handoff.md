@@ -24,6 +24,8 @@ Structure: `templates/handoff.md`.
 **Request → Specification**
 `intent.md` path, its consolidated intent version and last S-ID · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · intensity and its size budget.
 
+In Evolutionary Development, `handoff.md` is written only when the session stops or the feature is paused; the checklists below still define what each new agent's brief must point to.
+
 **Intent → Planning** (Evolutionary Development)
 `intent.md` (consolidated intent version, statements since) · decisions that settle behavior (D refs) · completion criteria · main flows · open questions (blocking ones flagged) · repository references (analyst report, including the nearest analog) · areas of technical uncertainty.
 

@@ -89,7 +89,7 @@ flowchart LR
     C4["/feature hub"] --> M3["Principal orchestrator"]
     C5["/feature join &lt,hub&gt, &lt,group&gt,"] --> M4["Sub-orchestrator of one group"]
     M3 <-->|"STATUS · DECISION-REQUEST · DECISION<br/>QUESTION · ANSWER · OVERLAP · DONE"| M4
-    C7["/feature-lean &lt;description&gt; | resume &lt;slug&gt;"] --> M6["Lean pipeline: this session works,<br/>one clean critic subagent"]
+    C7["/feature-lean &lt;description&gt; | resume &lt;slug&gt;"] --> M6["Lean pipeline: this session works by increments,<br/>one clean critic subagent per increment"]
     C6["/feature-kit [module…] | list | off"] --> M5["No workflow: modules loaded on demand<br/>for hand-driven work"]
 ```
 
@@ -100,16 +100,17 @@ flowchart LR
 | `/feature status` | Board of every feature in progress, plus the ones other orchestrators claim. |
 | `/feature continue <answer>` | A fresh session answers a pending gate, using `memory.md` and `decisions/` on disk. |
 | `/feature hub`, `/feature join <hub> <group>` | Hierarchical mode (§10). |
-| `/feature-lean <description>` | Separate skill: one session, one feature, no orchestrator relay; the only artifacts are a card and the review. Steps below. |
+| `/feature-lean <description>` | Separate skill: one session, one feature, by increments, no orchestrator relay; the only artifacts are a card and one review per increment. Steps below. |
 | `/feature-kit` | Separate skill. It exposes the roles and knowledge as modules (explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, card) without phases, gates, artifacts or worktrees. Only `review` launches subagents: a clean critic and, if asked, a verifier. |
 
 **`/feature-lean` steps** (detailed in [`lean.md`](lean.md)):
-1. A specification pass covers edge, error, security and worst-case behavior. Each case states what the project's nearest existing analog does with it.
-2. ⛔ Gate 1: questions and approach. Options carry their security consequence and their probed worst case.
-3. Code and tests: every case, a status for each testing technique, and fuzz or property tests at trust boundaries. Then the quality gate.
-4. One clean critic (opus), plus the specialist audits you chose (security mandatory if Critical and matching). Each finding is checked against the code.
-5. ⛔ Gate 2: every finding, each with fix · accept · change behavior.
-6. ⛔ Acceptance, integration and cleanup.
+Lean works by increments by default, following `workflows/evolutionary.md` without its separate agents: no specification, the card's intent record, decisions and cases carry what the feature must do.
+1. Intent pass: the intent record, the reach of broad statements, the nearest analog, the main flows as increments, and the first increment's cases (edge, error, security and worst case, each with what the analog does).
+2. ⛔ Gate 1: consolidated intent and completion criteria, blocking questions, approach (options with their security consequence and probed worst case), increments and the first cases.
+3. Per increment: code and a test for every case, a status for each testing technique, fuzz or property tests at trust boundaries, the quality gate; one clean critic (opus) on the increment's diff, plus the specialist audits you chose; each finding checked against the code.
+4. ⛔ Increment gate, the only one per increment: results, findings and discoveries, deferred edge cases, a new consolidated intent, and the next increment.
+5. Fixes test-first, then the next increment, until the completion criteria are met.
+6. ⛔ Mutation testing once (Critical or chosen), acceptance, integration and cleanup.
 
 All three skills have `disable-model-invocation: true`: they load only when the programmer types the command.
 
@@ -183,26 +184,23 @@ For features with open requirements or technical unknowns. Source: `workflows/ev
 ```mermaid
 flowchart TB
     P1["Phase 1 · Intent<br/>intent.md, analyst and nearest analog,<br/>reach of broad statements, main flows"] --> G1{"⛔ Intent gate<br/>consolidated intent v1, blocking questions only,<br/>criticality, completion criteria"}
-    G1 --> P2["Phase 2 · Explore and design the first cases<br/>Planner: approaches, prototypes as options<br/>Test Designer: cases of the first flow, from the intent"]
-    P2 --> G2{"⛔ Decide<br/>explore more · validate hypothesis · prototype ·<br/>select approach · change the intent · defer"}
-    G2 --> INC["Plan the next increment only<br/>flow · hypotheses · edge cases covered or deferred (D-ID)"]
-    INC --> P3["Phase 3 · Implement the increment<br/>record discoveries and invalidated assumptions"]
-    P3 --> RA{"Discovery touches the intent<br/>or a programmer decision?"}
-    RA -->|"yes"| G3{"⛔ Reassess"}
-    RA -->|"no"| P4
-    G3 --> P4["Phase 4 · Test and discover<br/>functional, E2E, black-box, mutation, review"]
-    P4 --> G4{"⛔ Increment validation<br/>facts vs interpretations, discoveries,<br/>deferred edge cases, new consolidated intent"}
-    G4 --> P5["Phase 5 · Evolve<br/>classify hypotheses, consolidate the intent,<br/>Test Designer updates and designs cases,<br/>impact analysis before significant changes"]
-    P5 --> DONE{"Completion criteria met?"}
-    DONE -->|"approach in question"| P2
-    DONE -->|"next increment"| INC
-    DONE -->|"yes"| P6["Phase 6 · Final report<br/>⛔ acceptance · ⛔ integration · ⛔ cleanup"]
+    G1 --> P2["Phase 2 · Approach<br/>Planner: approaches, prototypes as options<br/>Test Designer: cases of the first flow, from the intent"]
+    P2 --> G2{"⛔ Approach gate<br/>approach · first increment · verification depth<br/>(again only when the approach is in question)"}
+    G2 --> INC["Increment: entry written by the orchestrator<br/>flow · hypotheses · edge cases covered or deferred (D-ID)"]
+    INC --> P3["Implement the increment<br/>a blocking discovery stops it (⛔), the rest wait"]
+    P3 --> P4["Test and review the increment<br/>Tester, E2E, black-box statuses, critic on its diff"]
+    P4 --> G4{"⛔ Increment gate, the only one<br/>results, findings, discoveries, hypotheses,<br/>deferred edge cases, new consolidated intent, next increment"}
+    G4 -->|"next increment"| EV["Evolve<br/>consolidate the intent, update the plan,<br/>Test Designer updates and designs cases"]
+    EV --> INC
+    G4 -->|"approach in question"| G2
+    G4 -->|"completion criteria met"| P6["Finalization<br/>mutation testing once · short final report<br/>⛔ acceptance · ⛔ integration · ⛔ cleanup"]
 ```
 
+- **Leaner by design:** one gate per increment, the Planner only at the start and when the approach is in question, mutation testing once at the end, `handoff.md` only to resume in another session, and a short final report that links the intent, the cases and the decisions.
 - **Hypotheses** are the team's, kept in the plan's *Increments* with their status (Hypothesis, Under exploration, Confirmed, Rejected) and evidence. The programmer's words stay in the intent record.
 - **Deferred edge cases** need a programmer decision naming the increment that will cover them; they never accumulate silently.
 - **Prototypes** live outside production paths. They are discarded unless the programmer promotes them.
-- **Hybrid:** SDD Direct for the feature as a whole, with a specification; Phases 2–5 apply only to the uncertain area, marked *Under exploration*, until it can be specified.
+- **Hybrid:** SDD Direct for the feature as a whole, with a specification; Phases 2–4 apply only to the uncertain area, marked *Under exploration*, until it can be specified.
 
 ## 6. Intensity levels
 
@@ -370,7 +368,7 @@ flowchart LR
     O -->|"reads the gate from disk + consistency check"| DK
 ```
 
-- **Phases:** SDD Direct has Specification, Planning, Build and Fixes. Evolutionary Development has Intent, Exploration, Increment and Evolution.
+- **Phases:** SDD Direct has Specification, Planning, Build and Fixes. Evolutionary Development has Intent, Approach, Increment and Evolution.
 - **Experimental, never run.** By design the decisions are the same: the runner cannot reach the programmer, so it must stop at each gate. That has not been tested.
 - **What changes:** you see results at the gates instead of agent by agent, and you can stop a whole runner but not steer it mid-phase.
 

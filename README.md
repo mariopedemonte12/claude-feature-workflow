@@ -4,7 +4,7 @@ Claude Code skills for building features with the programmer in control of every
 
 | Command | What it is | Measured cost (one Django case, 3 large features) |
 | --- | --- | --- |
-| **`/feature-lean`** | **The main mode.** One session per feature, with no orchestrator relay. It runs a specification pass (edge, error, security and worst-case behavior, each compared with the nearest existing analog), one gate for your answers and the approach, code with tests and the quality gate, and one clean critic whose every finding comes to you. | **5× a plain session** (USD 5.6) |
+| **`/feature-lean`** | **The main mode.** One session per feature, with no orchestrator relay. It works by increments, main flows first: an intent record of your own words, and for each increment its edge, error, security and worst-case cases (each compared with the nearest existing analog), code with tests and the quality gate, and a clean critic whose every finding comes to you at the increment's gate. | **5× a plain session** (USD 5.6) |
 | `/feature` | The full multi-agent workflow: SDD Direct or Evolutionary Development, specialized subagents, every gate and artifact, review cycle, several features and orchestrators. Opt-in, for when you want its process and can afford it. | 13.5× a plain session (USD 15.2) at High |
 | `/feature-kit` | No pipeline: the workflow's knowledge (planning, quality, testing, review…) as modules the agent loads on demand while you work by hand. | not measured; close to a plain session, plus the modules it reads |
 
@@ -26,7 +26,7 @@ In every other session each skill costs, at most, a one-line description (~70 to
 
 ## `/feature-lean`
 
-How it works, step by step, with examples and the measured cost: [`docs/lean.md`](docs/lean.md). The behavior itself is defined in [`skills/feature-lean/SKILL.md`](skills/feature-lean/SKILL.md). One feature per session, in its own git worktree; several features means several sessions, which can run in parallel. The only artifacts are a card (target 500 lines; overflow goes to linked files, never cut) and the critic's review. Gate 1 settles behavior and approach, gate 2 the critic's findings, then acceptance, integration and cleanup.
+How it works, step by step, with examples and the measured cost: [`docs/lean.md`](docs/lean.md). The behavior itself is defined in [`skills/feature-lean/SKILL.md`](skills/feature-lean/SKILL.md). One feature per session, in its own git worktree; several features means several sessions, which can run in parallel. The only artifacts are a card (target 500 lines; overflow goes to linked files, never cut) and one critic review per increment. Gate 1 settles your intent, the approach and the first increment; each increment then has one gate for its results, findings and the next increment; then acceptance, integration and cleanup. A feature with a single main flow is a single increment. The measured costs below predate increments.
 
 ## `/feature-kit`
 

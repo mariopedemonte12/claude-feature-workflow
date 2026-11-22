@@ -1,4 +1,6 @@
-# Feature: <name> · Lite · <status> · base `abc1234` · worktree <path>
+# Feature: <name> · Lite or Lean · <status> · base `abc1234` · worktree <path>
+
+<!-- Lean works by increments: it uses Nearest analog, Increments and Cases, and no Requirements or Plan section. Lite uses Requirements and acceptance criteria and Plan. Omit the sections a mode does not use. -->
 
 ## Intent
 The intent record, as `templates/intent.md` describes. The programmer's words are the source; everything else in this card is the current reading of them, not a closed contract.
@@ -13,17 +15,30 @@ The intent record, as `templates/intent.md` describes. The programmer's words ar
 ## Discoveries
 Found after gate 1, in any step. Each one goes to the programmer: ID · found in (step) · what (evidence) · relation to the intent (covered by the programmer's words, quoted with the S-ID · implied by the intent · outside what was stated · contradicts) · decision (S-n), date.
 
-## Requirements and acceptance criteria
+## Nearest analog (Lean)
+The existing feature most like this one, `path:line`, and how it handles empty and invalid input, whitespace, exceptions from user objects, escaping, error messages.
+
+## Increments (Lean)
+| # | Flow | Starts at commit | Edge cases deferred here from (D-ID) | Status (planned · in progress · done) |
+| --- | --- | --- | --- | --- |
+
+## Cases (Lean)
+The executable criteria: no other section restates what the feature must do.
+
+| ID | Increment | Case (input or setup) | Type (positive · negative · error · security · worst case) | Expected result | Source (request · S-n · D-n · `path:line`) | Analog does | Status (planned · passed · failed · deferred to # · retired) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+
+## Requirements and acceptance criteria (Lite)
 - AC-1: … (observable, testable)
 
 ## Decisions
 - Approach: … (alternatives, one line each). Answers to questions: Q-1 → … (date). Pending decisions live in `decisions/`.
 
-## Plan
+## Plan (Lite)
 Files to touch · steps · tests to write (unit and end-to-end).
 
 ## State
-Phase · next step · what blocks it.
+Phase (Lean: increment # and step) · next step · what blocks it.
 
 ## Result
-Files changed · test commands with real results · quality gate result · `shortcut:` markers · known limitations · anti-pattern candidates.
+Files changed · test commands with real results (Lean: per increment) · testing technique statuses · quality gate result · `shortcut:` markers · known limitations · anti-pattern candidates.

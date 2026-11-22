@@ -30,9 +30,9 @@ A runner handles one phase of one feature, from its first step to the first ⛔ 
 | SDD Direct | Build | 7 – 11 and the review at the validated level | ⛔ defects and candidates gate (or a deviation gate) |
 | SDD Direct | Fixes | approved fixes, affected tests, new critic if R1/R2 | ⛔ defects gate again, or step 12 then ⛔ 13 acceptance |
 | Evolutionary | Intent | 1 – 2 | ⛔ 3 |
-| Evolutionary | Exploration | 4 – 5 | ⛔ 6 |
-| Evolutionary | Increment | 7 – 13 | ⛔ 9 reassess, or ⛔ 13 validation |
-| Evolutionary | Evolution | 14 – 16, then 7 of the next increment | ⛔ 13 consolidation or ⛔ 17 |
+| Evolutionary | Approach | 4 | ⛔ 5 |
+| Evolutionary | Increment | 6 – 9 | ⛔ 9 reassess, or ⛔ 13 validation |
+| Evolutionary | Evolution | 11, then 6 of the next increment | ⛔ 10 of the next increment |
 
 At Lite intensity, phased mode adds a runner without removing work: the orchestrator runs Lite features directly unless the programmer insists.
 

@@ -13,7 +13,7 @@
 
 ## Final specification state
 
-For Evolutionary Development: the final consolidated intent and how it evolved (`intent-history.md`), and the cases as the record of the behavior delivered.
+For Evolutionary Development, the report is short: link `intent.md` (its evolution is in `intent-history.md`), `testing-plan.md` and `decisions/` instead of restating them, and fill only the sections that live nowhere else (increments with their test results, mutation testing, remaining hypotheses, known limitations, accepted findings, risks).
 
 ## Approved approach and important decisions
 
