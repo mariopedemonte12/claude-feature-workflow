@@ -87,7 +87,7 @@ The principal presents pending requests as **one queue**, with the ordering crit
 
 This orders by consequence of waiting, as severity orderings do (`protocols/neutral-decisions.md` rule 11). It never ranks the options inside a request. The programmer may answer in any order, defer any request, or set their own priority for a group; the principal follows it until told otherwise.
 
-Every request keeps its own neutral presentation, untouched by the principal except to remove preference language, as rule 14 of that protocol requires.
+Every request keeps its own neutral presentation, untouched by the principal except to remove preference language, as rule 16 of that protocol requires.
 
 ## Transports for the hierarchical mode
 

@@ -34,6 +34,26 @@ The same 3 Django features ran with `/feature-lean`: one session per feature, in
 
 Lean failed "surrounding whitespace stripped" because the programmer chose to reject whitespace, a legitimate reading of "rejects anything else". It passed "trailing newline rejected", which High and the baseline failed. This is n=1, with the same caveats as the calibration run.
 
+## Real feature, maintainers' tests (measured)
+
+Django's HTTP QUERY method (ticket #37232), from the commit before the real implementation. Ground truth is the maintainers' own tests (48 for the feature, 1,228 regression tests in the affected apps), plus a blind opus review against the real commit. Each arm ran once, with a simulated programmer, unattended (`feature-experiments/query-method`, 2026-11-22).
+
+| Arm | Cost | × plain | Turns | Wall time | Diff lines | Feature tests | Regressions | Blind review |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Plain session | USD 0.52 | 1 | 1 | 2 min | 306 | 47/48 | 0 | 7 |
+| Checklist prompt | USD 1.06 | 2.0 | 1 | 6 min | 577 | 48/48 | 0 | 8.5 |
+| `/feature-lean` | USD 2.61 | 5.0 | 4 | 19 min | 581 | 47/48 | 0 | 8 |
+| `/feature` High | USD 8.28 | 15.9 | 6 | 35 min | 978 | 47/48 | 0 | 7.5 |
+
+The real commit changes 478 lines in 27 files.
+
+- **The one miss was the same in three arms:** `RedirectView` got no `query()` handler, so a QUERY request to it returns 405 instead of redirecting. The request asked for QUERY to be treated consistently everywhere that enumerates safe methods.
+- **`/feature` found it and lost it at the gate.** Its round-1 critic reported it with a probe, and the verifier confirmed it. The defects gate presented the fix as *"behavior change beyond current spec; spec amendment"*, and the simulated programmer accepted it as a known limitation. The specification had narrowed the request's "everywhere" into a closed list.
+- **`/feature-lean` did not find it:** its critic read `View.dispatch` but not the subclasses. It found a backward-compatibility case the real commit does not document: existing views with an attribute named `query`.
+- **`/feature` also committed `.quality/`** into Django's tree, which the blind reviewer counted as blocking the merge.
+- **Changes made from this run:** the specification is now the current reading of the intent, not a closed contract. It quotes the request, maps the reach of its broad statements and records later discoveries. Gates frame scope against the request (`neutral-decisions.md` rule 15), and the critic receives the request verbatim and checks the intent's reach. The registry's location (local or versioned) is now asked at bootstrap.
+- **Limits:** one feature, n=1, a simulated programmer. A human would likely have approved the `RedirectView` fix, giving `/feature` 48/48 at 16× the cost.
+
 ## Model
 
 - **Direct.**

@@ -23,10 +23,10 @@ The programmer wants the pieces of the feature workflow that showed value at the
 
 ## Principles
 
-1. **The programmer decides** scope, observable behavior, risk acceptance, dependencies and integration. Read `protocols/neutral-decisions.md` before presenting the first decision and follow it, including rules 13b (no defaults by silence) and 14.
+1. **The programmer decides** scope, observable behavior, risk acceptance, dependencies and integration. Read `protocols/neutral-decisions.md` before presenting the first decision and follow it, including rules 13b (no defaults by silence), 15 (scope framed against the request) and 16.
 2. **Ask, don't guess.** A question whose answer changes the output for a valid input is blocking (`protocols/agent-questions.md` §For the agent, "Blocking or not"). Never weaken an acceptance criterion to avoid asking.
 3. **Evidence over assertion.** Report only what was run. A test not run is never "passed".
-4. **No silent drift.** Any change of scope or behavior after a gate goes back to the programmer.
+4. **No silent drift, in either direction.** The specification pass is the current reading of the request, not a closed contract (`knowledge/specification-guide.md` §What a specification is). Any change of scope or behavior after a gate goes back to the programmer, and so does anything found later that the request seems to reach: it is a *discovery*, framed against the request (`protocols/neutral-decisions.md` rule 15), never dismissed as out of scope.
 
 ## Steps
 
@@ -37,16 +37,19 @@ The programmer wants the pieces of the feature workflow that showed value at the
 
 **2. Read only what the feature needs:**
 - CLAUDE.md, the code of the affected area, its tests, and the build, test and lint commands;
-- `.quality/` if it exists;
+- the registry if it exists: `<repo>/.quality/`, or `$(git rev-parse --git-common-dir)/quality/` when it is local;
 - `knowledge/code-quality.md`;
+- `knowledge/specification-guide.md`, only §What a specification is and §Discoveries;
 - the frontmatter only of every specialist file, and `protocols/specialists.md` when one matches or the request uses `--with`; the full specialist file only once it is active;
 - `knowledge/testing-techniques.md`;
 - `knowledge/design-patterns.md`, only when a design pattern is being considered.
 
 Do not read the rest of the library.
 
-**3. Specification pass.** In the card's *Requirements and acceptance criteria*:
+**3. Specification pass.** In the card's *Intent and scope* (request, reach, outside the intent) and *Requirements and acceptance criteria* (the rest):
 - **Request:** quote the request verbatim.
+- **Reach of the intent:** for each broad statement in the request ("everywhere that…", "all…", "consistently"), the search you ran and the places it found so far, including subclasses, overrides and copies of the same list or rule. Each place becomes a behavior or a question.
+- **Outside the intent:** what a reader might assume is included and the request does not say; each item is your reading, to confirm at gate 1.
 - **Nearest analog:** the existing feature of the project most like this one (a template tag for a tag, a form field for a field, a filter for a filter), with its `path:line`. Read how it handles each case listed below: empty and invalid input, whitespace, exceptions raised by user-supplied objects, escaping and safe-marking, error messages. If there is no analog, say so.
 - **Behavior:** testable statements, each traced to the request or to `path:line` evidence.
 - **Edge and error cases:** each case states what the analog does with it, as a fact (e.g. "`CharField` strips surrounding whitespace by default, `django/forms/fields.py:…`"). Enumerate, for each input:
@@ -65,6 +68,7 @@ Do not read the rest of the library.
   - If more than one approach is viable, present them in the neutral format. Each option carries two fields: **Security consequence**, and **Worst case**, probed or Unknown.
   - For options involving parsers, regular expressions, escaping or safe-marking, run a quick probe before the gate: a timing loop that doubles the input size, and an injection string. Report what it printed.
   - If only one approach is viable, state it with the excluded alternatives and the constraint each violates.
+- **Readings to confirm:** the reach of the intent found so far and each item you read as outside the intent, so the programmer settles the boundary.
 - **Choices by convention.** Implementation details you will settle by following the project's existing conventions, one line each. The programmer may override any of them.
 - **Specialists** (`protocols/specialists.md`): build the index and check signals against the request and the specification pass. Present the matching ones as facts (signals, slots, cost) and ask which run in which slots. Those with `mandatory-when: critical`, such as `security`, run on a Critical feature: state it. `--with <name>` in the request activates them directly. If `spec` or `plan` slots are chosen, run them right after this gate and bring back their questions and facts in a short **gate 1b** before implementing; `test-design` specialists add cases you then implement.
 - **Criticality:** ask whether the feature is Critical or Standard. Critical makes mutation testing **mandatory**: state that, do not ask whether to run it. For a Standard feature, ask neutrally whether to run it, stating what it can detect and what it costs. When it will run and the project has no mutation tool, present installing one (a new dev dependency) and leaving it *Blocked* with its residual risk as neutral options.
@@ -88,7 +92,7 @@ Record every answer in the card's *Decisions*, with the date.
 
   If the tool was not approved, its status is *Blocked*, with the residual risk.
 - **Checks:** run the tests, the project's lint and type checks, and `python3 <library>/scripts/quality_gate.py --repo <worktree> --base <base>`. Fix what you wrote.
-- **New questions:** a discovery that changes approved behavior is a new ⛔ question.
+- **Discoveries:** anything found while implementing that gate 1 did not settle, such as another place the request reaches or a case it implies, goes to the card's *Discoveries* with its relation to the request. One that changes approved behavior is a new ⛔ question; the rest go to gate 2.
 
 **6. Clean critic, and the active specialist audits.** Launch them together, all in the background, all clean. A specialist auditor gets the same brief as the critic below, except: `Read and follow your specialist file: <path> (section Slot: audit)` and output `<worktree>/docs/features/<slug>/<name>.md`. Never resume any of them; a later round is a new agent.
 
@@ -99,6 +103,7 @@ You are the Clean Code Critic for a code change.
 Feature worktree: <path> (branch <branch>). Start every shell command with `cd <worktree> &&`. First confirm `git -C <worktree> branch --show-current` prints <branch>; if not, stop and report. Never call EnterWorktree.
 1. Read and follow your role file: <library>/roles/reviewer.md
 Task: review `git diff <base>` (round 1). Do not open <worktree>/docs/features/<slug>/.
+Request (verbatim): <the programmer's request, as quoted in the card>
 Output: <worktree>/docs/features/<slug>/review.md
 Return: a summary of at most 150 words.
 ```
@@ -112,7 +117,7 @@ Discard nothing: the programmer sees every finding.
 
 **8. ⛔ Gate 2: findings and results.** In one message:
 - **Test and gate results:** commands and real output, summarized, including the mutation score and the surviving mutants when mutation testing ran.
-- **Findings:** every finding of the critic and the specialists, grouped by domain, with severity, concrete case or evidence, and your check result. Specialist findings are never fixed without your choice. Options for each: fix · accept as a known limitation · change the behavior. Accepting a reproduced Blocker requires the programmer's stated reason, recorded in the card and repeated at acceptance.
+- **Findings and discoveries:** every finding of the critic and the specialists, and every entry of the card's *Discoveries*, grouped by domain, with severity, concrete case or evidence, your check result and its relation to the request (`protocols/neutral-decisions.md` rule 15). Specialist findings are never fixed without your choice. Options for each: fix · accept as a known limitation · change the behavior. When the request's words cover a finding, say so; updating the card's behavior is an effect of the fix, never an argument against it. Accepting a reproduced Blocker requires the programmer's stated reason, recorded in the card and repeated at acceptance.
 - **Unresolved items:** anything you could not settle.
 
 **9. Fix** what the programmer chose. After a specialist's finding is fixed, launch a **new** auditor of that specialist on the fix diff only. For each Blocker or Major that changes behavior, first write a test that reproduces it and run it to see it fail; then fix and see it pass (`knowledge/code-quality.md` §1, *Test first for defects*). Run the tests and the gate again. A second critic runs only if the programmer asks: same brief, task "review `git diff <commit before fixes>` (later round)".

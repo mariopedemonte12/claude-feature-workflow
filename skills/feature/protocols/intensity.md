@@ -25,7 +25,7 @@ Every feature runs at one of three intensities: **Lite**, **Medium** or **High**
 | Specialists (`protocols/specialists.md`) | the programmer chooses at the spec + plan gate | the programmer chooses at the spec gate | the programmer chooses at the spec gate |
 | Mutation testing | no | asked at the plan gate | yes |
 | Gates | one **spec + plan** gate, then acceptance (defects go into the acceptance gate) | spec gate, plan gate, defects gate, acceptance | every gate in the workflow |
-| Spec questions | blocking ones only; the rest are written as out of scope | blocking and those that change observable behavior | all |
+| Spec questions | blocking ones only; the rest are written as readings to confirm under *Outside the intent*, and shown at the gate | blocking and those that change observable behavior | all |
 | Agent questions (`protocols/agent-questions.md`) | yes | yes | yes |
 | Artifacts | one `feature.md` card (`templates/feature-card.md`), target 500 lines, plus `decisions/` | spec, plan, handoff and reports, each within the size budget below | the full set |
 | Anti-pattern registry | read and respected; candidates only listed in the card | full loop | full loop |

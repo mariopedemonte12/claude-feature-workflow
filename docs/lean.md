@@ -64,7 +64,9 @@ Nothing else from the library is loaded.
 ### 3. Specification pass
 
 Written into the card before any code:
-- **The request, verbatim.**
+- **The request, verbatim.** The pass is the current reading of it, not a closed contract: where they diverge, the request wins.
+- **Reach of the intent:** for each broad statement ("everywhere that…", "all…", "consistently"), the search run and the places found so far, including subclasses, overrides and copies of the same list.
+- **Outside the intent:** what a reader might assume is included, marked as the session's reading, for you to confirm at gate 1.
 - **Nearest analog:** the existing feature of the project most like this one, with its `path:line`, and how it handles each case: empty and invalid input, whitespace, exceptions raised by user-supplied objects, escaping and safe-marking, error messages. If there is none, the card says so.
 - **Behavior:** testable statements, each traced to the request or to code evidence.
 - **Edge and error cases** for every input, each with the analog's behavior as a fact:
@@ -158,6 +160,8 @@ Measured on Django 6.1, with 3 large features (a `{% switch %}` tag, a `ColorFie
 | Wall time | — | ~9 min, in parallel | ~10 min, in parallel | hours |
 
 - **Questions surfaced:** in v2, the two behaviors that v1 missed (an exception from a user object inside `{% switch %}`, and surrounding whitespace in `ColorField`) reached gate 1 as explicit questions, with the analog's behavior attached. The simulated programmer chose differently from the analog both times, so the remaining hidden-test miss came from a decision, not an oversight.
+- **Real feature, maintainers' tests:** on Django's HTTP QUERY method, Lean passed 47/48 of the maintainers' tests for USD 2.61 (5× a plain session), with no regressions. The miss, `RedirectView` without a `query()` handler, is what the reach-of-the-intent step and the critic's intent check now look for. Details in [`cost-estimates.md`](cost-estimates.md).
+- **Discoveries:** anything found after gate 1 that the request seems to reach is recorded in the card's *Discoveries* with its relation to the request and goes to you, at once if it changes approved behavior, otherwise at gate 2.
 - **Limits:** these figures are n=1, with hidden tests written by the workflow's designers and a simulated programmer. See [`cost-estimates.md`](cost-estimates.md) and the README's *Evidence so far*.
 
 ## What Lean does not do

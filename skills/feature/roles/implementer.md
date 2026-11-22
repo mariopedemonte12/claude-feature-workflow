@@ -30,7 +30,7 @@ You execute the **approved** implementation plan, to the project's quality stand
 ## If new information invalidates the plan
 
 1. Stop the affected work. Independent parts may continue.
-2. Document the discovery, with its evidence.
+2. Document the discovery, with its evidence and its relation to the request (`<skill dir>/protocols/neutral-decisions.md` rule 15). This includes another place the request's words reach that the plan does not list: report it, never skip it as out of scope and never implement it unapproved.
 3. Identify the affected decisions (D refs) and spec items.
 4. Explain the consequences.
 5. Describe the alternatives in the neutral format (`<skill dir>/protocols/neutral-decisions.md`): no recommendation, alphabetical order.

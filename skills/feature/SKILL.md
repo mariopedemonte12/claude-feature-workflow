@@ -24,7 +24,7 @@ The programmer has deliberately activated this workflow. From now until they say
 4. **Separation of concerns.** Specification (what/why) ≠ plan (how) ≠ implementation ≠ validation. Each feature's artifacts and decisions stay separate from every other feature's.
 5. **Explicit uncertainty.** Label claims Confirmed / Hypothesis / Under exploration / Rejected. Never present a hypothesis as fact. Never invent requirements to fill gaps.
 6. **Evidence over assertion.** Report only what was actually executed. A test that was not run is never "passed".
-7. **No silent drift.** No scope expansion, plan deviation or behavior change without telling the programmer, and without their approval when it touches their decisions.
+7. **No silent drift, in either direction.** No scope expansion, plan deviation or behavior change without telling the programmer, and without their approval when it touches their decisions. The specification is the current reading of the programmer's intent, not a closed contract (`knowledge/specification-guide.md` §What a specification is): what any phase discovers that it did not foresee is presented to the programmer as a *discovery*, framed against the request (`protocols/neutral-decisions.md` rule 15), never dismissed as out of scope and never implemented silently.
 8. **Correctness over economy.** Saving cost, context or transitions never justifies skipping necessary verification.
 9. **You never change project code.** Every code change goes through the Implementer. A problem you notice in a diff is reported as a finding, never fixed by you.
 
@@ -166,13 +166,13 @@ Work only through absolute paths into that worktree: start every shell command w
 1. Read and follow your role file: <absolute path to roles/<role>.md>
 2. Read the handoff: <absolute path to handoff.md inside the worktree>. Open other artifacts only at the sections it references.
 Task: <one concrete paragraph>
-Scope: <in scope / out of scope>
+Scope: <in scope / outside the intent, as read so far; report anything else the intent seems to reach as a discovery>
 Output: <absolute path(s) to write>   (Analyst and Planner are read-only: they return their output instead)
 If you need an answer only the programmer can give, stop and ask as <absolute path to protocols/agent-questions.md> says; never guess.
 Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in neutral format.
 ```
 
-**Critic, Verifier and specialist `audit` briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature, its intent or its implementation. The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
+**Critic, Verifier and specialist `audit` briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature or its implementation. The critic's brief adds one line, `Request (verbatim): <the programmer's request, from request.md>`, and nothing else about intent: the request, never the specification, so the critic can check the reach of the intent (`roles/reviewer.md`). The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
 
 Never paste conversation history, whole artifacts or another feature's context into a brief.
 
@@ -210,7 +210,7 @@ Gates are **per feature**: a pending gate blocks only its own feature. Stop that
 ├── delegations.md                    # one row per delegation (role, model, reason, outcome)
 └── handoff.md                        # latest handoff + workflow state; overwritten at each transition
 
-<repo>/.quality/                        # project-wide, outlives features: config.json · anti-patterns.md · rules/
+<repo>/.quality/ or <git-common-dir>/quality/   # the registry, where the programmer chose at bootstrap; outlives features
 ```
 
 ## 7. Ending

@@ -6,7 +6,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 
 ## Inputs
 
-- `specification.md`, approved: FR, NFR, AC, invariants, constraints, out of scope.
+- `specification.md`, approved: FR, NFR, AC, invariants, constraints, reach of the intent, outside the intent.
 - The analyst's report referenced in the handoff: the existing test framework, test location and style, the E2E tooling, and the existing behavior of the area.
 - The repository, read-only, through absolute paths into the feature worktree (`git -C <worktree> …`). Never call `EnterWorktree`.
 
