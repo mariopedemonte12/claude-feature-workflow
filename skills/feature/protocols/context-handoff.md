@@ -22,13 +22,13 @@ Structure: `templates/handoff.md`.
 ## What each transition must carry
 
 **Request → Specification**
-`request.md` path · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · intensity and its size budget.
+`intent.md` path, its Current intent version and last S-ID · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · intensity and its size budget.
 
 **Specification → Planning**
 Intent · confirmed FR/AC IDs · constraints · invariants · open questions (blocking ones flagged) · repository references (analyst report) · areas of technical uncertainty.
 
 **Specification → Test design** (the Test Designer never reads the plan)
-Approved spec version · confirmed FR/AC/INV IDs · out of scope · existing test framework, location, style and commands · E2E tooling · existing behavior of the area (analyst report).
+Approved spec version · confirmed FR/AC/INV IDs · reach of the intent and outside the intent (with who drew each boundary) · existing test framework, location, style and commands · E2E tooling · existing behavior of the area (analyst report).
 
 **Planning → Implementation**
 Approved approach (D ref) · alternatives not chosen, with the reason only when that prevents re-litigating · technical decisions · affected files and components · dependencies · implementation sequence · risks · `testing-plan.md` (the behaviors the code must handle; the Implementer writes no tests) · decisions still pending and what must not be touched until they are made · verification depth (mutation testing yes or no · review level R0 / R1 / R2) · end-to-end harness · registry entries (AP IDs) relevant to the change.

@@ -79,8 +79,16 @@ def run_git(repo, *arguments):
     return completed.stdout if completed.returncode == 0 else None
 
 
+def registry_directory(repo):
+    versioned = repo / ".quality"
+    if versioned.is_dir():
+        return versioned
+    common = run_git(repo, "rev-parse", "--path-format=absolute", "--git-common-dir")
+    return Path(common.strip()) / "quality" if common else versioned
+
+
 def load_config(repo, explicit_path):
-    path = Path(explicit_path) if explicit_path else repo / ".quality" / "config.json"
+    path = Path(explicit_path) if explicit_path else registry_directory(repo) / "config.json"
     if not path.is_file():
         return {"limits": dict(DEFAULT_LIMITS), "exclude": [], "allowedCommentPatterns": [], "checks": [], "allowDocstrings": False}
     raw = json.loads(path.read_text(encoding="utf-8"))
@@ -300,7 +308,7 @@ def render_violations(violations):
 
 def render_project_checks(project_checks):
     if not project_checks:
-        return ["## Project checks", "", "None configured in `.quality/config.json`."]
+        return ["## Project checks", "", "None configured in the registry's `config.json`."]
     lines = ["## Project checks", ""]
     for outcome in project_checks:
         status = "passed" if outcome["passed"] else "FAILED"

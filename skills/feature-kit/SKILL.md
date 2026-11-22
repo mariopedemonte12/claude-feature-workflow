@@ -23,7 +23,7 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 1. **Lazily.** Do not read any module now, except the ones named in the request. Read a module the first time the current task needs it, by the triggers below, or when the programmer names it ("plan this", "use ponytail", "test it").
 2. **Announce it** in one line, e.g. `Loaded: test (testing-techniques.md)`. Do not re-read a module already loaded in this session unless the context was compacted.
 3. **Take the method, drop the process.** Role files are written for subagents inside the workflow. From them, apply the method, the checklists and the quality rules; ignore what belongs to the workflow: worktree location checks, handoffs, report files, artifact paths, delegation logs and gates. Write a file only when the programmer asks for one.
-4. **Project knowledge first.** If the repository has `.quality/` (`config.json`, `anti-patterns.md`, `rules/`), its limits and registry override the library defaults whenever the `quality` module is active.
+4. **Project knowledge first.** If the repository has a registry, at `<repo>/.quality/` or locally at `$(git rev-parse --git-common-dir)/quality/` (`config.json`, `anti-patterns.md`, `rules/`), its limits and registry override the library defaults whenever the `quality` module is active.
 
 ## Catalog
 

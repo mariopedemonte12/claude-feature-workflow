@@ -18,6 +18,7 @@ In every other session each skill costs, at most, a one-line description (~70 to
 | Cost | USD 1.1 | USD 5.6 | USD 15.2 |
 | Input-equivalent tokens | 0.6M | 2.7M | 8.2M |
 
+- **Real feature, maintainers' tests** (Django HTTP QUERY, #37232): plain 47/48 for USD 0.52, a checklist prompt 48/48 for USD 1.06, `/feature-lean` 47/48 for USD 2.61, `/feature` High 47/48 for USD 8.28; no regressions in any arm. The miss was the same everywhere (`RedirectView`). `/feature`'s critic found it, but the gate framed the fix as beyond the spec and the simulated programmer declined it. That led to treating the spec as the current reading of the intent (below).
 - **Smaller cases:** across four experiments (a toy project, Python-Markdown, two Django runs), the full workflow passed 120/121 hidden tests against the plain session's 114/121, at about 12× the cost.
 - **What helped quality was cheap:** enumerating edge cases before coding, one clean critic, and comparing with the nearest analog. Those are what `/feature-lean` keeps. The full workflow's extra machinery (orchestrator relay, verifier, extra review rounds) showed no proportional gain.
 - **Limits of this evidence.** Each configuration ran once (n=1). The hidden tests were written by the same people who designed the workflow, the programmer was simulated, and none of this is real day-to-day use. Treat it as a direction, not a result. Details: [`docs/cost-estimates.md`](docs/cost-estimates.md).
@@ -34,6 +35,7 @@ When you work on a feature by hand, `/feature-kit` makes the workflow's knowledg
 ## `/feature`: the full workflow
 
 
+- **The spec is a reading of your intent, not a closed contract.** Your request evolves as you talk: every statement of yours goes, verbatim, to an intent record that the spec cites as its source. The spec maps where the broad statements in your words reach, and marks which boundaries you drew and which are the agent's reading. Anything a later phase finds that it did not foresee comes back to you as a discovery, framed against your own words, never dismissed as "not in the spec".
 - **Two workflows, chosen per feature by uncertainty, not size.**
   - **SDD Direct:** for well-understood features.
   - **Evolutionary Spec-Driven Development (ESDD):** for features with open requirements or technical unknowns.
@@ -106,7 +108,7 @@ Then start a new Claude Code session.
 A typical SDD Direct run:
 
 1. **Workflow selection.** The orchestrator assesses uncertainty per dimension, with evidence, and you choose the workflow.
-2. **Specification.** The Specification Writer turns your request (kept verbatim in `request.md`) into intent, requirements, constraints, invariants and acceptance criteria, each traced to its source. Its questions come to you through the orchestrator. You approve it and set the criticality.
+2. **Specification.** The Specification Writer turns your request (kept in `intent.md`, the intent record: your original request and every later statement of yours, verbatim, plus a *Current intent* you confirm at each gate) into intent, requirements, constraints, invariants and acceptance criteria, each traced to its source. Its questions come to you through the orchestrator. You approve it and set the criticality.
 3. **Planning and test design.** In parallel, the Planner maps the viable approaches and the Test Designer derives the test cases from the spec. Both are presented at the same gate: you choose an approach, approve the testing plan, and decide mutation testing; the orchestrator recommends a review level (R0 gate only · R1 single critic · R2 review cycle) and you validate it.
 4. **Implementation.** The Implementer writes production code for the approved plan, without tests. Any deviation comes back to you as a decision.
 5. **Testing and review.** The Tester implements the designed cases and runs them, and a clean critic reviews in parallel. Fixes go back to the same Implementer, which makes the Tester's failing tests pass. At R2, a verifier refutes false findings, behavior-preserving fixes are applied automatically and listed at the next gate with a revert option, and a new clean critic reviews only those fixes (3 critic rounds per feature at most, across every path). At R1, every finding goes to you. Defects come back to you as decisions.
@@ -144,11 +146,11 @@ skills/feature/
 Artifacts created per feature in your project (default `docs/features/<slug>/`, or your project's own convention):
 
 ```
-request.md  specification.md  implementation-plan.md  testing-plan.md
+intent.md  specification.md  implementation-plan.md  testing-plan.md
 decisions/D-NNN-*.md  reports/*.md  delegations.md  handoff.md
 ```
 
-And once per project, after your approval: `.quality/` (`config.json` with limits and checks, `anti-patterns.md`, `rules/`).
+And once per project, after your approval: the anti-pattern registry (`config.json` with limits and checks, `anti-patterns.md`, `rules/`), either versioned at `<repo>/.quality/` or local to your clone at `<git-common-dir>/quality/`, as you choose.
 
 ## Customizing
 

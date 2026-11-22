@@ -9,9 +9,20 @@
 | Version | 1 |
 | Completion criteria (ESDD) | … |
 
+This specification is the current reading of the intent record, not a closed contract (`knowledge/specification-guide.md` §What a specification is). Where it and the record diverge, the record wins and the divergence is a question.
+
+**Source:** `intent.md`, Current intent version <n>, statements up to S-<n>.
+
 ## Intent
 
 Why this feature exists and what outcome it produces (2–5 sentences).
+
+## Reach of the intent
+
+For each broad statement in the request: the search run and the places found so far.
+
+| Statement (quoted, with its source: original request or S-n) | Search | Places found so far |
+| --- | --- | --- |
 
 ## Functional requirements
 
@@ -50,9 +61,17 @@ Why this feature exists and what outcome it produces (2–5 sentences).
 | ID | Statement | Status (Hypothesis · Under exploration · Confirmed · Rejected) | Evidence |
 | --- | --- | --- | --- |
 
-## Out of scope
+## Outside the intent
 
--
+| Item | Drawn by (programmer, with their words and date · agent's reading, to confirm) |
+| --- | --- |
+
+## Discoveries
+
+Found after this specification was written, in any phase. Each one goes to the programmer.
+
+| ID | Found by, phase | What (evidence) | Relation to the intent (covered by the programmer's words, with the quote and S-ID · implied by the intent · outside what was stated · contradicts) | Programmer's decision (S-n), date |
+| --- | --- | --- | --- | --- |
 
 ## Change log
 

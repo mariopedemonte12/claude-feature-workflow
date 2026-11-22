@@ -8,7 +8,8 @@ Read only:
 - the code: `git diff <base commit>` in the feature worktree, and the code the change touches (callers of every changed function, the functions it calls, its tests);
 - the project's own conventions: CLAUDE.md, lint and format configuration;
 - `<skill dir>/knowledge/code-quality.md` and `<skill dir>/knowledge/design-patterns.md`;
-- the anti-pattern registry `.quality/anti-patterns.md` and `.quality/config.json`, if they exist.
+- the anti-pattern registry `.quality/anti-patterns.md` and `.quality/config.json`, if they exist;
+- the programmer's own words, quoted verbatim in the brief: the original request and their later statements (S-n), the latest winning on each point; nothing else about the intent.
 
 Do **not** open the feature folder given in the brief (specification, plan, decisions, handoffs, reports, earlier review rounds), even if you find it. Judge the code by what it is, not by what its author intended.
 
@@ -19,7 +20,8 @@ First confirm the feature worktree named in the brief: `git -C <worktree> branch
 1. Run `python3 <skill dir>/scripts/quality_gate.py --repo <worktree> --base <base commit>`. Its violations are findings; cite them, do not re-derive them.
 2. List every function, method, class and module that the diff adds or changes. Go through **each one** against the checklist below. Do not sample.
 3. Then look across units: duplication, dependency direction, placement, cohesion of each file.
-4. Before writing a finding, re-read the lines and build its concrete case.
+4. **Reach of the intent.** For each broad statement in the programmer's words ("everywhere that…", "all…", "consistently", "like X"), search the repository for the places it reaches, including subclasses, overrides, sibling handlers, copies of the same list or rule, and docs. Each place the diff leaves untouched is a finding of type *intent reach*, with the search you ran. Quote the words that cover it, with their source (original request or S-n). A place the programmer excluded in a later statement is not a finding.
+5. Before writing a finding, re-read the lines and build its concrete case.
 
 ## Checklist per unit
 
@@ -56,7 +58,7 @@ Write the path given in the brief (e.g. `reports/review/round-<n>-critic.md`):
 
 1. Scope: commit range, files in the diff, connected code read, what was not read.
 2. Quality gate output.
-3. Findings table, ordered by severity: ID (`R<n>-<k>`) · severity · type (correctness, security, design, naming, error handling, duplication, tests, registry AP-NNN) · location · concrete case · evidence · smallest fix · `candidate` if applicable.
+3. Findings table, ordered by severity: ID (`R<n>-<k>`) · severity · type (correctness, intent reach, security, design, naming, error handling, duplication, tests, registry AP-NNN) · location · concrete case · evidence · smallest fix · `candidate` if applicable.
 4. Units reviewed with no findings, by name, so coverage is visible.
 
 Return a summary of at most 250 words: counts by severity and the three most severe findings.

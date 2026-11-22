@@ -40,7 +40,7 @@ At Lite intensity, phased mode adds a runner without removing work: the orchestr
 
 It keeps everything that needs the programmer or spans features:
 - startup (`SKILL.md` §2): memory, claims, worktree creation, intensity, workflow selection;
-- `request.md`, and recording every answer;
+- `intent.md`, and recording every answer and statement in it;
 - gates: presenting, recording decisions, choosing what the next phase runs;
 - relaying agent questions (`protocols/agent-questions.md`) between runners and the programmer;
 - the portfolio, overlaps between features, project memory, integration and cleanup (SDD Direct steps 14–15).

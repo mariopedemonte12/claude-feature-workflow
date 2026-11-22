@@ -5,13 +5,21 @@ Each project keeps its own registry of anti-patterns: the mistakes that matter *
 ## Layout in the project
 
 ```
-<repo>/.quality/
+<registry>/
 ├── config.json          # limits, exclusions, allowed directives, project checks
 ├── anti-patterns.md     # the registry
 └── rules/               # machine rules, one per automated entry, each with its tests
 ```
 
-`.quality/` is versioned with the project. Changes to it are made in the feature worktree and travel on the feature branch, like any other file. If the project already has an equivalent place for lint configuration, the programmer may choose it instead at bootstrap.
+**Where the registry lives is the programmer's choice at bootstrap**, because committing it adds files to the project that its maintainers may not want (a contribution to someone else's repository, for example):
+
+| Location | Path | What follows |
+| --- | --- | --- |
+| Local to this clone | `$(git rev-parse --git-common-dir)/quality/` | Never committed and never in a diff. Shared by every worktree of this clone, and lost if the clone is deleted. Other developers do not see it. |
+| Project's existing lint configuration | the place the project already uses | Only what that tool can express; the rest stays local or versioned, as chosen |
+| Versioned with the project | `<repo>/.quality/` | Committed. Changes are made in the feature worktree and travel on the feature branch, like any other file, and appear in the feature's diff and pull request. |
+
+Everywhere in this workflow, `.quality/` names the registry wherever it lives. Agents and `scripts/quality_gate.py` look for `<repo>/.quality/` first and then for the local path, so a local registry needs no flag. A local registry is written directly at its path, not in the feature worktree, and is never staged.
 
 ### `config.json`
 
@@ -54,8 +62,9 @@ When the registry passes 400 lines, split it by area (`anti-patterns/<area>.md`)
    - the seed entries, so they choose which to adopt (all, some, none);
    - the limits in `config.json`, with the defaults stated as defaults, next to the repository's own figures (how many files already exceed each limit);
    - `allowDocstrings`, with the evidence of whether the project documents its public units with docstrings;
-   - how detection is automated (options below).
-4. Write `.quality/` in the feature worktree with only what was approved, and record the decision in `decisions/`.
+   - how detection is automated (options below);
+   - **where the registry lives** (table above), with the facts of this repository: whether it is the programmer's own project or a contribution, and whether its `.gitignore` or contributing guide says anything about tool files.
+4. Write the registry at the chosen location with only what was approved, and record the decision in `decisions/`. When it is versioned, write it in the feature worktree; otherwise never stage it.
 
 The bootstrap happens once per project. If another feature in progress also bootstraps or edits `.quality/`, report the overlap as described in `protocols/multi-feature.md`.
 
