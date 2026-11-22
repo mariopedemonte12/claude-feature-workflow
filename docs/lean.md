@@ -25,8 +25,8 @@ The behavior is defined by [`skills/feature-lean/SKILL.md`](../skills/feature-le
 flowchart TB
     R(["/feature-lean &lt;request&gt;"]) --> W["1 · Worktree<br/>EnterWorktree name=slug, stay in it<br/>card docs/features/&lt;slug&gt;/feature.md"]
     W --> RD["2 · Read only what is needed<br/>CLAUDE.md, affected code, tests, commands,<br/>registry, code-quality, testing-techniques"]
-    RD --> SP["3 · Intent pass, in the card<br/>intent record · reach · nearest analog ·<br/>main flows as increments · cases of the first one"]
-    SP --> G1{"⛔ 4 · Gate 1<br/>consolidated intent and completion criteria<br/>blocking questions with the analog's behavior<br/>approach · increments · first cases · approve / change / reject"}
+    RD --> SP["3 · Intent pass, in the card<br/>intent record · reach · nearest analog ·<br/>main flows · cases for every flow"]
+    SP --> G1{"⛔ 4 · Gate 1<br/>consolidated intent and completion criteria<br/>blocking questions with the analog's behavior<br/>approach · how many increments (your choice) · cases · approve / change / reject"}
     G1 --> IM["5 · Implement the increment<br/>code to the quality standard, a test per case,<br/>technique statuses, lint, quality gate"]
     IM --> CR["6 · Clean critic on the increment's diff<br/>new opus subagent in the background"]
     CR --> CK["7 · Check each finding<br/>Reproduced · Not reproduced · Unclear"]
@@ -38,7 +38,7 @@ flowchart TB
 
 The session does all the work itself. The only subagents are the critics, one per increment. There is no orchestrator relaying messages, and that relay is where most of the full workflow's cost went: 46% of all tokens in the measured run.
 
-**Increments by default.** Lean follows `workflows/evolutionary.md` without its separate agents. There is no specification: the card's intent record, its decisions and its cases say what the feature must do. Each main flow is an increment, and each increment gets its own cases, code, tests, critic and gate. A feature with a single main flow is a single increment, which is the one-pass flow Lean had before.
+**Increments, if you want them.** Lean follows `workflows/evolutionary.md` without its separate agents. There is no specification: the card's intent record, its decisions and its cases say what the feature must do. At gate 1 you choose how to deliver it: one increment for the whole feature (one critic and one increment gate, the one-pass flow Lean had before), one per main flow (a critic and a gate per flow), or another grouping. At each increment gate you can regroup what remains.
 
 ## Step by step
 
@@ -56,8 +56,8 @@ Written into the card before any code:
 - **The intent record.** The request evolves as you talk, so the card keeps your original request verbatim, a consolidated intent you confirm at each gate (with the completion criteria: what "done" means for you), and your statements since, verbatim (S-1, S-2…), only those that change the intent. At each gate the session proposes a new consolidated version; once you confirm it, the absorbed statements move to an appendix, so the card does not grow with the conversation.
 - **Scope:** for each broad statement ("everywhere that…", "all…", "consistently"), the search run and the places found so far, including subclasses, overrides and copies of the same list. And what a reader might assume is included, marked as the session's reading, for you to confirm.
 - **Nearest analog:** the existing feature of the project most like this one, with its `path:line`, and how it handles empty and invalid input, whitespace, exceptions from user objects, escaping and error messages.
-- **Increments:** the feature's main flows, in order, one increment each.
-- **Cases of the first increment:** for its flow, every case with its expected result, its source (your request, a statement, a decision, or existing behavior with `path:line`) and what the analog does: boundaries, empty and missing values, invalid values and encodings, error paths, duplicates and ordering, concurrency, security (escaping, injection, safe-marking, authorization), and the worst-case input. An edge case the increment does not cover is marked *to defer*.
+- **Main flows:** the feature's main flows, in order, as the possible split into increments.
+- **Cases** for every main flow: every case with its expected result, its source (your request, a statement, a decision, or existing behavior with `path:line`) and what the analog does: boundaries, empty and missing values, invalid values and encodings, error paths, duplicates and ordering, concurrency, security (escaping, injection, safe-marking, authorization), and the worst-case input. Cases of later flows may be revised when their increment starts.
 
 ### 4. Gate 1: intent, approach and first increment
 
@@ -65,7 +65,7 @@ One message, every item in full:
 - the consolidated intent and completion criteria, and the readings to confirm;
 - blocking questions, each with what the analog does as a fact, never as a recommendation; questions that only later increments need wait for them;
 - the approach: options in the neutral format, each with its security consequence and its worst case (probed for parsers, regular expressions, escaping or safe-marking);
-- the increments and the first increment's cases; each edge case *to defer* needs your decision naming the increment that will cover it;
+- how many increments, as a neutral question (one for the whole feature, one per main flow, or your own grouping), with the cases in full; an edge case you want to defer needs your decision naming the increment that will cover it;
 - choices by convention, one line each, which you may override;
 - the specialists whose signals match, as facts, and which of them run;
 - criticality: Critical makes mutation testing mandatory, once at the end; for a Standard feature, a neutral question;
@@ -85,7 +85,7 @@ The session checks every finding against the code and re-runs each specialist's 
 
 ### 8. Increment gate
 
-The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met.
+The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments.
 
 ### 9. Fix and evolve
 
@@ -116,7 +116,7 @@ Measured on Django 6.1, with 3 large features (a `{% switch %}` tag, a `ColorFie
 - **Questions surfaced:** in v2, the two behaviors that v1 missed (an exception from a user object inside `{% switch %}`, and surrounding whitespace in `ColorField`) reached gate 1 as explicit questions, with the analog's behavior attached. The simulated programmer chose differently from the analog both times, so the remaining hidden-test miss came from a decision, not an oversight.
 - **Real feature, maintainers' tests:** on Django's HTTP QUERY method, Lean passed 47/48 of the maintainers' tests for USD 2.61 (5× a plain session), with no regressions. The miss, `RedirectView` without a `query()` handler, is what the reach-of-the-intent step and the critic's intent check now look for. Details in [`cost-estimates.md`](cost-estimates.md).
 - **Discoveries:** anything found after gate 1 that your words seem to reach is recorded in the card's *Discoveries* with its relation to the intent and goes to you, at once if it blocks the work, otherwise at the increment gate.
-- **Measured before increments:** every figure above comes from the one-pass Lean. Working by increments adds one critic per increment, so a feature with several main flows costs more; a single-flow feature runs as before.
+- **Measured before increments:** every figure above comes from the one-pass Lean, which is the single-increment choice. Each extra increment adds a critic and a gate.
 - **Limits:** these figures are n=1, with hidden tests written by the workflow's designers and a simulated programmer. See [`cost-estimates.md`](cost-estimates.md) and the README's *Evidence so far*.
 
 ## What Lean does not do

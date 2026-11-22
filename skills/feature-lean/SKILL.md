@@ -1,6 +1,6 @@
 ---
 name: feature-lean
-description: Lean feature pipeline, by increments. This session keeps the programmer's intent, delivers the feature one main flow at a time with its edge cases and tests, and gets a clean critic review of each increment, with no orchestrator relay. Manual invocation only.
+description: Lean feature pipeline. This session keeps the programmer's intent, settles every case with them before code, delivers the feature in one increment or several (their choice), and gets a clean critic review of each increment, with no orchestrator relay. Manual invocation only.
 argument-hint: "<feature description> [--with <specialist>,…] | resume <slug>"
 disable-model-invocation: true
 ---
@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 The programmer wants the pieces of the feature workflow that showed value at the lowest cost:
 - an intent record of the programmer's own words, consolidated with them at each gate;
-- increments, main flows first, each with its edge, error, security and worst-case cases settled before its code;
+- every edge, error, security and worst-case case settled before the code, delivered in one increment or in several, main flows first, as the programmer chooses;
 - code with tests and the quality gate;
 - a review of each increment by a clean critic that never saw the code being written.
 
@@ -47,12 +47,12 @@ The programmer wants the pieces of the feature workflow that showed value at the
 
 Do not read the rest of the library.
 
-**3. Intent pass.** Lean works by increments by default, as `workflows/evolutionary.md` describes, without its separate agents: there is no specification; the card's intent record, decisions and cases carry what the feature must do. In the card:
+**3. Intent pass.** Lean follows `workflows/evolutionary.md` without its separate agents, and how many increments the feature has is the programmer's choice: there is no specification; the card's intent record, decisions and cases carry what the feature must do. In the card:
 - **Intent:** the original request verbatim, and a proposed consolidated intent, version 1, to confirm at gate 1, including the **completion criteria**: what "done" means, in the programmer's words. From here on, append every statement of the programmer that changes the intent as an S-ID; at each gate with new statements, propose the next version and consolidate on their confirmation (`templates/intent.md`).
 - **Scope:** the reach of each broad statement in the programmer's words ("everywhere that…", "all…", "consistently"), with the search you ran and the places it found so far, including subclasses, overrides and copies of the same list or rule; and what a reader might assume is included and the request does not say, each item your reading, to confirm at gate 1.
 - **Nearest analog:** the existing feature of the project most like this one (a template tag for a tag, a form field for a field, a filter for a filter), with its `path:line`. Read how it handles: empty and invalid input, whitespace, exceptions raised by user-supplied objects, escaping and safe-marking, error messages. If there is no analog, say so.
-- **Increments:** the feature's main flows, in order, one increment each. A feature with a single main flow is a single increment.
-- **Cases of the first increment,** in the card's *Cases*: for its flow, every case with its expected result and its source (the request, an S-ID, a D-ID, or `path:line` for existing behavior to keep), stating what the analog does as a fact. Enumerate, for each input of the flow:
+- **Main flows:** the feature's main flows, in order, as the possible split into increments.
+- **Cases,** in the card's *Cases*, for every main flow: every case with its expected result and its source (the request, an S-ID, a D-ID, or `path:line` for existing behavior to keep), stating what the analog does as a fact. Enumerate, for each input of the flow:
   - boundaries, empty and missing values;
   - invalid values and encodings;
   - error paths, with their message and exit or status;
@@ -61,7 +61,7 @@ Do not read the rest of the library.
   - security: escaping, injection, safe-marking, authorization and trust boundaries;
   - worst case: the input size or shape that costs the most time or memory, and the bound expected.
 
-  An edge case of the flow that the increment does not cover is listed as *to defer*, with the increment you propose for it.
+  Cases of later flows may be revised when their increment starts.
 
 **4. ⛔ Gate 1: intent, approach and first increment.** In one message, each item shown in full:
 - **Consolidated intent**, proposed, with the completion criteria, to confirm or correct, and the **readings to confirm:** the reach found so far and each item you read as outside the intent.
@@ -70,7 +70,7 @@ Do not read the rest of the library.
   - If more than one approach is viable, present them in the neutral format. Each option carries two fields: **Security consequence**, and **Worst case**, probed or Unknown.
   - For options involving parsers, regular expressions, escaping or safe-marking, run a quick probe before the gate: a timing loop that doubles the input size, and an injection string. Report what it printed.
   - If only one approach is viable, state it with the excluded alternatives and the constraint each violates.
-- **Increments:** the proposed order of flows, and the first increment's cases. Each edge case *to defer* needs the programmer's decision naming the increment that will cover it.
+- **Increments,** a neutral question with the facts of each option: one increment for the whole feature (one critic and one increment gate), one per main flow (a critic and a gate per flow, with feedback before the next flow starts), or another grouping the programmer names. With the cases, in full. Each edge case the programmer wants to defer needs their decision naming the increment that will cover it.
 - **Choices by convention.** Implementation details you will settle by following the project's existing conventions, one line each. The programmer may override any of them.
 - **Specialists** (`protocols/specialists.md`): build the index and check signals against the request and the intent pass. Present the matching ones as facts (signals, slots, cost) and ask which run in which slots. Those with `mandatory-when: critical`, such as `security`, run on a Critical feature: state it. `--with <name>` in the request activates them directly. If `spec` or `plan` slots are chosen, run them right after this gate and bring back their questions and facts in a short **gate 1b** before implementing; `test-design` specialists add cases to each increment.
 - **Criticality:** ask whether the feature is Critical or Standard. Critical makes mutation testing **mandatory**, once at the end: state that, do not ask whether to run it. For a Standard feature, ask neutrally whether to run it, stating what it can detect and what it costs. When it will run and the project has no mutation tool, present installing one (a new dev dependency) and leaving it *Blocked* with its residual risk as neutral options.
@@ -78,7 +78,7 @@ Do not read the rest of the library.
 
 Record every answer in the card's *Decisions*, with the date, and, when it changes the intent, append it to the intent record as a statement.
 
-Steps 5 to 9 repeat for each increment. Record in the card's *State* the commit where each increment starts.
+Steps 5 to 9 run once per increment: once in total when the programmer chose a single increment. Record in the card's *State* the commit where each increment starts.
 
 **5. Implement the increment.**
 - **Code:** follow `knowledge/code-quality.md` and the registry. Do only the increment's flow and its cases.
@@ -119,7 +119,7 @@ Discard nothing: the programmer sees every finding.
 - **Findings and discoveries:** every finding of the critic and the specialists, and every new entry of the card's *Discoveries*, grouped by domain, with severity, concrete case or evidence, your check result and its relation to the intent (`protocols/neutral-decisions.md` rule 15). Specialist findings are never fixed without the programmer's choice. Options for each: fix · accept as a known limitation · change the behavior. When the programmer's words cover a finding, say so, with the quote and its S-ID; updating the cases is an effect of the fix, never an argument against it. Accepting a reproduced Blocker requires the programmer's stated reason, recorded in the card and repeated at acceptance.
 - **Deferred edge cases** still open, with the increment each is planned for.
 - **Consolidated intent:** a proposed new version, when there are statements since the last gate.
-- **Next:** the next increment's flow and cases (each edge case covered or *to defer*), or, when the completion criteria are met, the move to acceptance.
+- **Next:** the next increment's flow and cases (each edge case covered or *to defer*), or, when the completion criteria are met, the move to acceptance. The programmer may also regroup the remaining increments: merge them into one, split one, reorder them.
 - **Unresolved items:** anything you could not settle.
 
 **9. Fix and evolve.** Fix what the programmer chose: for each Blocker or Major that changes behavior, first write a test that reproduces it and run it to see it fail; then fix and see it pass (`knowledge/code-quality.md` §1, *Test first for defects*). After a specialist's finding is fixed, launch a **new** auditor of that specialist on the fix diff only. Run the tests and the gate again; a second critic on the fixes runs only if the programmer asks. Then consolidate the intent if they confirmed a new version, retire the cases whose source statement was superseded (they keep their IDs), and continue with the next increment at step 5.

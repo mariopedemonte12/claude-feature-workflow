@@ -89,7 +89,7 @@ flowchart LR
     C4["/feature hub"] --> M3["Principal orchestrator"]
     C5["/feature join &lt,hub&gt, &lt,group&gt,"] --> M4["Sub-orchestrator of one group"]
     M3 <-->|"STATUS · DECISION-REQUEST · DECISION<br/>QUESTION · ANSWER · OVERLAP · DONE"| M4
-    C7["/feature-lean &lt;description&gt; | resume &lt;slug&gt;"] --> M6["Lean pipeline: this session works by increments,<br/>one clean critic subagent per increment"]
+    C7["/feature-lean &lt;description&gt; | resume &lt;slug&gt;"] --> M6["Lean pipeline: this session works,<br/>one or more increments, a clean critic per increment"]
     C6["/feature-kit [module…] | list | off"] --> M5["No workflow: modules loaded on demand<br/>for hand-driven work"]
 ```
 
@@ -104,12 +104,12 @@ flowchart LR
 | `/feature-kit` | Separate skill. It exposes the roles and knowledge as modules (explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, card) without phases, gates, artifacts or worktrees. Only `review` launches subagents: a clean critic and, if asked, a verifier. |
 
 **`/feature-lean` steps** (detailed in [`lean.md`](lean.md)):
-Lean works by increments by default, following `workflows/evolutionary.md` without its separate agents: no specification, the card's intent record, decisions and cases carry what the feature must do.
-1. Intent pass: the intent record, the reach of broad statements, the nearest analog, the main flows as increments, and the first increment's cases (edge, error, security and worst case, each with what the analog does).
-2. ⛔ Gate 1: consolidated intent and completion criteria, blocking questions, approach (options with their security consequence and probed worst case), increments and the first cases.
+Lean follows `workflows/evolutionary.md` without its separate agents, in one increment or several as the programmer chooses: no specification, the card's intent record, decisions and cases carry what the feature must do.
+1. Intent pass: the intent record, the reach of broad statements, the nearest analog, the main flows, and the cases of every flow (edge, error, security and worst case, each with what the analog does).
+2. ⛔ Gate 1: consolidated intent and completion criteria, blocking questions, approach (options with their security consequence and probed worst case), how many increments (the programmer's choice) and the cases.
 3. Per increment: code and a test for every case, a status for each testing technique, fuzz or property tests at trust boundaries, the quality gate; one clean critic (opus) on the increment's diff, plus the specialist audits you chose; each finding checked against the code.
 4. ⛔ Increment gate, the only one per increment: results, findings and discoveries, deferred edge cases, a new consolidated intent, and the next increment.
-5. Fixes test-first, then the next increment, until the completion criteria are met.
+5. Fixes test-first, then the next increment if there is one; the programmer may regroup what remains.
 6. ⛔ Mutation testing once (Critical or chosen), acceptance, integration and cleanup.
 
 All three skills have `disable-model-invocation: true`: they load only when the programmer types the command.
