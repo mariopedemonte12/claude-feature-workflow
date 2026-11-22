@@ -1,3 +1,11 @@
+---
+name: design-patterns
+kind: guide
+summary: When a design pattern solves a problem present in the code now, and when it is speculative
+use-in: [plan, implement]
+signals:
+  - terms: ["pattern", "strategy", "factory", "adapter", "observer", "refactor"]
+---
 # Design Patterns Reference
 
 A pattern is a named solution to a recurring problem. Apply one only when **its problem is present in the code now**. If the "use when" column does not describe the current code, the pattern is speculative and becomes an anti-pattern.

@@ -7,7 +7,8 @@
 | --- | --- |
 | Feature | <slug> |
 | Status | Active · Paused · Done |
-| Workflow | SDD Direct · Evolutionary Development · Hybrid |
+| Workflow | DIRECT · SDD · EVO · Hybrid |
+| Role of the session | Orchestrator · Executor |
 | Feature worktree | <absolute path to .claude/worktrees/<slug>> · branch <name> · base commit `abc1234` |
 | Related features | <slug>: <relation, e.g. "both modify src/x.ts">, or "none" |
 | Phase / step | … |
@@ -41,7 +42,7 @@ IDs with references, e.g. `specification.md` §Invariants INV-1..3.
 - `path` §section / `file:line`: why it matters
 
 ## Open issues
-In Evolutionary Development, which has no specification, this section also holds the open questions: ID · asked by · blocking? · Pending, Answered (S-n) or Deferred.
+In EVO, which has no specification, this section also holds the open questions: ID · asked by · blocking? · Pending, Answered (S-n) or Deferred.
 
 ## Expected next actions
 

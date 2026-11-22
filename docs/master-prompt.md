@@ -1,18 +1,19 @@
 > **About this document**
 >
-> This is the original design document ("master prompt") that the `/feature` skill was derived from. It explains the reasoning behind the workflow. **Where the two differ, the skill in [`skills/feature/`](../skills/feature/SKILL.md) is authoritative.** The skill departs from this document on purpose in six ways:
+> This is the original design document ("master prompt") that the `/feature` skill was derived from. It explains the reasoning behind the workflow. **Where the two differ, the skill in [`skills/feature/`](../skills/feature/SKILL.md) is authoritative.** The skill departs from this document on purpose in seven ways:
 >
 > 1. **Neutrality replaces recommendations.** Wherever this document says agents should "recommend" an option or include "a recommendation, when appropriate", the skill instead requires options to be presented neutrally: no recommended option, alphabetical order, symmetric pros and cons, facts instead of adjectives, and excluded options listed with the constraint they violate. The agent gives an opinion only if the programmer explicitly insists. See [`protocols/neutral-decisions.md`](../skills/feature/protocols/neutral-decisions.md).
 > 2. **Model selection per delegation.** Each role has a standard model, but the orchestrator picks the least expensive sufficient model for every individual delegation, above or below the standard. Floors keep planning and review from being downgraded. Every choice is logged in `delegations.md`.
-> 3. **Several features at once.** One orchestrator can run several feature flows in parallel, each with its own workflow (SDD Direct, ESDD or Hybrid), artifacts, gates and agents. The orchestrator is the single intermediary with the programmer. See [`protocols/multi-feature.md`](../skills/feature/protocols/multi-feature.md).
+> 3. **Several features at once.** One orchestrator can run several feature flows in parallel, each with its own workflow (SDD, ESDD or Hybrid), artifacts, gates and agents. The orchestrator is the single intermediary with the programmer. See [`protocols/multi-feature.md`](../skills/feature/protocols/multi-feature.md).
 > 4. **One git worktree per feature.** Every feature, even a lone one, works in its own worktree created with Claude Code's built-in worktree support. Integrating the branch and removing the worktree are programmer decisions.
 > 5. **The skills library of Section 7 is consolidated.** It became role files, protocols and two knowledge guides inside the skill, loaded progressively, instead of separate global skills that would cost context in every session.
-> 6. **ESDD became Evolutionary Development.** The evolutionary workflow has no specification: the intent record, the programmer's decisions and the designed test cases carry what the feature must do, increment by increment. Where this document describes the ESDD specification, its statuses and its change log, see [`workflows/evolutionary.md`](../skills/feature/workflows/evolutionary.md); only Hybrid mode keeps a specification.
+> 6. **ESDD became EVO.** The evolutionary workflow has no specification: the intent record, the programmer's decisions and the designed test cases carry what the feature must do, increment by increment. Where this document describes the ESDD specification, its statuses and its change log, see [`workflows/evo.md`](../skills/feature/workflows/evo.md); only Hybrid mode keeps a specification.
+> 7. **Workflow and role are separate.** Three workflows (DIRECT, a single pass with the edge-case checklist; SDD; EVO) and two roles for the session (orchestrator or executor), chosen per feature; the agent recommends the workflow. Intensity levels were removed, and knowledge and specialists became skills classified by phase, extensible per user, repository and module. See [`SKILL.md`](../skills/feature/SKILL.md) §2 and [`protocols/skills.md`](../skills/feature/protocols/skills.md).
 
 ---
 
 # Multi-Agent Software Engineering System
-## Master Prompt — Agent Orchestration, SDD Direct & Evolutionary Spec-Driven Development
+## Master Prompt — Agent Orchestration, SDD & Evolutionary Spec-Driven Development
 
 ---
 
@@ -72,7 +73,7 @@ Defines the development process.
 
 Two primary workflows are available:
 
-- SDD Direct.
+- SDD.
 - Evolutionary Spec-Driven Development (ESDD).
 
 Workflows define what must happen and in what order.
@@ -177,9 +178,9 @@ Before starting a feature, determine which workflow is appropriate.
 
 The selection is primarily based on uncertainty, not feature size.
 
-## 4.1 SDD Direct
+## 4.1 SDD
 
-Use SDD Direct when:
+Use SDD when:
 
 - The feature intent is clear.
 - Requirements are sufficiently understood.
@@ -208,7 +209,7 @@ The specification and implementation plan evolve as understanding improves.
 
 Do not choose ESDD merely because a feature is large.
 
-A large but well-understood feature may use SDD Direct.
+A large but well-understood feature may use SDD.
 
 A small but technically uncertain feature may require ESDD.
 
@@ -831,7 +832,7 @@ The programmer determines final acceptance.
 
 Use this workflow when meaningful uncertainty or discovery is expected.
 
-Unlike SDD Direct, ESDD treats specification, planning and implementation as evolving artifacts.
+Unlike SDD, ESDD treats specification, planning and implementation as evolving artifacts.
 
 The process is iterative.
 
@@ -1443,7 +1444,7 @@ You are responsible for selecting the development workflow.
 
 Analyze the feature intent, requirements, uncertainty and expected discoveries.
 
-Determine whether SDD Direct or Evolutionary Spec-Driven Development is appropriate.
+Determine whether SDD or Evolutionary Spec-Driven Development is appropriate.
 
 Consider:
 - Requirement clarity.
@@ -1743,7 +1744,7 @@ Identify:
 
 ## Step 2 — Select Workflow
 
-Choose SDD Direct or ESDD based on uncertainty.
+Choose SDD or ESDD based on uncertainty.
 
 ## Step 3 — Identify Responsibilities
 
@@ -1840,7 +1841,7 @@ Always preserve these principles:
 
 1. **Human authority:** the programmer makes consequential product and architectural decisions.
 
-2. **Workflow adaptability:** use SDD Direct for predictable work and ESDD for meaningful uncertainty.
+2. **Workflow adaptability:** use SDD for predictable work and ESDD for meaningful uncertainty.
 
 3. **Separation of concerns:** specification, planning, implementation and testing have distinct responsibilities.
 

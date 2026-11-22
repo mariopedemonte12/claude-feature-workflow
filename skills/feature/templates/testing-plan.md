@@ -1,6 +1,6 @@
 # Testing Plan: <Feature name>
 
-Designed by the Test Designer before implementation, from the approved specification (spec vN), or in Evolutionary Development from the intent record (consolidated intent vN, statements up to S-n) and `decisions/`, one increment at a time. In Evolutionary Development these cases are the executable criteria of the feature. Implemented and run by the Tester. Cases the Tester adds during exploratory testing are marked *added* with their reason.
+Designed by the Test Designer before implementation, from the approved specification (spec vN), or in EVO from the intent record (consolidated intent vN, statements up to S-n) and `decisions/`, one increment at a time. In EVO these cases are the executable criteria of the feature. Implemented and run by the Tester. Cases the Tester adds during exploratory testing are marked *added* with their reason.
 
 ## Scope
 
@@ -10,7 +10,7 @@ In scope: … Out of scope: …
 
 ## Functional scenarios
 
-| ID | Increment (Evolutionary) | Scenario | Type (positive · negative · error · security · worst case · integration · regression) | Technique | Covers (AC/FR/INV) or source (S-n · intent vN · D-n · `path:line`) | Input or setup | Expected result (from the source) | Status (planned · implemented · passed · failed · retired) |
+| ID | Increment (EVO) | Scenario | Type (positive · negative · error · security · worst case · integration · regression) | Technique | Covers (AC/FR/INV) or source (S-n · intent vN · D-n · `path:line`) | Input or setup | Expected result (from the source) | Status (planned · implemented · passed · failed · retired) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## End-to-end
@@ -22,7 +22,7 @@ Status (Applied · Not applicable · Blocked) and basis. Harness and version · 
 
 ## Traceability
 
-Every AC (in Evolutionary Development: every part of the consolidated intent and every behavior-settling decision) with its case IDs; what has no case, and why. Evolutionary Development: deferred edge cases, each with the D-ID that deferred it and the increment that will cover it.
+Every AC (in EVO: every part of the consolidated intent and every behavior-settling decision) with its case IDs; what has no case, and why. EVO: deferred edge cases, each with the D-ID that deferred it and the increment that will cover it.
 
 ## Black-box technique applicability
 

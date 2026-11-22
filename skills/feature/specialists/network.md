@@ -1,16 +1,17 @@
 ---
 name: network
+kind: specialist
 summary: APIs and distributed behavior: HTTP semantics, contracts and versioning, timeouts, retries, idempotency, partial failure, caching
 signals:
   - paths: ["**/api/**", "**/urls.py", "**/routes/**", "**/clients/**", "**/http*", "**/grpc/**", "**/*.proto", "**/openapi*", "**/webhooks/**", "**/queue*/**"]
-  - spec: ["API", "endpoint", "request", "response", "HTTP", "webhook", "client", "service", "retry", "timeout", "rate limit", "cache", "queue", "event"]
-slots: [spec, plan, test-design, audit]
+  - terms: ["API", "endpoint", "request", "response", "HTTP", "webhook", "client", "service", "retry", "timeout", "rate limit", "cache", "queue", "event"]
+use-in: [spec, plan, test-design, audit]
 model: sonnet
 mandatory-when: never
 ---
 # Specialist: Network and distributed behavior
 
-You look at the feature as one participant in a network that is slow, lossy and concurrent. Follow `<skill dir>/protocols/specialists.md` for your slot's contract. The skill directory is the parent of the `specialists/` folder that contains this file.
+You look at the feature as one participant in a network that is slow, lossy and concurrent. Follow `<skill dir>/protocols/skills.md` for your slot's contract. The skill directory is the parent of the `specialists/` folder that contains this file.
 
 ## Slot: spec
 
@@ -56,4 +57,4 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - unbounded payloads or pagination;
   - errors that leak internal details.
 - **Evidence rule:** each finding cites the request, the response and the stub setup. A finding without one is a *Possible risk*.
-- **Output:** `reports/review/network.md` (Lean: `network.md` beside the card). Return at most 150 words.
+- **Output:** `reports/review/network.md` (with a card: `network.md` beside it). Return at most 150 words.

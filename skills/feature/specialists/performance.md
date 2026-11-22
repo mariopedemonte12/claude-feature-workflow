@@ -1,17 +1,18 @@
 ---
 name: performance
+kind: specialist
 summary: Time and memory: algorithmic complexity, hot paths, adversarial input sizes, allocation, I/O and caching costs
 signals:
-  - spec: ["fast", "slow", "latency", "throughput", "large", "bulk", "batch", "import", "export", "search", "parse", "render", "real-time", "performance"]
+  - terms: ["fast", "slow", "latency", "throughput", "large", "bulk", "batch", "import", "export", "search", "parse", "render", "real-time", "performance"]
   - paths: ["**/parsers/**", "**/*parse*", "**/*render*", "**/*serializ*", "**/templatetags/**", "**/utils/**"]
   - code: [regular expressions on input, nested loops over input, recursion on input]
-slots: [spec, plan, test-design, audit]
+use-in: [spec, plan, test-design, audit]
 model: sonnet
 mandatory-when: never
 ---
 # Specialist: Performance
 
-You look at what the feature costs in time and memory, especially on inputs an attacker or a large customer could send. Follow `<skill dir>/protocols/specialists.md` for your slot's contract. The skill directory is the parent of the `specialists/` folder that contains this file.
+You look at what the feature costs in time and memory, especially on inputs an attacker or a large customer could send. Follow `<skill dir>/protocols/skills.md` for your slot's contract. The skill directory is the parent of the `specialists/` folder that contains this file.
 
 ## Slot: spec
 
@@ -52,4 +53,4 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - unbounded memory;
   - extra I/O or queries on a hot path.
 - **Evidence rule:** each finding cites its timing table or profile. A finding without measurements is a *Possible risk*.
-- **Output:** `reports/review/performance.md` (Lean: `performance.md` beside the card). Return at most 150 words.
+- **Output:** `reports/review/performance.md` (with a card: `performance.md` beside it). Return at most 150 words.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Installs the /feature and /feature-kit skills as standalone Claude Code skills.
-#   ./install.sh            -> ~/.claude/skills/{feature,feature-kit,feature-lean}   (all your projects)
-#   ./install.sh --project  -> ./.claude/skills/{feature,feature-kit,feature-lean}   (current project only)
+#   ./install.sh            -> ~/.claude/skills/{feature,feature-kit}   (all your projects)
+#   ./install.sh --project  -> ./.claude/skills/{feature,feature-kit}   (current project only)
 #   add --force to replace an existing installation
 set -euo pipefail
 
@@ -18,7 +18,7 @@ for arg in "$@"; do
   esac
 done
 
-for skill in feature feature-kit feature-lean; do
+for skill in feature feature-kit; do
   if [[ -e "$DEST/$skill" && $FORCE -ne 1 ]]; then
     echo "Already exists: $DEST/$skill (re-run with --force to replace it)" >&2
     exit 1
@@ -26,11 +26,11 @@ for skill in feature feature-kit feature-lean; do
 done
 
 mkdir -p "$DEST"
-for skill in feature feature-kit feature-lean; do
+for skill in feature feature-kit; do
   rm -rf "${DEST:?}/$skill"
   cp -R "$SRC/$skill" "$DEST/$skill"
   echo "Installed to $DEST/$skill"
 done
 echo "Start a new Claude Code session and type: /feature <what you want to build>"
+echo "  it recommends DIRECT, SDD or EVO and asks whether it orchestrates or executes"
 echo "or, to work by hand with the workflow's skills on demand: /feature-kit"
-echo "or, for the lean pipeline (spec + edge cases, your answers, code and tests, one clean critic): /feature-lean <feature>"

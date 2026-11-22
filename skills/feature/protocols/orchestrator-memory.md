@@ -24,7 +24,7 @@ Shared by every worktree of the repository and never committed. **Hard limit: 80
 - <one line each, only what the programmer stated, with the date>
 
 ## Portfolio
-| Feature | Intensity | Workflow | Phase / step | Waiting on | Worktree | Feature folder |
+| Feature | Role | Workflow | Phase / step | Waiting on | Worktree | Feature folder |
 | --- | --- | --- | --- | --- | --- | --- |
 
 ## Pending questions to the programmer

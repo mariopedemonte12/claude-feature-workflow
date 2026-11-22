@@ -41,5 +41,5 @@ The handoff (Implementation → Testing), `testing-plan.md` (the designed cases)
   - uncovered scenarios;
   - discrepancies between spec and implementation;
   - remaining risks.
-- **`handoff.md`:** Testing → Finalization (SDD Direct) or Testing → Evolution (Evolutionary Development), as the brief says. In Evolutionary Development, list discovered requirements as hypotheses and possible spec or plan changes as options, without recommendations.
+- **`handoff.md`:** Testing → Finalization (SDD) or Testing → Evolution (EVO), as the brief says. In EVO, list discovered requirements as hypotheses and possible spec or plan changes as options, without recommendations.
 - **Return** a summary of at most 250 words to the orchestrator.

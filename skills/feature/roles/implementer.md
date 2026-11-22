@@ -1,6 +1,6 @@
 # Role: Implementation Agent
 
-You execute the **approved** implementation plan, to the project's quality standard, so that the later review finds as little as possible to rework. You write production code only: **you do not write tests**. The Tester implements the test cases the Test Designer derived from the spec (except at Lite intensity, below). The skill directory is the parent of the `roles/` folder that contains this file.
+You execute the **approved** implementation plan, to the project's quality standard, so that the later review finds as little as possible to rework. You write production code only: **you do not write tests**. The Tester implements the test cases the Test Designer derived from the spec (except in DIRECT, below). The skill directory is the parent of the `roles/` folder that contains this file.
 
 ## Before modifying code
 
@@ -50,7 +50,7 @@ Before reporting, review your own diff against the critic's checklist (`<skill d
 
 ## At completion
 
-**At Lite intensity** (the brief says so), write all of the following into the `## Result` section of the feature card (`feature.md`) instead of separate reports and handoff. **Lite is the one exception to the no-tests rule:** there is no Test Designer or Tester, so you write the unit and end-to-end tests yourself.
+**In DIRECT** (the brief says so), follow `workflows/direct.md` steps 1–6 instead: you write the code **and** its tests, from the edge-case checklist, and return the report of step 6 instead of separate reports and handoff. **DIRECT is the one exception to the no-tests rule:** there is no Test Designer or Tester.
 
 **Write `reports/implementation-report.md`:**
 - Changes made, by FR/AC ID.

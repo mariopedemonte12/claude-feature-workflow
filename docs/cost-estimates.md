@@ -1,10 +1,12 @@
 # Cost estimates: direct vs phased orchestration
 
+> Every figure here was measured or modeled before workflows and roles were separated. *High intensity* and *direct mode* mean SDD as orchestrator with every agent; `/feature-lean` is today's EVO as executor; the checklist prompt is close to DIRECT.
+
 These are **estimates from a model**, not measurements, except for the 3-feature calibration row. The model is in [`cost-model.py`](cost-model.py); run `python3 docs/cost-model.py` to reproduce the numbers.
 
 ## Calibration (measured)
 
-One complete run: 3 large features on Django 6.1, High intensity, SDD Direct, Sonnet, direct mode, with a simulated programmer over 13 turns.
+One complete run: 3 large features on Django 6.1, High intensity, SDD, Sonnet, direct mode, with a simulated programmer over 13 turns.
 
 | | Measured |
 | --- | --- |
@@ -84,7 +86,7 @@ The real commit changes 478 lines in 27 files.
 Baseline for 10 features: 2.1M eq, about USD 4.
 
 - **Break-even:** phased costs more than direct up to 3 simultaneous features and less from 4 on (3: 3.8M vs 4.0M; 4: 6.0M vs 5.5M of orchestration).
-- **Subagents stay fixed:** 14.7M for 10 features is not changed by the mode. It is set by the intensity: Lite and Medium run fewer agents.
+- **Subagents stay fixed:** 14.7M for 10 features is not changed by the mode. It is set by the workflow and role: DIRECT and executor sessions run fewer agents.
 
 ## Assumptions not measured
 

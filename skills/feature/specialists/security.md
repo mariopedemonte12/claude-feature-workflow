@@ -1,11 +1,12 @@
 ---
 name: security
+kind: specialist
 summary: Vulnerabilities: injection, XSS and safe-marking, CSRF, authentication and authorization, paths, deserialization, secrets, resource exhaustion
 signals:
-  - spec: ["user input", "request", "upload", "file", "path", "url", "redirect", "auth", "login", "permission", "token", "password", "secret", "escape", "html", "template", "sql", "serialize", "subprocess", "shell"]
+  - terms: ["user input", "request", "upload", "file", "path", "url", "redirect", "auth", "login", "permission", "token", "password", "secret", "escape", "html", "template", "sql", "serialize", "subprocess", "shell"]
   - paths: ["**/auth*/**", "**/views*", "**/templates/**", "**/middleware*", "**/*serializ*", "**/settings*"]
   - boundaries: [external input, escaping or safe-marking, authentication, authorization, files, network, subprocesses, serialization, raw SQL, cryptography, secrets, resource limits]
-slots: [audit]
+use-in: [audit]
 model: opus
 mandatory-when: critical
 ---

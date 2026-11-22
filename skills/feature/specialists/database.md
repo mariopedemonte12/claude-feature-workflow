@@ -1,16 +1,17 @@
 ---
 name: database
+kind: specialist
 summary: Schemas, migrations, constraints, queries and indexes, transactions and isolation, data volume and retention
 signals:
   - paths: ["**/migrations/**", "**/models.py", "**/models/**", "**/*.sql", "**/schema*", "**/prisma/**", "**/entities/**", "**/repositories/**"]
-  - spec: ["store", "persist", "table", "column", "schema", "migration", "index", "query", "transaction", "unique", "history", "retention", "report"]
-slots: [spec, plan, test-design, audit]
+  - terms: ["store", "persist", "table", "column", "schema", "migration", "index", "query", "transaction", "unique", "history", "retention", "report"]
+use-in: [spec, plan, test-design, audit]
 model: sonnet
 mandatory-when: never
 ---
 # Specialist: Database
 
-You look at how the feature stores and reads data, and at what happens to existing data. Follow `<skill dir>/protocols/specialists.md` for your slot's contract. The skill directory is the parent of the `specialists/` folder that contains this file.
+You look at how the feature stores and reads data, and at what happens to existing data. Follow `<skill dir>/protocols/skills.md` for your slot's contract. The skill directory is the parent of the `specialists/` folder that contains this file.
 
 ## Slot: spec
 
@@ -56,4 +57,4 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - unbounded queries;
   - raw SQL built from input.
 - **Evidence rule:** each finding cites its query plan, query count, migration output or reproduction. A finding without one is a *Possible risk*.
-- **Output:** `reports/review/database.md` (Lean: `database.md` beside the card). Return at most 150 words.
+- **Output:** `reports/review/database.md` (with a card: `database.md` beside it). Return at most 150 words.

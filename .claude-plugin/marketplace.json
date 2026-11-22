@@ -1,6 +1,6 @@
 {
   "name": "feature-workflow",
-  "description": "On-demand feature skills for Claude Code: /feature-lean (one session, spec with edge cases, one gate, code and tests, one clean critic), the full multi-agent /feature workflow, and /feature-kit for hand-driven work.",
+  "description": "On-demand feature skills for Claude Code: /feature recommends a workflow (DIRECT, SDD or EVO) and runs it as orchestrator of several features or executor of one, with classified skills you can extend per user, repository or module; /feature-kit loads the same skills for hand-driven work.",
   "owner": {
     "name": "mariopedemonte12"
   },
@@ -8,7 +8,7 @@
     {
       "name": "feature-workflow",
       "source": "./",
-      "description": "On-demand feature skills for Claude Code: /feature-lean (one session, spec with edge cases, one gate, code and tests, one clean critic), the full multi-agent /feature workflow, and /feature-kit for hand-driven work."
+      "description": "On-demand feature skills for Claude Code: /feature recommends a workflow (DIRECT, SDD or EVO) and runs it as orchestrator of several features or executor of one, with classified skills you can extend per user, repository or module; /feature-kit loads the same skills for hand-driven work."
     }
   ]
 }

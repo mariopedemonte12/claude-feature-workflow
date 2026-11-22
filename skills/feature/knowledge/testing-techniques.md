@@ -1,3 +1,9 @@
+---
+name: testing-techniques
+kind: guide
+summary: Black-box techniques (BVA, fuzz, decision table, FSM, symbolic/concolic) and mutation testing
+use-in: [test-design, test]
+---
 # Testing Techniques Guide
 
 Testing must show behavior, not just that code runs. Prioritize by risk: critical business rules, boundaries, invalid inputs, error handling, state transitions, integrations, security-sensitive behavior, regressions.

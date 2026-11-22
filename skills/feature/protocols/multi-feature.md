@@ -1,6 +1,6 @@
 # Multi-Feature Orchestration Protocol
 
-One orchestrator (the main thread) can run a single feature flow or several at once. Each feature is independent: its own workflow (SDD Direct, Evolutionary Development or Hybrid, selected per feature), artifacts, gates, decision numbering, agents and model choices. The orchestrator is the **only** channel between the programmer and the agents of every feature.
+One orchestrator (the main thread) can run a single feature flow or several at once. Each feature is independent: its own workflow (DIRECT, SDD, EVO or Hybrid, selected per feature), artifacts, gates, decision numbering, agents and model choices. The orchestrator is the **only** channel between the programmer and the agents of every feature.
 
 ## Portfolio
 
@@ -60,6 +60,18 @@ Every feature already lives in its own built-in worktree (`SKILL.md` §2.3), so 
 - **Integration.** Branches that change the same files will conflict when integrated. Report the overlap as a fact (files, branches) as soon as plans show it, not only at the end. The integration order and method across features are the programmer's decisions, presented neutrally.
 - **Runtime resources.** Test runs in different worktrees can still collide on ports, databases, caches or external services. If two features would use the same resource at the same time, report it; serializing or isolating those runs is the programmer's decision.
 - **Base drift.** Each worktree branches from its base at creation. Once another feature is integrated, the remaining branches may need updating (merge or rebase of the new base). Whether and how to do that is the programmer's decision.
+
+## Efficiency
+
+- Launch every agent of a phase in one message, across features.
+- Write the artifacts of several features in one command when their content is ready.
+- Never wait with `sleep`: background agents notify when they finish.
+- Verify an agent's claims with one batched check (for example, one command that runs every feature's tests), not one call per claim.
+- Keep subagent returns within their word limits; do not re-read what a report already states unless you are verifying it.
+
+## Executor sessions beside the orchestrator
+
+A feature run by an executor session (`protocols/executor.md`) is not in this orchestrator's portfolio, but its claim is visible (`protocols/hierarchy.md` §Claims). Show it on the board as `executor: <session>` with the phase from its claim, compare its files for overlap like any other feature, and never act on it. To bring it under this orchestrator, the programmer stops the executor session and runs `/feature resume <slug>` here.
 
 ## Context economy
 

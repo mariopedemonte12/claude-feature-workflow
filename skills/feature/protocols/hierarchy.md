@@ -5,7 +5,7 @@ Features can be orchestrated in three **modes**. None is mandatory; the programm
 | Mode | Shape | Who the programmer talks to |
 | --- | --- | --- |
 | **Single** | One orchestrator runs every feature (`protocols/multi-feature.md`). | That orchestrator |
-| **Independent** | Several orchestrator sessions, each with its own features, unaware of a leader. | Each session directly |
+| **Independent** | Several sessions, each orchestrating its own features or executing one, unaware of a leader. | Each session directly |
 | **Hierarchical** | A **principal** orchestrator coordinates **sub-orchestrators**; each sub-orchestrator runs one **group** of features with its own local context and reports to the principal. | The principal |
 
 A **group** is a named set of features (kebab-case, e.g. `billing`, `onboarding`) that one sub-orchestrator runs. Which features form a group, and how many groups exist, is the programmer's decision. The principal may report facts that bear on it (features that touch the same files belong in one group more cheaply than in two).
@@ -30,7 +30,7 @@ $(git rev-parse --git-common-dir)/feature-workflow/claims/<slug>.json
 
 ## Independent mode
 
-Each session runs `/feature` as usual. In addition:
+Each session runs `/feature` as usual, as orchestrator or executor. In addition:
 - **Claims** prevent two sessions from orchestrating the same feature.
 - **Overlap across sessions:** when a plan is approved, compare its "Components and files" with the plans of the features other sessions claim (their `implementation-plan.md` is readable through the claim's `featureFolder`). Report overlaps to the programmer as facts, as in `protocols/multi-feature.md` §Interactions.
 - Sessions do not message each other unless the programmer asks for it.

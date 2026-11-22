@@ -4,7 +4,7 @@
 | Field | Value |
 | --- | --- |
 | Status | Draft · Approved (YYYY-MM-DD) · Evolving (Hybrid) |
-| Workflow | SDD Direct · Hybrid (Evolutionary Development has no specification) |
+| Workflow | SDD · Hybrid (EVO has no specification) |
 | Criticality | Critical · Standard (decided by the programmer) |
 | Version | 1 |
 | Area under exploration (Hybrid) | … |
