@@ -22,7 +22,15 @@ Structure: `templates/handoff.md`.
 ## What each transition must carry
 
 **Request → Specification**
-`intent.md` path, its Current intent version and last S-ID · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · intensity and its size budget.
+`intent.md` path, its consolidated intent version and last S-ID · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · intensity and its size budget.
+
+In Evolutionary Development, `handoff.md` is written only when the session stops or the feature is paused; the checklists below still define what each new agent's brief must point to.
+
+**Intent → Planning** (Evolutionary Development)
+`intent.md` (consolidated intent version, statements since) · decisions that settle behavior (D refs) · completion criteria · main flows · open questions (blocking ones flagged) · repository references (analyst report, including the nearest analog) · areas of technical uncertainty.
+
+**Intent → Test design** (Evolutionary Development; the Test Designer never reads the plan beyond the increment entry)
+`intent.md` version and last S-ID · behavior-settling decisions (D refs) · the increment: the flow it delivers and its planned edge cases · reach of the intent found so far · existing test framework, location, style and commands · E2E tooling · existing behavior of the area and the nearest analog (analyst report).
 
 **Specification → Planning**
 Intent · confirmed FR/AC IDs · constraints · invariants · open questions (blocking ones flagged) · repository references (analyst report) · areas of technical uncertainty.
@@ -36,8 +44,8 @@ Approved approach (D ref) · alternatives not chosen, with the reason only when 
 **Implementation → Testing** (critics and verifiers never read handoffs: `protocols/review-cycle.md` §Clean context)
 Implemented functionality by FR/AC · agent IDs to resume (Implementer, Tester) · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · how to start the system for end-to-end tests · quality gate result · suggested testing focus.
 
-**Testing → Specification / Evolution (ESDD)**
-Tests executed, with results and evidence · failures · uncovered scenarios · discrepancies between spec and implementation · newly discovered requirements (as hypotheses) · invalidated assumptions · risks · possible spec or plan changes, phrased as options for the programmer rather than recommendations.
+**Testing → Evolution** (Evolutionary Development)
+Tests executed, with results and evidence · failures · uncovered scenarios · discrepancies between the intent or cases and the implementation · newly discovered behavior (as hypotheses or discoveries) · deferred edge cases still open · invalidated assumptions · risks · possible intent, case or plan changes, phrased as options for the programmer rather than recommendations.
 
 **Testing → Finalization**
 Validation results · status of each acceptance criterion · end-to-end status and evidence · black-box technique statuses · mutation testing results · known defects · remaining risks · limitations.

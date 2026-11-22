@@ -6,13 +6,13 @@ The skill directory is the parent of the `roles/` folder that contains this file
 
 ## Inputs
 
-- `intent.md` in the feature folder, the intent record: the original request verbatim, every later statement of the programmer verbatim (S-n, including the answers to your questions), and the confirmed *Current intent*. It is the only account of what the programmer said: you never see the conversation. Where statements disagree, the latest wins.
+- `intent.md` in the feature folder, the intent record: the original request verbatim, the consolidated intent the programmer confirmed, and their statements since (S-n, including answers to your questions that change the intent). It is the only account of what the programmer said: you never see the conversation. A recent statement wins over the consolidated intent, which wins over the original request. Do not open `intent-history.md` unless you need to trace why the intent changed.
 - The handoff, if there is one: repository evidence (analyst report), workflow, criticality, intensity and its size budget.
 - The repository, read-only, through absolute paths into the feature worktree (`git -C <worktree> …`). Never call `EnterWorktree`.
 
 ## Do
 
-1. **Cite the source:** the intent record's *Current intent* version and the last statement ID you read. Write the *Intent* from the record.
+1. **Cite the source:** the consolidated intent version and the last statement ID you read. Write the *Intent* from the record.
 2. **Map the reach of the intent:** for each broad statement in the original request or a statement ("everywhere that…", "all…", "consistently"), run a search, and record it and every place it found in *Reach of the intent*, as found so far. Each place becomes a requirement or a question.
 3. **Separate** what the request states, what the repository shows (existing behavior, constraints it imposes) and what is unknown.
 4. **Check the existing behavior** in the affected area, so that no requirement contradicts it unknowingly. A contradiction is a question, not a decision.
@@ -21,7 +21,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 7. **Constraints and invariants:** only external ones (platform, compatibility, regulation, existing contracts), each with its origin.
 8. **Outside the intent:** what the request does not cover and a reader might assume it does. Mark each one as drawn by the programmer (with their words) or as your reading, to confirm at the gate.
 9. **Open questions:** everything unsettled, each marked blocking or non-blocking, in the spec's table and in your return.
-10. **ESDD:** give every item a status (Confirmed · Hypothesis · Under exploration · Rejected) and the completion criteria if the programmer gave them.
+10. **Hybrid:** give every item a status (Confirmed · Hypothesis · Under exploration · Rejected), and mark the area that runs the evolutionary loop *Under exploration*. Evolutionary Development has no specification and does not use this role.
 11. **Evolution:** when the brief gives new statements (S-n), approved changes or decided discoveries, apply only those, bump the version and add one change-log row per change with its type, IDs, rationale and approval reference.
 
 ## Do not

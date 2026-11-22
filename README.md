@@ -4,8 +4,8 @@ Claude Code skills for building features with the programmer in control of every
 
 | Command | What it is | Measured cost (one Django case, 3 large features) |
 | --- | --- | --- |
-| **`/feature-lean`** | **The main mode.** One session per feature, with no orchestrator relay. It runs a specification pass (edge, error, security and worst-case behavior, each compared with the nearest existing analog), one gate for your answers and the approach, code with tests and the quality gate, and one clean critic whose every finding comes to you. | **5× a plain session** (USD 5.6) |
-| `/feature` | The full multi-agent workflow: SDD Direct or ESDD, specialized subagents, every gate and artifact, review cycle, several features and orchestrators. Opt-in, for when you want its process and can afford it. | 13.5× a plain session (USD 15.2) at High |
+| **`/feature-lean`** | **The main mode.** One session per feature, with no orchestrator relay. It keeps an intent record of your own words, settles every edge, error, security and worst-case case with you before the code (each compared with the nearest existing analog), and delivers the feature in one increment or in several, as you choose: each with code, tests, the quality gate, and a clean critic whose every finding comes to you at the increment's gate. | **5× a plain session** (USD 5.6) |
+| `/feature` | The full multi-agent workflow: SDD Direct or Evolutionary Development, specialized subagents, every gate and artifact, review cycle, several features and orchestrators. Opt-in, for when you want its process and can afford it. | 13.5× a plain session (USD 15.2) at High |
 | `/feature-kit` | No pipeline: the workflow's knowledge (planning, quality, testing, review…) as modules the agent loads on demand while you work by hand. | not measured; close to a plain session, plus the modules it reads |
 
 In every other session each skill costs, at most, a one-line description (~70 tokens).
@@ -26,7 +26,7 @@ In every other session each skill costs, at most, a one-line description (~70 to
 
 ## `/feature-lean`
 
-How it works, step by step, with examples and the measured cost: [`docs/lean.md`](docs/lean.md). The behavior itself is defined in [`skills/feature-lean/SKILL.md`](skills/feature-lean/SKILL.md). One feature per session, in its own git worktree; several features means several sessions, which can run in parallel. The only artifacts are a card (target 500 lines; overflow goes to linked files, never cut) and the critic's review. Gate 1 settles behavior and approach, gate 2 the critic's findings, then acceptance, integration and cleanup.
+How it works, step by step, with examples and the measured cost: [`docs/lean.md`](docs/lean.md). The behavior itself is defined in [`skills/feature-lean/SKILL.md`](skills/feature-lean/SKILL.md). One feature per session, in its own git worktree; several features means several sessions, which can run in parallel. The only artifacts are a card (target 500 lines; overflow goes to linked files, never cut) and one critic review per increment. Gate 1 settles your intent, the approach, the cases and how many increments; each increment then has one gate for its results, findings and the next increment; then acceptance, integration and cleanup. The measured costs below are for a single increment.
 
 ## `/feature-kit`
 
@@ -35,11 +35,11 @@ When you work on a feature by hand, `/feature-kit` makes the workflow's knowledg
 ## `/feature`: the full workflow
 
 
-- **The spec is a reading of your intent, not a closed contract.** Your request evolves as you talk: every statement of yours goes, verbatim, to an intent record that the spec cites as its source. The spec maps where the broad statements in your words reach, and marks which boundaries you drew and which are the agent's reading. Anything a later phase finds that it did not foresee comes back to you as a discovery, framed against your own words, never dismissed as "not in the spec".
+- **The spec is a reading of your intent, not a closed contract.** Your request evolves as you talk: every statement of yours that changes the intent goes, verbatim, to an intent record that is consolidated with your confirmation at each gate, and that the spec cites as its source. The spec maps where the broad statements in your words reach, and marks which boundaries you drew and which are the agent's reading. Anything a later phase finds that it did not foresee comes back to you as a discovery, framed against your own words, never dismissed as "not in the spec".
 - **Two workflows, chosen per feature by uncertainty, not size.**
   - **SDD Direct:** for well-understood features.
-  - **Evolutionary Spec-Driven Development (ESDD):** for features with open requirements or technical unknowns.
-  - **Hybrid:** ESDD only for the uncertain part.
+  - **Evolutionary Development:** for features with open requirements or technical unknowns. No specification: your intent record, your decisions and the designed test cases carry what the feature must do, increment by increment, main flows first.
+  - **Hybrid:** SDD Direct with a specification, and the evolutionary loop only for the uncertain part.
 - **Specialized subagents.** Repository Analyst, Specification Writer, Planner, Test Designer, Implementer, Tester, Clean Code Critic and Finding Verifier, each driven by its own role file.
   - **Tests:** the Test Designer derives the test cases from the approved spec, in parallel with the Planner and without seeing the plan. Only the Tester writes tests. The Implementer writes production code to the quality standard and reviews its own diff against the critic's checklist first, so review finds little to rework.
   - **Headless:** agents run in the background. You see one line when an agent starts or finishes, and the full content at gates.
@@ -94,7 +94,7 @@ Then start a new Claude Code session.
 /feature-lean resume csv-export                   # continue it in a new session
 /feature-lean add bulk import --with database,performance   # activate specialists up front
 /feature add CSV export to the reports page       # new feature; you choose the workflow after an uncertainty assessment
-/feature migrate auth to OAuth --esdd             # choose the workflow up front (--sdd | --esdd)
+/feature migrate auth to OAuth --evo              # choose the workflow up front (--sdd | --evo)
 /feature add audit log --high --phased            # intensity, and phased mode instead of direct
 /feature status                                   # board of every feature in progress
 /feature resume csv-export                        # continue a feature (or several) from its handoff
@@ -108,14 +108,14 @@ Then start a new Claude Code session.
 A typical SDD Direct run:
 
 1. **Workflow selection.** The orchestrator assesses uncertainty per dimension, with evidence, and you choose the workflow.
-2. **Specification.** The Specification Writer turns your request (kept in `intent.md`, the intent record: your original request and every later statement of yours, verbatim, plus a *Current intent* you confirm at each gate) into intent, requirements, constraints, invariants and acceptance criteria, each traced to its source. Its questions come to you through the orchestrator. You approve it and set the criticality.
+2. **Specification.** The Specification Writer turns your request (kept in `intent.md`, the intent record: your original request, a consolidated intent you confirm at each gate, and your statements since, verbatim) into intent, requirements, constraints, invariants and acceptance criteria, each traced to its source. Its questions come to you through the orchestrator. You approve it and set the criticality.
 3. **Planning and test design.** In parallel, the Planner maps the viable approaches and the Test Designer derives the test cases from the spec. Both are presented at the same gate: you choose an approach, approve the testing plan, and decide mutation testing; the orchestrator recommends a review level (R0 gate only · R1 single critic · R2 review cycle) and you validate it.
 4. **Implementation.** The Implementer writes production code for the approved plan, without tests. Any deviation comes back to you as a decision.
 5. **Testing and review.** The Tester implements the designed cases and runs them, and a clean critic reviews in parallel. Fixes go back to the same Implementer, which makes the Tester's failing tests pass. At R2, a verifier refutes false findings, behavior-preserving fixes are applied automatically and listed at the next gate with a revert option, and a new clean critic reviews only those fixes (3 critic rounds per feature at most, across every path). At R1, every finding goes to you. Defects come back to you as decisions.
 6. **Final report.** Built only from evidence. You decide acceptance.
 7. **Integration and cleanup.** You choose how the feature branch is integrated and whether its worktree is removed.
 
-ESDD adds exploration, disposable prototypes, increments, discovery classification (Confirmed / Hypothesis / Under exploration / Rejected) and a traceable spec change log.
+Evolutionary Development replaces the specification with the intent record and the cases, and adds exploration, disposable prototypes, increments that deliver one flow at a time, hypotheses with their status, and edge cases that are covered or explicitly deferred in each increment.
 
 ## How it stays out of your context
 
@@ -134,7 +134,7 @@ skills/feature-kit/
 └── SKILL.md             module catalog for hand-driven work (reads from skills/feature)
 skills/feature/
 ├── SKILL.md             orchestrator: principles, startup, roles & model selection, gates
-├── workflows/           sdd-direct.md · esdd.md (incl. hybrid)
+├── workflows/           sdd-direct.md · evolutionary.md (incl. hybrid)
 ├── protocols/           neutral-decisions.md · agent-questions.md · context-handoff.md · multi-feature.md · …
 ├── roles/               repository-analyst · spec-writer · planner · test-designer · implementer · tester · reviewer (critic) · verifier
 ├── specialists/         security · ux-ui · database · network · performance · observability (extensible)

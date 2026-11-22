@@ -52,9 +52,16 @@ End-to-end harness: existing one, or the approved installation (decision referen
 
 - <name>: see D-NNN.
 
-## Increments (ESDD)
+## Increments (Evolutionary Development)
 
-| # | Goal | Hypothesis it validates | Done criteria | Status |
+| # | Flow it delivers | Hypotheses it confirms or rejects, and how | Edge cases covered · deferred (D-ID, to increment #) | Done criteria | Status |
+| --- | --- | --- | --- | --- | --- |
+
+### Hypotheses
+
+The team's assumptions, not the programmer's statements.
+
+| ID | Hypothesis | Status (Hypothesis · Under exploration · Confirmed · Rejected) | Evidence | Increment |
 | --- | --- | --- | --- | --- |
 
 ## Plan change log

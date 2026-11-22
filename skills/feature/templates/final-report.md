@@ -3,8 +3,8 @@
 
 | Field | Value |
 | --- | --- |
-| Workflow | SDD Direct · ESDD · Hybrid |
-| Spec | vN (`specification.md`) |
+| Workflow | SDD Direct · Evolutionary Development · Hybrid |
+| Spec | vN (`specification.md`), or in Evolutionary Development: consolidated intent vN (`intent.md`) |
 | Plan | `implementation-plan.md` (D-NNN) |
 | Commits | base `abc1234` → final `def5678` |
 | Date | YYYY-MM-DD |
@@ -13,15 +13,15 @@
 
 ## Final specification state
 
-For ESDD: a summary of the evolution, from the change log.
+For Evolutionary Development, the report is short: link `intent.md` (its evolution is in `intent-history.md`), `testing-plan.md` and `decisions/` instead of restating them, and fill only the sections that live nowhere else (increments with their test results, mutation testing, remaining hypotheses, known limitations, accepted findings, risks).
 
 ## Approved approach and important decisions
 
 - D-NNN: …
 
-## Increments (ESDD)
+## Increments (Evolutionary Development)
 
-## Important discoveries (ESDD)
+## Important discoveries (Evolutionary Development)
 
 | Discovery | Classification | Effect |
 | --- | --- | --- |
@@ -58,7 +58,7 @@ Scope · tool · score · surviving mutants · gaps · limitations, or "Not perf
 
 Level (R0 / R1 / R2, D-NNN) · rounds run and why the cycle stopped · per round: findings raised, VALID / INVALID / AMBIGUOUS, fixed automatically, sent to the gate · how each remaining finding was resolved · Nits not applied · share of INVALID findings.
 
-## Remaining hypotheses (ESDD)
+## Remaining hypotheses (Evolutionary Development)
 
 ## Known limitations
 

@@ -9,7 +9,7 @@ Read only:
 - the project's own conventions: CLAUDE.md, lint and format configuration;
 - `<skill dir>/knowledge/code-quality.md` and `<skill dir>/knowledge/design-patterns.md`;
 - the anti-pattern registry `.quality/anti-patterns.md` and `.quality/config.json`, if they exist;
-- the programmer's own words, quoted verbatim in the brief: the original request and their later statements (S-n), the latest winning on each point; nothing else about the intent.
+- the programmer's own words, quoted verbatim in the brief: the original request, the confirmed consolidated intent and the statements since (S-n); a recent statement wins over the consolidated intent, which wins over the original request; nothing else about the intent.
 
 Do **not** open the feature folder given in the brief (specification, plan, decisions, handoffs, reports, earlier review rounds), even if you find it. Judge the code by what it is, not by what its author intended.
 
@@ -20,7 +20,7 @@ First confirm the feature worktree named in the brief: `git -C <worktree> branch
 1. Run `python3 <skill dir>/scripts/quality_gate.py --repo <worktree> --base <base commit>`. Its violations are findings; cite them, do not re-derive them.
 2. List every function, method, class and module that the diff adds or changes. Go through **each one** against the checklist below. Do not sample.
 3. Then look across units: duplication, dependency direction, placement, cohesion of each file.
-4. **Reach of the intent.** For each broad statement in the programmer's words ("everywhere that…", "all…", "consistently", "like X"), search the repository for the places it reaches, including subclasses, overrides, sibling handlers, copies of the same list or rule, and docs. Each place the diff leaves untouched is a finding of type *intent reach*, with the search you ran. Quote the words that cover it, with their source (original request or S-n). A place the programmer excluded in a later statement is not a finding.
+4. **Reach of the intent.** For each broad statement in the programmer's words ("everywhere that…", "all…", "consistently", "like X"), search the repository for the places it reaches, including subclasses, overrides, sibling handlers, copies of the same list or rule, and docs. Each place the diff leaves untouched is a finding of type *intent reach*, with the search you ran. Quote the words that cover it, with their source (original request or S-n). A place the programmer excluded in the consolidated intent or a recent statement is not a finding.
 5. Before writing a finding, re-read the lines and build its concrete case.
 
 ## Checklist per unit

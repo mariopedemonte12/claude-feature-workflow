@@ -1,20 +1,28 @@
-<!-- The intent record of one feature. Written only by whoever talks to the programmer: the orchestrator in /feature, the session in /feature-lean. Omit any section that has no content. -->
+<!-- The intent record of one feature. Written only by whoever talks to the programmer: the orchestrator in /feature, the session in /feature-lean (as the card's Intent section). Omit any section that has no content. -->
 # Intent: <Feature name>
 
 ## Original request
 
 > The programmer's first request, verbatim. Never edited.
 
-## Programmer's statements
+## Consolidated intent
 
-Append-only, in the programmer's own words. Every answer, decision, scope change or boundary they state, whether asked or not. A later statement wins over an earlier one and over the original request; it never deletes it.
+Version <n> · confirmed by the programmer at <gate>, <date> · absorbs S-1 … S-<n>
 
-| ID | Date | Statement (verbatim) | Prompted by (Q-n · D-n · gate · unprompted) | Changes (what it adds, removes or settles) |
+What the programmer wants, in their terms: the behavior, the reach of each broad statement, and the boundaries they drew. A few lines to a short list. Written by the agent as a proposal and binding only once the programmer confirmed or corrected it; their correction is the text.
+
+## Statements since the last consolidation
+
+Verbatim, in the programmer's words. Only statements that change the intent: they add, remove or narrow scope, behavior or a boundary, asked or unprompted. Approvals ("approve", "B") stay in the gate records, and implementation choices in `decisions/`.
+
+| ID | Date | Statement (verbatim) | Prompted by (Q-n · D-n · gate · unprompted) | Changes |
 | --- | --- | --- | --- | --- |
-| S-1 | YYYY-MM-DD | "…" | Q-1 | … |
+| S-<n+1> | YYYY-MM-DD | "…" | Q-3 | … |
 
-## Current intent
-
-Version <n> · confirmed by the programmer at <gate>, <date> · rests on: original request, S-…
-
-The agent's summary of what the programmer wants now, in a few lines, including the reach of each broad statement and the boundaries the programmer drew. It is an interpretation: the original request and the statements above are the source, and they win where this summary disagrees with them.
+<!--
+Rules:
+- Precedence: a recent statement wins over the consolidated intent, and the consolidated intent wins over the original request where they differ.
+- Consolidation, at each gate with new statements: propose the new consolidated text, showing what changed and which S-IDs it absorbs. On the programmer's confirmation or correction, bump the version, write the text, and move the absorbed statements, verbatim, to intent-history.md (in Lean, the card appendix), under the version that absorbed them. Never consolidate without that confirmation.
+- intent-history.md is the archive: it is never edited and not read by default. Read it only to trace why the intent changed.
+- Readers that need the programmer's words (the Specification Writer, the critic) receive the original request, the confirmed consolidated intent and the statements since; never an unconfirmed proposal.
+-->

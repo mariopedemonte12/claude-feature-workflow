@@ -4,9 +4,9 @@ A specification states the problem and the expected behavior: **what** and **why
 
 ## What a specification is
 
-**A specification is the team's current reading of the programmer's intent, not a closed contract.** Its source is the **intent record** (`templates/intent.md`): `intent.md` in the feature folder, or the card's *Intent* section in Lean. The record holds the original request, verbatim and never edited; every later statement of the programmer, verbatim, append-only; and a short *Current intent* that the programmer confirms at each gate. The request evolves as the programmer talks, and the record is where it evolves: a later statement wins over an earlier one and over the original request. The specification is a working interpretation of the record, written before the code exists, and so it is always incomplete. Treat it this way:
+**A specification is the team's current reading of the programmer's intent, not a closed contract.** Its source is the **intent record** (`templates/intent.md`): `intent.md` in the feature folder, or the card's *Intent* section in Lean. The record holds the original request, verbatim and never edited; a *consolidated intent* that the programmer confirmed at the last gate; and their statements since, verbatim, limited to those that change the intent. The request evolves as the programmer talks, and the record is where it evolves: a recent statement wins over the consolidated intent, which wins over the original request. At each gate the new statements are consolidated with the programmer's confirmation, and the absorbed ones move to an archive, so the record stays short. The specification is a working interpretation of the record, written before the code exists, and so it is always incomplete. Treat it this way:
 
-- **Intent wins over wording.** When the specification and the intent record diverge, the record wins, and the divergence is a question. The programmer's words win over the *Current intent* summary, which is an interpretation too. The specification never narrows the request silently: a broad statement in the request ("everywhere that…", "all…", "consistently") stays broad, and the places it reaches are listed as found so far, not as the complete set.
+- **Intent wins over wording.** When the specification and the intent record diverge, the record wins, and the divergence is a question. The consolidated intent counts as the programmer's words only once they confirmed it. The specification never narrows the request silently: a broad statement in the request ("everywhere that…", "all…", "consistently") stays broad, and the places it reaches are listed as found so far, not as the complete set.
 - **Requirements are the current understanding.** They are testable statements, so the work can be checked, but they describe what is known today. The list grows and changes as the work finds new facts.
 - **"Outside the intent" is a reading too.** Each boundary records who drew it: the programmer (with their words) or the agent's reading of the request, to be confirmed. Only the programmer's boundaries are settled.
 - **Discoveries go to the programmer.** When any phase (planning, implementation, testing, review) finds something the specification did not foresee, such as another place the intent reaches, a case the programmer's words imply, a contradiction with existing behavior or an easier path, it is a *discovery*. It is recorded and presented to the programmer with its relation to the intent (see *Discoveries* below). Nobody, in any role, settles it alone: not by implementing it silently, and not by dismissing it as "not in the spec".
@@ -24,7 +24,7 @@ The programmer's decision updates the specification through its change log, like
 
 ## Process
 
-1. **Intent:** read the intent record, then state who needs what outcome, and why, citing the original request and the statements (S-n) each part rests on. If you cannot state it in a few sentences, the intent is not clear yet: ask.
+1. **Intent:** read the intent record, then state who needs what outcome, and why, citing the consolidated intent version and the statements (S-n) each part rests on. If you cannot state it in a few sentences, the intent is not clear yet: ask.
 2. **Reach of the intent:** for every broad statement in the original request or a statement ("everywhere that…", "all…", "any…", "consistently", "like X does"), search the repository and list the places it reaches, with the search you ran (the command or query) and its results. Record the list as *found so far*, so a later phase that finds another place compares it with this search.
 3. **Existing behavior:** what the system does today in this area, with evidence (`path:line` or an observed run).
 4. **Requirements:** record each one with its source (programmer message, ticket, existing behavior, regulation). Without a source, it is not a requirement; it is a question or a hypothesis.
@@ -60,7 +60,10 @@ The programmer's decision updates the specification through its change log, like
 
 `FR-n`, `NFR-n`, `C-n`, `INV-n`, `AC-n`, `Q-n`, `H-n`. IDs are never reused. A retired item keeps its ID, with status Retired.
 
-## Evolutionary specifications (ESDD)
+## Evolving specifications (Hybrid)
+
+In Hybrid mode, the specification evolves while one area runs the evolutionary loop. Evolutionary Development itself has no specification: the intent record, the decisions and the cases replace it (`workflows/evolutionary.md`).
+
 
 - **Item status:** Confirmed · Hypothesis · Under exploration · Rejected. Requirements that are no longer valid become Retired.
 - **Change types:** Added · Clarified · Modified · Replaced · Retired. Each change bumps the spec version and adds a change-log row with its rationale and approval.

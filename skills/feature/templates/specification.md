@@ -3,15 +3,15 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Draft · Approved (YYYY-MM-DD) · Evolving (ESDD) |
-| Workflow | SDD Direct · ESDD · Hybrid |
+| Status | Draft · Approved (YYYY-MM-DD) · Evolving (Hybrid) |
+| Workflow | SDD Direct · Hybrid (Evolutionary Development has no specification) |
 | Criticality | Critical · Standard (decided by the programmer) |
 | Version | 1 |
-| Completion criteria (ESDD) | … |
+| Area under exploration (Hybrid) | … |
 
 This specification is the current reading of the intent record, not a closed contract (`knowledge/specification-guide.md` §What a specification is). Where it and the record diverge, the record wins and the divergence is a question.
 
-**Source:** `intent.md`, Current intent version <n>, statements up to S-<n>.
+**Source:** `intent.md`, consolidated intent version <n>, statements up to S-<n>.
 
 ## Intent
 
@@ -56,7 +56,7 @@ For each broad statement in the request: the search run and the places found so 
 | ID | Question | Asked by | Blocking? | Status (Pending · Answered · Deferred) | Answer (programmer's words, date) |
 | --- | --- | --- | --- | --- | --- |
 
-## Hypotheses (ESDD)
+## Hypotheses (Hybrid area)
 
 | ID | Statement | Status (Hypothesis · Under exploration · Confirmed · Rejected) | Evidence |
 | --- | --- | --- | --- |

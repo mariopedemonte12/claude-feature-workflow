@@ -10,7 +10,7 @@ Diagrams use Mermaid and render on GitHub.
 2. [Entry points and modes](#2-entry-points-and-modes)
 3. [Startup of a feature](#3-startup-of-a-feature)
 4. [SDD Direct](#4-sdd-direct)
-5. [ESDD and Hybrid](#5-esdd-and-hybrid)
+5. [Evolutionary Development and Hybrid](#5-evolutionary-development-and-hybrid)
 6. [Intensity levels](#6-intensity-levels)
 7. [Agent questions](#7-agent-questions)
 8. [Review cycle](#8-review-cycle)
@@ -31,7 +31,7 @@ flowchart TB
     end
 
     subgraph Skill["Skill library: skills/feature/, read on demand"]
-        W["workflows/<br/>sdd-direct · esdd"]
+        W["workflows/<br/>sdd-direct · evolutionary"]
         PR["protocols/<br/>neutral-decisions · agent-questions · context-handoff<br/>intensity · review-cycle · anti-pattern-registry<br/>multi-feature · hierarchy · orchestrator-memory"]
         R["roles/<br/>repository-analyst · spec-writer · planner<br/>implementer · tester · reviewer · verifier"]
         K["knowledge/<br/>specification-guide · code-quality · design-patterns<br/>testing-techniques · e2e-testing · anti-patterns/*"]
@@ -83,13 +83,13 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    C1["/feature &lt,description&gt, [--sdd|--esdd] [--lite|--medium|--high]"] --> M1["Single orchestrator<br/>one or several features"]
+    C1["/feature &lt,description&gt, [--sdd|--evo] [--lite|--medium|--high]"] --> M1["Single orchestrator<br/>one or several features"]
     C2["/feature resume &lt,slug&gt,… · status · continue &lt,answer&gt,"] --> M1
     C3["/feature in several sessions"] --> M2["Independent orchestrators<br/>coordinated only through claims"]
     C4["/feature hub"] --> M3["Principal orchestrator"]
     C5["/feature join &lt,hub&gt, &lt,group&gt,"] --> M4["Sub-orchestrator of one group"]
     M3 <-->|"STATUS · DECISION-REQUEST · DECISION<br/>QUESTION · ANSWER · OVERLAP · DONE"| M4
-    C7["/feature-lean &lt;description&gt; | resume &lt;slug&gt;"] --> M6["Lean pipeline: this session works,<br/>one clean critic subagent"]
+    C7["/feature-lean &lt;description&gt; | resume &lt;slug&gt;"] --> M6["Lean pipeline: this session works,<br/>one or more increments, a clean critic per increment"]
     C6["/feature-kit [module…] | list | off"] --> M5["No workflow: modules loaded on demand<br/>for hand-driven work"]
 ```
 
@@ -100,16 +100,17 @@ flowchart LR
 | `/feature status` | Board of every feature in progress, plus the ones other orchestrators claim. |
 | `/feature continue <answer>` | A fresh session answers a pending gate, using `memory.md` and `decisions/` on disk. |
 | `/feature hub`, `/feature join <hub> <group>` | Hierarchical mode (§10). |
-| `/feature-lean <description>` | Separate skill: one session, one feature, no orchestrator relay; the only artifacts are a card and the review. Steps below. |
+| `/feature-lean <description>` | Separate skill: one session, one feature, by increments, no orchestrator relay; the only artifacts are a card and one review per increment. Steps below. |
 | `/feature-kit` | Separate skill. It exposes the roles and knowledge as modules (explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, card) without phases, gates, artifacts or worktrees. Only `review` launches subagents: a clean critic and, if asked, a verifier. |
 
 **`/feature-lean` steps** (detailed in [`lean.md`](lean.md)):
-1. A specification pass covers edge, error, security and worst-case behavior. Each case states what the project's nearest existing analog does with it.
-2. ⛔ Gate 1: questions and approach. Options carry their security consequence and their probed worst case.
-3. Code and tests: every case, a status for each testing technique, and fuzz or property tests at trust boundaries. Then the quality gate.
-4. One clean critic (opus), plus the specialist audits you chose (security mandatory if Critical and matching). Each finding is checked against the code.
-5. ⛔ Gate 2: every finding, each with fix · accept · change behavior.
-6. ⛔ Acceptance, integration and cleanup.
+Lean follows `workflows/evolutionary.md` without its separate agents, in one increment or several as the programmer chooses: no specification, the card's intent record, decisions and cases carry what the feature must do.
+1. Intent pass: the intent record, the reach of broad statements, the nearest analog, the main flows, and the cases of every flow (edge, error, security and worst case, each with what the analog does).
+2. ⛔ Gate 1: consolidated intent and completion criteria, blocking questions, approach (options with their security consequence and probed worst case), how many increments (the programmer's choice) and the cases.
+3. Per increment: code and a test for every case, a status for each testing technique, fuzz or property tests at trust boundaries, the quality gate; one clean critic (opus) on the increment's diff, plus the specialist audits you chose; each finding checked against the code.
+4. ⛔ Increment gate, the only one per increment: results, findings and discoveries, deferred edge cases, a new consolidated intent, and the next increment.
+5. Fixes test-first, then the next increment if there is one; the programmer may regroup what remains.
+6. ⛔ Mutation testing once (Critical or chosen), acceptance, integration and cleanup.
 
 All three skills have `disable-model-invocation: true`: they load only when the programmer types the command.
 
@@ -128,7 +129,7 @@ flowchart TB
     S4 --> S5{"5 · Workflow chosen<br/>by a flag?"}
     S5 -->|"no"| S5b["Assess uncertainty per dimension with evidence,<br/>present the workflows neutrally, the programmer chooses"]
     S5 -->|"yes"| S6
-    S5b --> S6["6 · Load the workflow file<br/>sdd-direct.md or esdd.md"]
+    S5b --> S6["6 · Load the workflow file<br/>sdd-direct.md or evolutionary.md"]
 ```
 
 - **Uncertainty dimensions** for the workflow choice: requirement clarity, functional uncertainty, technical feasibility, architectural uncertainty, expected discoveries, need for prototypes. Feature size alone never decides.
@@ -176,33 +177,30 @@ flowchart TB
 - Mutation testing and review ran as decided.
 - Regressions were evaluated, and no blocking issue is hidden.
 
-## 5. ESDD and Hybrid
+## 5. Evolutionary Development and Hybrid
 
-For features with open requirements or technical unknowns. Source: `workflows/esdd.md`.
+For features with open requirements or technical unknowns. Source: `workflows/evolutionary.md`. **There is no specification:** the intent record (`intent.md`), the programmer's decisions (`decisions/`) and the designed cases (`testing-plan.md`, the executable criteria) carry what the feature must do, increment by increment, main flows first.
 
 ```mermaid
 flowchart TB
-    P1["Phase 1 · Initial spec<br/>intent.md, known vs unknown, Specification Writer<br/>with status per item, criticality, completion criteria"] --> G1{"⛔ Collaborative review<br/>blocking questions only"}
-    G1 --> P2["Phase 2 · Explore<br/>Planner: approaches, feasibility, reversibility,<br/>disposable prototypes as options"]
-    P2 --> G2{"⛔ Decide<br/>explore more · validate hypothesis · prototype ·<br/>select approach · modify requirements · defer"}
-    G2 --> INC["Plan the next increment only<br/>goal · hypothesis it validates · done criteria"]
-    INC --> P3["Phase 3 · Implement the increment<br/>record discoveries and invalidated assumptions"]
-    P3 --> RA{"Discovery touches a<br/>programmer decision?"}
-    RA -->|"yes"| G3{"⛔ Reassess"}
-    RA -->|"no"| P4
-    G3 --> P4["Phase 4 · Test and discover<br/>functional, E2E, black-box, mutation, review"]
-    P4 --> G4{"⛔ Validation<br/>facts vs interpretations, anti-pattern candidates"}
-    G4 --> P5["Phase 5 · Evolve<br/>classify discoveries, Specification Writer applies<br/>approved spec changes with version + change log,<br/>impact analysis before significant changes"]
-    P5 --> DONE{"Completion criteria met?"}
-    DONE -->|"approach in question"| P2
-    DONE -->|"next increment"| INC
-    DONE -->|"yes"| P6["Phase 6 · Final report<br/>⛔ acceptance · ⛔ integration · ⛔ cleanup"]
+    P1["Phase 1 · Intent<br/>intent.md, analyst and nearest analog,<br/>reach of broad statements, main flows"] --> G1{"⛔ Intent gate<br/>consolidated intent v1, blocking questions only,<br/>criticality, completion criteria"}
+    G1 --> P2["Phase 2 · Approach<br/>Planner: approaches, prototypes as options<br/>Test Designer: cases of the first flow, from the intent"]
+    P2 --> G2{"⛔ Approach gate<br/>approach · first increment · verification depth<br/>(again only when the approach is in question)"}
+    G2 --> INC["Increment: entry written by the orchestrator<br/>flow · hypotheses · edge cases covered or deferred (D-ID)"]
+    INC --> P3["Implement the increment<br/>a blocking discovery stops it (⛔), the rest wait"]
+    P3 --> P4["Test and review the increment<br/>Tester, E2E, black-box statuses, critic on its diff"]
+    P4 --> G4{"⛔ Increment gate, the only one<br/>results, findings, discoveries, hypotheses,<br/>deferred edge cases, new consolidated intent, next increment"}
+    G4 -->|"next increment"| EV["Evolve<br/>consolidate the intent, update the plan,<br/>Test Designer updates and designs cases"]
+    EV --> INC
+    G4 -->|"approach in question"| G2
+    G4 -->|"completion criteria met"| P6["Finalization<br/>mutation testing once · short final report<br/>⛔ acceptance · ⛔ integration · ⛔ cleanup"]
 ```
 
-- **Statuses** for spec items and discoveries: Confirmed, Hypothesis, Under exploration, Rejected.
-- **Requirement changes** are typed Added, Clarified, Modified, Replaced or Retired, and every one is approved by the programmer.
+- **Leaner by design:** one gate per increment, the Planner only at the start and when the approach is in question, mutation testing once at the end, `handoff.md` only to resume in another session, and a short final report that links the intent, the cases and the decisions.
+- **Hypotheses** are the team's, kept in the plan's *Increments* with their status (Hypothesis, Under exploration, Confirmed, Rejected) and evidence. The programmer's words stay in the intent record.
+- **Deferred edge cases** need a programmer decision naming the increment that will cover them; they never accumulate silently.
 - **Prototypes** live outside production paths. They are discarded unless the programmer promotes them.
-- **Hybrid:** SDD Direct for the feature as a whole, with Phases 2–5 applied only to the uncertain area.
+- **Hybrid:** SDD Direct for the feature as a whole, with a specification; Phases 2–4 apply only to the uncertain area, marked *Under exploration*, until it can be specified.
 
 ## 6. Intensity levels
 
@@ -210,7 +208,7 @@ Set per feature or per group. Source: `protocols/intensity.md`.
 
 | Aspect | Lite | Medium | High |
 | --- | --- | --- | --- |
-| Workflow | SDD Direct | SDD Direct, ESDD, Hybrid | SDD Direct, ESDD, Hybrid |
+| Workflow | SDD Direct | SDD Direct, Evolutionary, Hybrid | SDD Direct, Evolutionary, Hybrid |
 | Repository Analyst | no | only if the memory lacks the evidence | yes |
 | Specification Writer | no: the orchestrator writes the card's spec section | yes | yes |
 | Planner | no: the orchestrator writes one approach | main decision only | full solution space |
@@ -370,7 +368,7 @@ flowchart LR
     O -->|"reads the gate from disk + consistency check"| DK
 ```
 
-- **Phases:** SDD Direct has Specification, Planning, Build and Fixes. ESDD has Initial specification, Exploration, Increment and Evolution.
+- **Phases:** SDD Direct has Specification, Planning, Build and Fixes. Evolutionary Development has Intent, Approach, Increment and Evolution.
 - **Experimental, never run.** By design the decisions are the same: the runner cannot reach the programmer, so it must stop at each gate. That has not been tested.
 - **What changes:** you see results at the gates instead of agent by agent, and you can stop a whole runner but not steer it mid-phase.
 
@@ -382,9 +380,9 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 
 | Agent | Executor · standard model | Responsible for | Reads | Writes | Never |
 | --- | --- | --- | --- | --- | --- |
-| **Orchestrator** | main session | Talking to the programmer, worktrees, intensity and workflow selection, the intent record `intent.md` (original request, the programmer's statements verbatim, Current intent), briefs, verifying returns, relaying questions, gates, decision records, handoffs between phases, delegation log, final report, integration and cleanup on approval | Only the skill files the current step needs; artifacts; reports | `intent.md`, `decisions/`, handoffs for read-only roles, `delegations.md`, `reports/review/rounds.md`, `final-report.md`, `memory.md`, claims | Recommend or rank options (except the review level), write production code, approve on the programmer's behalf, integrate or delete without confirmation |
+| **Orchestrator** | main session | Talking to the programmer, worktrees, intensity and workflow selection, the intent record `intent.md` (original request, consolidated intent confirmed at each gate, statements since), briefs, verifying returns, relaying questions, gates, decision records, handoffs between phases, delegation log, final report, integration and cleanup on approval | Only the skill files the current step needs; artifacts; reports | `intent.md`, `decisions/`, handoffs for read-only roles, `delegations.md`, `reports/review/rounds.md`, `final-report.md`, `memory.md`, claims | Recommend or rank options (except the review level), write production code, approve on the programmer's behalf, integrate or delete without confirmation |
 | **Repository Analyst** | `Explore` · haiku (sonnet for large or unfamiliar code) | Evidence for one task: components, dependencies, conventions, existing behavior, tests and commands, architecture style, quality and E2E tooling; observed vs inferred | The feature worktree, only what the brief needs | Nothing: returns a context report of about 600 words | Recommend approaches, assume a stack without evidence, modify files |
-| **Specification Writer** | `general-purpose` · opus (sonnet for short, clear requests; never haiku) | Turning the request into the current reading of its intent (not a closed contract): the source version of the intent record, the reach of its broad statements, FR/NFR, constraints, invariants, Given/When/Then criteria, what is outside the intent (and who drew each boundary) and open questions, each item traced to a source; ESDD statuses; applying approved spec changes | `intent.md`, handoff, the specification guide and template, the repository (read-only) | `specification.md` (Draft) | Invent requirements, resolve ambiguity, include implementation details, write vague criteria to avoid a question |
+| **Specification Writer** | `general-purpose` · opus (sonnet for short, clear requests; never haiku) | Turning the request into the current reading of its intent (not a closed contract): the source version of the intent record, the reach of its broad statements, FR/NFR, constraints, invariants, Given/When/Then criteria, what is outside the intent (and who drew each boundary) and open questions, each item traced to a source; Hybrid statuses; applying approved spec changes. Not used in Evolutionary Development | `intent.md`, handoff, the specification guide and template, the repository (read-only) | `specification.md` (Draft) | Invent requirements, resolve ambiguity, include implementation details, write vague criteria to avoid a question |
 | **Planner** | `Plan` · opus (sonnet for one mechanical approach; never haiku) | The solution space: viable approaches in the neutral format, per-option outlines that follow the quality standard, the E2E harness, other decisions needed, excluded options with the constraint they violate | Handoff, spec sections, code, registry | Nothing: returns the decision block | Choose, rank, change requirements, add speculative abstractions |
 | **Test Designer** | `general-purpose` · sonnet (opus if Critical; never haiku) | Test cases derived from the approved spec alone, in parallel with the Planner: each technique applied or justified, error, security, worst-case and E2E cases, traceability from every AC to its cases | Spec, analyst report, testing techniques, E2E guide (never the plan or code) | `testing-plan.md` | Invent expected results, design around an implementation, write test code |
 | **Implementer** | `general-purpose` · sonnet (haiku if mechanical, opus if risky) | Production code for the approved plan only, to the quality standard. Self-review against the critic's checklist before the quality gate, so review finds little to rework. Runs the existing tests; **writes no tests** (Lite is the exception). Makes the Tester's reproducing tests pass when resumed for fixes. | Handoff, plan, testing plan, quality standard, design patterns, registry | Production code, `implementation-report.md`, handoff to testing, Lite card result | Write tests (outside Lite), drift from the plan silently, add comments, leave quality violations unreported, expand scope |
@@ -409,7 +407,8 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 ```
 <repo>/.claude/worktrees/<slug>/                 feature worktree, own branch
 └── docs/features/<slug>/                        or the project's own convention
-    ├── intent.md                orchestrator        original request + statements S-n + Current intent
+    ├── intent.md                orchestrator        original request + consolidated intent + statements since
+    ├── intent-history.md        orchestrator        absorbed statements, by consolidation version
     ├── specification.md         Specification Writer  versioned; change log
     ├── implementation-plan.md   orchestrator        approved approach only
     ├── testing-plan.md          Test Designer (cases) · Tester (statuses)
@@ -431,7 +430,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 ```
 
 **Handoffs** transfer knowledge, not conversation (`protocols/context-handoff.md`):
-- **Transitions:** Request → Specification, Specification → Planning, Planning → Implementation, Implementation → Testing, Testing → Evolution (ESDD), and Testing → Finalization. Each one has a checklist.
+- **Transitions:** Request → Specification, Specification → Planning, Planning → Implementation, Implementation → Testing, Intent → Planning and Intent → Test design (Evolutionary), Testing → Evolution (Evolutionary), and Testing → Finalization. Each one has a checklist.
 - **Content:** handoffs reference artifacts by path and section instead of copying them, and record freshness (commit, branch, dirty state, artifact versions).
 - **Critics and verifiers** never read handoffs.
 

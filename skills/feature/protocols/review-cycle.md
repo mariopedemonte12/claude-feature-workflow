@@ -14,7 +14,7 @@ Code review is done by **clean agents**: a fresh subagent that never saw how the
 
 ### Recommending the level
 
-This is the one verification decision where the orchestrator **recommends**: the programmer asked for it as a standing instruction. The recommendation goes in the plan gate (SDD Direct step 6, ESDD step 7), labeled *Recommendation*, with the evidence behind it:
+This is the one verification decision where the orchestrator **recommends**: the programmer asked for it as a standing instruction. The recommendation goes in the plan gate (SDD Direct step 6, Evolutionary Development step 5), labeled *Recommendation*, with the evidence behind it:
 
 - **Size:** files and components the plan touches; estimated changed lines.
 - **Complexity:** new branching logic, state machines, parsers, concurrency, money, security, data writes or migrations, public interfaces, changes across several features or layers.
@@ -30,7 +30,7 @@ Specialists active in their `audit` slot (`protocols/specialists.md`) are separa
 
 ## Clean context
 
-A critic's brief contains only: the feature worktree, the base commit, its role file, the output path and the programmer's own words: the original request and the statements from the intent record, verbatim, without the *Current intent* summary. They let it check the reach of the intent (`roles/reviewer.md` §Method, step 4); they are what the programmer said, not how anyone read it. It does **not** receive, and must not open: the specification, the plan, decisions, handoffs, the implementation report, delegations, earlier review rounds, or anything else in the feature folder. It reads the code, `git diff <base>`, the project's own conventions (CLAUDE.md, lint configuration), the quality standard and the anti-pattern registry.
+A critic's brief contains only: the feature worktree, the base commit, its role file, the output path and the programmer's own words: from the intent record: the original request, the confirmed consolidated intent and the statements since, verbatim. They let it check the reach of the intent (`roles/reviewer.md` §Method, step 4); they are what the programmer said, not how anyone read it. It does **not** receive, and must not open: the specification, the plan, decisions, handoffs, the implementation report, delegations, earlier review rounds, or anything else in the feature folder. It reads the code, `git diff <base>`, the project's own conventions (CLAUDE.md, lint configuration), the quality standard and the anti-pattern registry.
 
 Each round launches a **new** critic. Never reuse a critic through SendMessage. Scope compliance against the spec is not the critic's job, but places the programmer's words reach and the diff does not are findings: the Tester validates the acceptance criteria and the orchestrator checks the implementation report against the plan.
 

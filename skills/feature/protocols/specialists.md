@@ -47,7 +47,7 @@ At the start of a feature, read **only the frontmatter** of every specialist fil
 3. **The programmer chooses** which specialists run and in which slots. Ask neutrally: matching specialists are facts, not recommendations.
 4. **Flag:** `--with <name>[,<name>…]` in the request activates those specialists in all their slots. The programmer may restrict them at the gate.
 5. **Mandatory:** a specialist with `mandatory-when: critical` runs on a Critical feature whenever one of its signals matches. State it; do not ask. The built-in `security` specialist is mandatory this way.
-6. **Re-check signals** against the real diff before the verification phase, and, in ESDD, at each increment. A specialist whose signals now match but was not chosen is asked about again.
+6. **Re-check signals** against the real diff before the verification phase, and, in Evolutionary Development, at each increment. A specialist whose signals now match but was not chosen is asked about again.
 
 Record the choices in the feature's `decisions/` (`/feature`) or the card's *Decisions* (`/feature-lean`).
 
