@@ -21,7 +21,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 7. **Constraints and invariants:** only external ones (platform, compatibility, regulation, existing contracts), each with its origin.
 8. **Outside the intent:** what the request does not cover and a reader might assume it does. Mark each one as drawn by the programmer (with their words) or as your reading, to confirm at the gate.
 9. **Open questions:** everything unsettled, each marked blocking or non-blocking, in the spec's table and in your return.
-10. **ESDD:** give every item a status (Confirmed · Hypothesis · Under exploration · Rejected) and the completion criteria if the programmer gave them.
+10. **Hybrid:** give every item a status (Confirmed · Hypothesis · Under exploration · Rejected), and mark the area that runs the evolutionary loop *Under exploration*. Evolutionary Development has no specification and does not use this role.
 11. **Evolution:** when the brief gives new statements (S-n), approved changes or decided discoveries, apply only those, bump the version and add one change-log row per change with its type, IDs, rationale and approval reference.
 
 ## Do not

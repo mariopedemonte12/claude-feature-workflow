@@ -13,7 +13,7 @@ The behavior is defined by [`skills/feature-lean/SKILL.md`](../skills/feature-le
 | Use `/feature-lean` when | Use `/feature` when |
 | --- | --- |
 | One feature, or several independent ones you can run as parallel sessions | Several features that must be coordinated in one portfolio, with overlap detection |
-| Requirements are clear enough to settle at one gate | Requirements will evolve: ESDD increments, prototypes, a spec change log |
+| Requirements are clear enough to settle at one gate | Requirements will evolve: Evolutionary Development increments, prototypes, an intent consolidated at each gate |
 | You want control over behavior and approach, and a clean review, at a moderate cost | You want separate specification, planning, test-design, implementation and testing agents, or the R2 review cycle |
 | You are on a plan with a usage limit | The token budget is not a concern |
 
@@ -168,6 +168,6 @@ Measured on Django 6.1, with 3 large features (a `{% switch %}` tag, a `ColorFie
 
 - **No separate roles:** there is no separate specification, planning, test-design or testing agent. The same session that writes the code writes its tests. That is the main trade-off against `/feature`, where only the Tester writes tests and the cases come from a Test Designer who never sees the plan.
 - **Review:** there is no verifier, no automatic fixes and no multi-round cycle. You decide every finding, including the specialists'.
-- **Testing depth:** mutation testing runs only for Critical features or when you choose it. There are no ESDD increments or prototypes.
+- **Testing depth:** mutation testing runs only for Critical features or when you choose it. There are no evolutionary increments or prototypes.
 - **Coordination:** there is no portfolio, no claims and no overlap detection across sessions.
 - **Registry:** no anti-pattern registry bootstrap. If `.quality/` exists, Lean reads and respects it, but does not create or extend it.

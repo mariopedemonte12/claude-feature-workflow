@@ -1,6 +1,6 @@
 # Multi-Feature Orchestration Protocol
 
-One orchestrator (the main thread) can run a single feature flow or several at once. Each feature is independent: its own workflow (SDD Direct, ESDD or Hybrid, selected per feature), artifacts, gates, decision numbering, agents and model choices. The orchestrator is the **only** channel between the programmer and the agents of every feature.
+One orchestrator (the main thread) can run a single feature flow or several at once. Each feature is independent: its own workflow (SDD Direct, Evolutionary Development or Hybrid, selected per feature), artifacts, gates, decision numbering, agents and model choices. The orchestrator is the **only** channel between the programmer and the agents of every feature.
 
 ## Portfolio
 

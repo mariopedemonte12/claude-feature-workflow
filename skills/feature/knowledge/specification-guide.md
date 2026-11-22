@@ -60,7 +60,10 @@ The programmer's decision updates the specification through its change log, like
 
 `FR-n`, `NFR-n`, `C-n`, `INV-n`, `AC-n`, `Q-n`, `H-n`. IDs are never reused. A retired item keeps its ID, with status Retired.
 
-## Evolutionary specifications (ESDD)
+## Evolving specifications (Hybrid)
+
+In Hybrid mode, the specification evolves while one area runs the evolutionary loop. Evolutionary Development itself has no specification: the intent record, the decisions and the cases replace it (`workflows/evolutionary.md`).
+
 
 - **Item status:** Confirmed · Hypothesis · Under exploration · Rejected. Requirements that are no longer valid become Retired.
 - **Change types:** Added · Clarified · Modified · Replaced · Retired. Each change bumps the spec version and adds a change-log row with its rationale and approval.

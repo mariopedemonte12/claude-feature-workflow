@@ -14,7 +14,7 @@ Code review is done by **clean agents**: a fresh subagent that never saw how the
 
 ### Recommending the level
 
-This is the one verification decision where the orchestrator **recommends**: the programmer asked for it as a standing instruction. The recommendation goes in the plan gate (SDD Direct step 6, ESDD step 7), labeled *Recommendation*, with the evidence behind it:
+This is the one verification decision where the orchestrator **recommends**: the programmer asked for it as a standing instruction. The recommendation goes in the plan gate (SDD Direct step 6, Evolutionary Development step 7), labeled *Recommendation*, with the evidence behind it:
 
 - **Size:** files and components the plan touches; estimated changed lines.
 - **Complexity:** new branching logic, state machines, parsers, concurrency, money, security, data writes or migrations, public interfaces, changes across several features or layers.

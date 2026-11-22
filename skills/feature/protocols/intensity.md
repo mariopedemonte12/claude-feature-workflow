@@ -14,7 +14,7 @@ Every feature runs at one of three intensities: **Lite**, **Medium** or **High**
 
 | Aspect | Lite | Medium | High |
 | --- | --- | --- | --- |
-| Workflow | SDD Direct only | SDD Direct, ESDD or Hybrid | SDD Direct, ESDD or Hybrid |
+| Workflow | SDD Direct only | SDD Direct, Evolutionary Development or Hybrid | SDD Direct, Evolutionary Development or Hybrid |
 | Repository Analyst | no; the orchestrator reads what it needs, or uses the project memory | only if the memory lacks the evidence | yes |
 | Specification Writer | no; the orchestrator writes the card's specification section | yes | yes |
 | Planner | no; the orchestrator writes one approach and lists alternatives in a line each | yes, briefed for the main decision only | yes, full solution space |
