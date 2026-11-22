@@ -8,7 +8,7 @@ This workflow runs **per feature**, at Medium or High intensity (`protocols/inte
 
 ## Phase 1: Initial specification (orchestrator)
 
-**1. Understand and explore.** Write the programmer's request, verbatim, to `request.md`. Separate known from unknown requirements, product from technical uncertainties, and existing system constraints from candidate exploration areas. Classify each uncertainty as *blocking now* or *investigable later*. Delegate broad inspection to the Repository Analyst.
+**1. Understand and explore.** Start the intent record, `intent.md` (`templates/intent.md`), with the request verbatim, and keep it as `workflows/sdd-direct.md` step 1 describes. Separate known from unknown requirements, product from technical uncertainties, and existing system constraints from candidate exploration areas. Classify each uncertainty as *blocking now* or *investigable later*. Delegate broad inspection to the Repository Analyst.
 
 **2. Initial specification.** Brief the Specification Writer (`roles/spec-writer.md`), relaying its questions and resuming it until it returns `STATUS: DONE` (`protocols/agent-questions.md`). It writes `specification.md` with: intent, known requirements, constraints, invariants, initial acceptance criteria, open questions and hypotheses. Every item carries a status: Confirmed / Hypothesis / Under exploration / Rejected. Present the matching specialists and ask which run (`protocols/specialists.md`). Ask the programmer for the feature's **criticality** (Critical / Standard) and for the **completion criteria**: what "done" means for this feature, so the loop has an agreed exit.
 

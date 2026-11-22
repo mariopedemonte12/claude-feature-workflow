@@ -22,7 +22,7 @@ Structure: `templates/handoff.md`.
 ## What each transition must carry
 
 **Request → Specification**
-`request.md` path · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · intensity and its size budget.
+`intent.md` path, its Current intent version and last S-ID · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · intensity and its size budget.
 
 **Specification → Planning**
 Intent · confirmed FR/AC IDs · constraints · invariants · open questions (blocking ones flagged) · repository references (analyst report) · areas of technical uncertainty.

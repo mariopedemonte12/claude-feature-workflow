@@ -4,12 +4,12 @@ A specification states the problem and the expected behavior: **what** and **why
 
 ## What a specification is
 
-**A specification is the team's current reading of the programmer's intent, not a closed contract.** The programmer's request, quoted verbatim, is the source; the specification is a working interpretation of it, written before the code exists, and so it is always incomplete. Treat it this way:
+**A specification is the team's current reading of the programmer's intent, not a closed contract.** Its source is the **intent record** (`templates/intent.md`): `intent.md` in the feature folder, or the card's *Intent* section in Lean. The record holds the original request, verbatim and never edited; every later statement of the programmer, verbatim, append-only; and a short *Current intent* that the programmer confirms at each gate. The request evolves as the programmer talks, and the record is where it evolves: a later statement wins over an earlier one and over the original request. The specification is a working interpretation of the record, written before the code exists, and so it is always incomplete. Treat it this way:
 
-- **Intent wins over wording.** When the specification and the request diverge, the request and the programmer's answers win, and the divergence is a question. The specification never narrows the request silently: a broad statement in the request ("everywhere that…", "all…", "consistently") stays broad, and the places it reaches are listed as found so far, not as the complete set.
+- **Intent wins over wording.** When the specification and the intent record diverge, the record wins, and the divergence is a question. The programmer's words win over the *Current intent* summary, which is an interpretation too. The specification never narrows the request silently: a broad statement in the request ("everywhere that…", "all…", "consistently") stays broad, and the places it reaches are listed as found so far, not as the complete set.
 - **Requirements are the current understanding.** They are testable statements, so the work can be checked, but they describe what is known today. The list grows and changes as the work finds new facts.
 - **"Outside the intent" is a reading too.** Each boundary records who drew it: the programmer (with their words) or the agent's reading of the request, to be confirmed. Only the programmer's boundaries are settled.
-- **Discoveries go to the programmer.** When any phase (planning, implementation, testing, review) finds something the specification did not foresee, such as another place the intent reaches, a case the request implies, a contradiction with existing behavior or an easier path, it is a *discovery*. It is recorded and presented to the programmer with its relation to the request (see *Discoveries* below). Nobody, in any role, settles it alone: not by implementing it silently, and not by dismissing it as "not in the spec".
+- **Discoveries go to the programmer.** When any phase (planning, implementation, testing, review) finds something the specification did not foresee, such as another place the intent reaches, a case the programmer's words imply, a contradiction with existing behavior or an easier path, it is a *discovery*. It is recorded and presented to the programmer with its relation to the intent (see *Discoveries* below). Nobody, in any role, settles it alone: not by implementing it silently, and not by dismissing it as "not in the spec".
 - **"Not in the specification" is never an argument.** A missing item means the specification did not foresee it, not that the programmer excluded it. An option is never presented as worse because it "goes beyond the spec".
 
 ## Discoveries
@@ -17,15 +17,15 @@ A specification states the problem and the expected behavior: **what** and **why
 A discovery is recorded in the specification's *Discoveries* table (the card's, in Lean) and presented at the next gate, or at once if it blocks the work. Each one states, as facts:
 
 - **What was found,** with evidence (`path:line`, a probe, a failing case).
-- **Relation to the request:** *Covered by the request's words* (quote them), *Implied by the intent* (the reasoning, marked as reading), *Outside what the programmer stated*, or *Contradicts the request or an answer*.
+- **Relation to the intent:** *Covered by the programmer's words* (quote them, from the original request or a statement, with its S-ID), *Implied by the intent* (the reasoning, marked as reading), *Outside what the programmer stated*, or *Contradicts the original request or a statement*. Cite the latest statement on the point: it wins.
 - **Options,** in the neutral format: for example, change the code, change the specification, accept as a known limitation, or defer it to another feature. Each option states its effect on the work already done (files, tests, a later gate).
 
-The programmer's decision updates the specification through its change log, like any other change. A discovery *covered by the request's words* that the specification missed is a specification defect: say so.
+The programmer's decision updates the specification through its change log, like any other change. A discovery *covered by the programmer's words* that the specification missed is a specification defect: say so. The programmer's decision on a discovery is itself a statement: it is appended to the intent record before the specification changes.
 
 ## Process
 
-1. **Intent:** quote the request verbatim, then state who needs what outcome, and why. If you cannot state it in a few sentences, the intent is not clear yet: ask.
-2. **Reach of the intent:** for every broad statement in the request ("everywhere that…", "all…", "any…", "consistently", "like X does"), search the repository and list the places it reaches, with the search you ran (the command or query) and its results. Record the list as *found so far*, so a later phase that finds another place compares it with this search.
+1. **Intent:** read the intent record, then state who needs what outcome, and why, citing the original request and the statements (S-n) each part rests on. If you cannot state it in a few sentences, the intent is not clear yet: ask.
+2. **Reach of the intent:** for every broad statement in the original request or a statement ("everywhere that…", "all…", "any…", "consistently", "like X does"), search the repository and list the places it reaches, with the search you ran (the command or query) and its results. Record the list as *found so far*, so a later phase that finds another place compares it with this search.
 3. **Existing behavior:** what the system does today in this area, with evidence (`path:line` or an observed run).
 4. **Requirements:** record each one with its source (programmer message, ticket, existing behavior, regulation). Without a source, it is not a requirement; it is a question or a hypothesis.
 5. **Constraints vs. invariants:**

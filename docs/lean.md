@@ -25,7 +25,7 @@ The behavior is defined by [`skills/feature-lean/SKILL.md`](../skills/feature-le
 flowchart TB
     R(["/feature-lean &lt;request&gt;"]) --> W["1 · Worktree<br/>EnterWorktree name=slug, stay in it<br/>card docs/features/&lt;slug&gt;/feature.md"]
     W --> RD["2 · Read only what is needed<br/>CLAUDE.md, affected code, tests, commands,<br/>.quality/, code-quality, testing-techniques"]
-    RD --> SP["3 · Specification pass, in the card<br/>request verbatim · nearest analog · behavior ·<br/>edge, error, security, worst-case cases · ACs"]
+    RD --> SP["3 · Specification pass, in the card<br/>intent record · nearest analog · behavior ·<br/>edge, error, security, worst-case cases · ACs"]
     SP --> G1{"⛔ 4 · Gate 1<br/>blocking questions with the analog's behavior<br/>approach options with security and probed worst case<br/>choices by convention · approve / change / reject"}
     G1 --> IM["5 · Implement<br/>code to the quality standard<br/>tests for every AC and case · technique statuses<br/>fuzz or property tests at trust boundaries<br/>lint · quality gate"]
     IM --> CR["6 · Clean critic<br/>new opus subagent in the background<br/>sees only the diff, conventions and standard"]
@@ -64,7 +64,7 @@ Nothing else from the library is loaded.
 ### 3. Specification pass
 
 Written into the card before any code:
-- **The request, verbatim.** The pass is the current reading of it, not a closed contract: where they diverge, the request wins.
+- **The intent record.** The request evolves as you talk, so the card keeps your original request verbatim, every later statement of yours verbatim (S-1, S-2…, the latest winning), and a short *Current intent* you confirm at each gate. The rest of the pass is the current reading of that record, not a closed contract: where they diverge, your words win.
 - **Reach of the intent:** for each broad statement ("everywhere that…", "all…", "consistently"), the search run and the places found so far, including subclasses, overrides and copies of the same list.
 - **Outside the intent:** what a reader might assume is included, marked as the session's reading, for you to confirm at gate 1.
 - **Nearest analog:** the existing feature of the project most like this one, with its `path:line`, and how it handles each case: empty and invalid input, whitespace, exceptions raised by user-supplied objects, escaping and safe-marking, error messages. If there is none, the card says so.
@@ -161,7 +161,7 @@ Measured on Django 6.1, with 3 large features (a `{% switch %}` tag, a `ColorFie
 
 - **Questions surfaced:** in v2, the two behaviors that v1 missed (an exception from a user object inside `{% switch %}`, and surrounding whitespace in `ColorField`) reached gate 1 as explicit questions, with the analog's behavior attached. The simulated programmer chose differently from the analog both times, so the remaining hidden-test miss came from a decision, not an oversight.
 - **Real feature, maintainers' tests:** on Django's HTTP QUERY method, Lean passed 47/48 of the maintainers' tests for USD 2.61 (5× a plain session), with no regressions. The miss, `RedirectView` without a `query()` handler, is what the reach-of-the-intent step and the critic's intent check now look for. Details in [`cost-estimates.md`](cost-estimates.md).
-- **Discoveries:** anything found after gate 1 that the request seems to reach is recorded in the card's *Discoveries* with its relation to the request and goes to you, at once if it changes approved behavior, otherwise at gate 2.
+- **Discoveries:** anything found after gate 1 that your words seem to reach is recorded in the card's *Discoveries* with its relation to the intent and goes to you, at once if it changes approved behavior, otherwise at gate 2.
 - **Limits:** these figures are n=1, with hidden tests written by the workflow's designers and a simulated programmer. See [`cost-estimates.md`](cost-estimates.md) and the README's *Evidence so far*.
 
 ## What Lean does not do
