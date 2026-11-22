@@ -52,7 +52,7 @@ End-to-end harness: existing one, or the approved installation (decision referen
 
 - <name>: see D-NNN.
 
-## Increments (Evolutionary Development)
+## Increments (EVO)
 
 | # | Flow it delivers | Hypotheses it confirms or rejects, and how | Edge cases covered · deferred (D-ID, to increment #) | Done criteria | Status |
 | --- | --- | --- | --- | --- | --- |

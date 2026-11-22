@@ -1,4 +1,4 @@
-<!-- The intent record of one feature. Written only by whoever talks to the programmer: the orchestrator in /feature, the session in /feature-lean (as the card's Intent section). Omit any section that has no content. -->
+<!-- The intent record of one feature. Written only by whoever talks to the programmer: the orchestrator, or the executor session (in a card, as its Intent section). DIRECT keeps no intent record. Omit any section that has no content. -->
 # Intent: <Feature name>
 
 ## Original request
@@ -22,7 +22,7 @@ Verbatim, in the programmer's words. Only statements that change the intent: the
 <!--
 Rules:
 - Precedence: a recent statement wins over the consolidated intent, and the consolidated intent wins over the original request where they differ.
-- Consolidation, at each gate with new statements: propose the new consolidated text, showing what changed and which S-IDs it absorbs. On the programmer's confirmation or correction, bump the version, write the text, and move the absorbed statements, verbatim, to intent-history.md (in Lean, the card appendix), under the version that absorbed them. Never consolidate without that confirmation.
+- Consolidation, at each gate with new statements: propose the new consolidated text, showing what changed and which S-IDs it absorbs. On the programmer's confirmation or correction, bump the version, write the text, and move the absorbed statements, verbatim, to intent-history.md (with a card, the card appendix), under the version that absorbed them. Never consolidate without that confirmation.
 - intent-history.md is the archive: it is never edited and not read by default. Read it only to trace why the intent changed.
 - Readers that need the programmer's words (the Specification Writer, the critic) receive the original request, the confirmed consolidated intent and the statements since; never an unconfirmed proposal.
 -->

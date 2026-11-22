@@ -1,10 +1,17 @@
+---
+name: specification-guide
+kind: guide
+summary: What a specification is, the reach of the intent, discoveries, ambiguity checklist, acceptance criteria
+use-in: [intent, spec, test-design]
+workflows: [sdd, evo]
+---
 # Specification Guide
 
 A specification states the problem and the expected behavior: **what** and **why**. It does not state *how*, unless the how is a genuine external constraint (a regulation, an API contract that must be honored, a platform the programmer mandates).
 
 ## What a specification is
 
-**A specification is the team's current reading of the programmer's intent, not a closed contract.** Its source is the **intent record** (`templates/intent.md`): `intent.md` in the feature folder, or the card's *Intent* section in Lean. The record holds the original request, verbatim and never edited; a *consolidated intent* that the programmer confirmed at the last gate; and their statements since, verbatim, limited to those that change the intent. The request evolves as the programmer talks, and the record is where it evolves: a recent statement wins over the consolidated intent, which wins over the original request. At each gate the new statements are consolidated with the programmer's confirmation, and the absorbed ones move to an archive, so the record stays short. The specification is a working interpretation of the record, written before the code exists, and so it is always incomplete. Treat it this way:
+**A specification is the team's current reading of the programmer's intent, not a closed contract.** Its source is the **intent record** (`templates/intent.md`): `intent.md` in the feature folder, or the card's *Intent* section when the feature uses a card (EVO in executor mode). The record holds the original request, verbatim and never edited; a *consolidated intent* that the programmer confirmed at the last gate; and their statements since, verbatim, limited to those that change the intent. The request evolves as the programmer talks, and the record is where it evolves: a recent statement wins over the consolidated intent, which wins over the original request. At each gate the new statements are consolidated with the programmer's confirmation, and the absorbed ones move to an archive, so the record stays short. The specification is a working interpretation of the record, written before the code exists, and so it is always incomplete. Treat it this way:
 
 - **Intent wins over wording.** When the specification and the intent record diverge, the record wins, and the divergence is a question. The consolidated intent counts as the programmer's words only once they confirmed it. The specification never narrows the request silently: a broad statement in the request ("everywhere that…", "all…", "consistently") stays broad, and the places it reaches are listed as found so far, not as the complete set.
 - **Requirements are the current understanding.** They are testable statements, so the work can be checked, but they describe what is known today. The list grows and changes as the work finds new facts.
@@ -14,7 +21,7 @@ A specification states the problem and the expected behavior: **what** and **why
 
 ## Discoveries
 
-A discovery is recorded in the specification's *Discoveries* table (the card's, in Lean) and presented at the next gate, or at once if it blocks the work. Each one states, as facts:
+A discovery is recorded in the specification's *Discoveries* table (the card's, when the feature uses one) and presented at the next gate, or at once if it blocks the work. Each one states, as facts:
 
 - **What was found,** with evidence (`path:line`, a probe, a failing case).
 - **Relation to the intent:** *Covered by the programmer's words* (quote them, from the original request or a statement, with its S-ID), *Implied by the intent* (the reasoning, marked as reading), *Outside what the programmer stated*, or *Contradicts the original request or a statement*. Cite the latest statement on the point: it wins.
@@ -62,7 +69,7 @@ The programmer's decision updates the specification through its change log, like
 
 ## Evolving specifications (Hybrid)
 
-In Hybrid mode, the specification evolves while one area runs the evolutionary loop. Evolutionary Development itself has no specification: the intent record, the decisions and the cases replace it (`workflows/evolutionary.md`).
+In Hybrid mode, the specification evolves while one area runs the evolutionary loop. EVO itself has no specification: the intent record, the decisions and the cases replace it (`workflows/evo.md`).
 
 
 - **Item status:** Confirmed · Hypothesis · Under exploration · Rejected. Requirements that are no longer valid become Retired.

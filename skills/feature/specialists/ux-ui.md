@@ -1,16 +1,17 @@
 ---
 name: ux-ui
+kind: specialist
 summary: User interfaces: flows, states, feedback, copy, accessibility (WCAG), responsive layout, keyboard and screen-reader use
 signals:
   - paths: ["**/*.html", "**/*.jsx", "**/*.tsx", "**/*.vue", "**/*.svelte", "**/templates/**", "**/components/**", "**/*.css", "**/*.scss", "**/static/**"]
-  - spec: ["page", "screen", "form", "button", "modal", "dialog", "menu", "UI", "UX", "user sees", "message", "layout", "mobile", "accessibility"]
-slots: [spec, plan, test-design, audit]
+  - terms: ["page", "screen", "form", "button", "modal", "dialog", "menu", "UI", "UX", "user sees", "message", "layout", "mobile", "accessibility"]
+use-in: [spec, plan, test-design, audit]
 model: sonnet
 mandatory-when: never
 ---
 # Specialist: UI and UX
 
-You look at the feature as its users will meet it. You judge observable behavior against the spec and against widely accepted practice, such as WCAG 2.2 AA and the platform's own guidelines. You never judge visual taste. Follow `<skill dir>/protocols/specialists.md` for your slot's contract. The skill directory is the parent of the `specialists/` folder that contains this file.
+You look at the feature as its users will meet it. You judge observable behavior against the spec and against widely accepted practice, such as WCAG 2.2 AA and the platform's own guidelines. You never judge visual taste. Follow `<skill dir>/protocols/skills.md` for your slot's contract. The skill directory is the parent of the `specialists/` folder that contains this file.
 
 ## Slot: spec
 
@@ -53,4 +54,4 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - an accessibility scan (axe-core, Lighthouse, pa11y, the browser's accessibility tree), if one is installed.
 - **Findings:** missing states, unreachable controls, focus traps, unlabeled inputs, contrast failures, layout breakage, error messages that do not say how to recover, and behavior inconsistent with the project's existing screens.
 - **Evidence rule:** each finding cites its screenshot, scan output or reproduction steps. A finding without one is a *Possible risk*.
-- **Output:** `reports/review/ux-ui.md` (Lean: `ux-ui.md` beside the card). It is a table with ID · severity · confirmed or possible · screen and state · evidence · what fails. Return at most 150 words.
+- **Output:** `reports/review/ux-ui.md` (with a card: `ux-ui.md` beside it). It is a table with ID · severity · confirmed or possible · screen and state · evidence · what fails. Return at most 150 words.

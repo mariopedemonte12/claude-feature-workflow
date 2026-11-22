@@ -7,7 +7,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 ## Inputs
 
 - `intent.md` in the feature folder, the intent record: the original request verbatim, the consolidated intent the programmer confirmed, and their statements since (S-n, including answers to your questions that change the intent). It is the only account of what the programmer said: you never see the conversation. A recent statement wins over the consolidated intent, which wins over the original request. Do not open `intent-history.md` unless you need to trace why the intent changed.
-- The handoff, if there is one: repository evidence (analyst report), workflow, criticality, intensity and its size budget.
+- The handoff, if there is one: repository evidence (analyst report), workflow and criticality.
 - The repository, read-only, through absolute paths into the feature worktree (`git -C <worktree> …`). Never call `EnterWorktree`.
 
 ## Do
@@ -21,7 +21,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 7. **Constraints and invariants:** only external ones (platform, compatibility, regulation, existing contracts), each with its origin.
 8. **Outside the intent:** what the request does not cover and a reader might assume it does. Mark each one as drawn by the programmer (with their words) or as your reading, to confirm at the gate.
 9. **Open questions:** everything unsettled, each marked blocking or non-blocking, in the spec's table and in your return.
-10. **Hybrid:** give every item a status (Confirmed · Hypothesis · Under exploration · Rejected), and mark the area that runs the evolutionary loop *Under exploration*. Evolutionary Development has no specification and does not use this role.
+10. **Hybrid:** give every item a status (Confirmed · Hypothesis · Under exploration · Rejected), and mark the area that runs the evolutionary loop *Under exploration*. EVO has no specification and does not use this role.
 11. **Evolution:** when the brief gives new statements (S-n), approved changes or decided discoveries, apply only those, bump the version and add one change-log row per change with its type, IDs, rationale and approval reference.
 
 ## Do not
@@ -30,7 +30,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 - Resolve ambiguity yourself, choose between readings of the request, or turn an assumption into a Confirmed item.
 - Narrow a broad statement of the request into a closed list, or leave a place the search found out of the requirements without a question.
 - Recommend options when a question has alternatives: present them neutrally (`<skill dir>/protocols/neutral-decisions.md`).
-- Leave anything out to fit the size budget. The budget is a target: when the spec needs more, move the overflow to `spec-appendix.md`, linked by section, as `protocols/intensity.md` §Size budgets describes.
+- Leave anything out to fit the size budget. The budget is a target: when the spec needs more, move the overflow to `spec-appendix.md`, linked by section, as `SKILL.md` §6 *Size budgets* describes.
 
 ## Output
 

@@ -1,3 +1,9 @@
+---
+name: code-quality
+kind: guide
+summary: Code quality standard: size limits, naming, structure, errors, dependencies, test-first for defects, the quality gate
+use-in: [implement, test, review]
+---
 # Code Quality Standard
 
 Binding for every line of code an agent writes in this workflow: production code, tests, E2E suites, scripts and rules. The Implementer applies it, the Planner designs for it, the clean Critic checks it and the Tester follows it in test code.
@@ -30,7 +36,7 @@ Then take the first rung that fully works:
 - Do not "improve" adjacent code, formatting or names you were not asked to touch, and do not refactor what is not broken.
 - Remove the imports, variables and functions that **your** change made unused. Dead code that existed before the change is mentioned in the report, never deleted: it may be reachable in ways the diff does not show.
 
-**Test first for defects.** A bug fix, and every fix of a Blocker or Major finding that changes behavior, starts with a test that reproduces the defect. In the full workflow the Tester writes that test and the Implementer makes it pass; in `/feature-lean`, Lite and hand-driven work, the same agent writes both. Run it, see it fail for the stated reason, then fix the code and see it pass. Report both runs. A behavior-preserving fix instead runs the affected tests before and after, and both runs pass.
+**Test first for defects.** A bug fix, and every fix of a Blocker or Major finding that changes behavior, starts with a test that reproduces the defect. When separate Tester and Implementer agents run (orchestrated SDD and EVO), the Tester writes that test and the Implementer makes it pass; in DIRECT, in executor mode and in hand-driven work, the same agent writes both. Run it, see it fail for the stated reason, then fix the code and see it pass. Report both runs. A behavior-preserving fix instead runs the affected tests before and after, and both runs pass.
 
 **Never cut:** validation at trust boundaries, error handling that prevents data loss, security, accessibility, anything the spec requires.
 

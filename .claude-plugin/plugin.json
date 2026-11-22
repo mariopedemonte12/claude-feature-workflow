@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "feature-workflow",
-  "version": "0.2.0",
-  "description": "On-demand feature skills for Claude Code: /feature-lean (one session, spec with edge cases, one gate, code and tests, one clean critic), the full multi-agent /feature workflow, and /feature-kit for hand-driven work.",
+  "version": "0.3.0",
+  "description": "On-demand feature skills for Claude Code: /feature recommends a workflow (DIRECT, SDD or EVO) and runs it as orchestrator of several features or executor of one, with classified skills you can extend per user, repository or module; /feature-kit loads the same skills for hand-driven work.",
   "author": {
     "name": "mariopedemonte12"
   },
@@ -10,7 +10,6 @@
   "repository": "https://github.com/mariopedemonte12/claude-feature-workflow",
   "skills": [
     "./skills/feature",
-    "./skills/feature-kit",
-    "./skills/feature-lean"
+    "./skills/feature-kit"
   ]
 }

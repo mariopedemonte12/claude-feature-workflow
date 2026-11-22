@@ -1,6 +1,6 @@
 # Architecture of the Feature Workflow
 
-There are three entry points: `/feature-lean`, the main mode (§2), the full `/feature` workflow, and `/feature-kit`. Most of this document describes how the full `/feature` workflow is built: who takes part, how a feature moves from request to integration, which files hold the state, and what each agent is responsible for. The behavior itself is defined by the files under `skills/feature/`. When this document and those files disagree, the files win, and each section names the file it summarizes.
+There are two entry points: `/feature` and `/feature-kit`. Each feature in `/feature` has a **workflow** (DIRECT, SDD or EVO) and the session has a **role** (orchestrator or executor). Most of this document describes how the orchestrated workflows are built: who takes part, how a feature moves from request to integration, which files hold the state, and what each agent is responsible for. The behavior itself is defined by the files under `skills/feature/`. When this document and those files disagree, the files win, and each section names the file it summarizes.
 
 Diagrams use Mermaid and render on GitHub.
 
@@ -9,9 +9,9 @@ Diagrams use Mermaid and render on GitHub.
 1. [Building blocks](#1-building-blocks)
 2. [Entry points and modes](#2-entry-points-and-modes)
 3. [Startup of a feature](#3-startup-of-a-feature)
-4. [SDD Direct](#4-sdd-direct)
-5. [Evolutionary Development and Hybrid](#5-evolutionary-development-and-hybrid)
-6. [Intensity levels](#6-intensity-levels)
+4. [SDD](#4-sdd)
+5. [EVO and Hybrid](#5-evo-and-hybrid)
+6. [Skills and their classification](#6-skills-and-their-classification)
 7. [Agent questions](#7-agent-questions)
 8. [Review cycle](#8-review-cycle)
 9. [Anti-pattern registry and quality gate](#9-anti-pattern-registry-and-quality-gate)
@@ -31,10 +31,10 @@ flowchart TB
     end
 
     subgraph Skill["Skill library: skills/feature/, read on demand"]
-        W["workflows/<br/>sdd-direct · evolutionary"]
-        PR["protocols/<br/>neutral-decisions · agent-questions · context-handoff<br/>intensity · review-cycle · anti-pattern-registry<br/>multi-feature · hierarchy · orchestrator-memory"]
+        W["workflows/<br/>direct · sdd · evo"]
+        PR["protocols/<br/>neutral-decisions · agent-questions · context-handoff<br/>executor · skills · review-cycle · anti-pattern-registry<br/>multi-feature · hierarchy · orchestrator-memory"]
         R["roles/<br/>repository-analyst · spec-writer · planner<br/>implementer · tester · reviewer · verifier"]
-        K["knowledge/<br/>specification-guide · code-quality · design-patterns<br/>testing-techniques · e2e-testing · anti-patterns/*"]
+        K["knowledge/ (guides)<br/>edge-cases · specification-guide · code-quality · design-patterns<br/>testing-techniques · e2e-testing · anti-patterns/*"]
         T["templates/<br/>specification · implementation-plan · testing-plan<br/>intent · decision-record · handoff · final-report · feature-card"]
         S["scripts/quality_gate.py"]
     end
@@ -72,9 +72,10 @@ flowchart TB
 | Block | What it is | Source |
 | --- | --- | --- |
 | **Programmer** | Makes every consequential decision: requirements, scope, architecture, dependencies, trade-offs, acceptance, integration. | `SKILL.md` §1 |
-| **Orchestrator** | The main session after `/feature`. The only party that talks to the programmer. It parses requests, creates worktrees, briefs subagents, verifies what they return, relays their questions, presents gates and records decisions. It writes no production code. | `SKILL.md` |
+| **Orchestrator** | The main session after `/feature`, in orchestrator role. The only party that talks to the programmer. It parses requests, creates worktrees, briefs subagents, verifies what they return, relays their questions, presents gates and records decisions. It writes no production code. | `SKILL.md` |
+| **Executor** | The main session after `/feature`, in executor role: it does one feature's work itself; only the critic and audits are subagents, and in SDD the Test Designer is a session the programmer opens. | `protocols/executor.md` |
 | **Subagents** | Claude Code built-in subagents (`Explore`, `Plan`, `general-purpose`) with a model chosen per task. Each one is pointed at its role file and never delegates further. | `SKILL.md` §4 |
-| **Skill library** | Markdown files read only when a step needs them (progressive loading), plus one script. | `SKILL.md` §3 |
+| **Skill library** | Markdown files read only when a step needs them (progressive loading), plus one script. Knowledge and specialists are classified skills, extensible per user, repository and module (§6). | `SKILL.md` §3, `protocols/skills.md` |
 | **Feature worktree** | One git worktree and branch per feature. Code and artifacts travel together on that branch. | `SKILL.md` §2.3 |
 | **`.quality/`** | The project's quality configuration and anti-pattern registry. It outlives features. The programmer chooses at bootstrap whether it is versioned (`<repo>/.quality/`) or local to the clone (`<git-common-dir>/quality/`). | `protocols/anti-pattern-registry.md` |
 | **Git common dir** | Shared by every worktree and never committed: the orchestrator's project memory and the feature claims. | `protocols/orchestrator-memory.md`, `protocols/hierarchy.md` |
@@ -83,36 +84,35 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    C1["/feature &lt,description&gt, [--sdd|--evo] [--lite|--medium|--high]"] --> M1["Single orchestrator<br/>one or several features"]
-    C2["/feature resume &lt,slug&gt,… · status · continue &lt,answer&gt,"] --> M1
-    C3["/feature in several sessions"] --> M2["Independent orchestrators<br/>coordinated only through claims"]
+    C1["/feature &lt;request&gt; [--direct|--sdd|--evo] [--orchestrate|--execute]"] --> REC["Recommend a workflow,<br/>ask the role"]
+    REC --> M1["Orchestrator<br/>one or several features, any workflow each"]
+    REC --> M7["Executor<br/>one feature, this session works"]
+    M7 -.->|"SDD: Test Designer"| C8["/feature role test-designer &lt;slug&gt;<br/>a session the programmer opens"]
+    C2["/feature resume &lt;slug&gt;… · status · continue &lt;answer&gt;"] --> M1
+    C3["/feature in several sessions"] --> M2["Independent sessions<br/>orchestrators or executors, coordinated through claims"]
     C4["/feature hub"] --> M3["Principal orchestrator"]
-    C5["/feature join &lt,hub&gt, &lt,group&gt,"] --> M4["Sub-orchestrator of one group"]
+    C5["/feature join &lt;hub&gt; &lt;group&gt;"] --> M4["Sub-orchestrator of one group"]
     M3 <-->|"STATUS · DECISION-REQUEST · DECISION<br/>QUESTION · ANSWER · OVERLAP · DONE"| M4
-    C7["/feature-lean &lt;description&gt; | resume &lt;slug&gt;"] --> M6["Lean pipeline: this session works,<br/>one or more increments, a clean critic per increment"]
-    C6["/feature-kit [module…] | list | off"] --> M5["No workflow: modules loaded on demand<br/>for hand-driven work"]
+    C6["/feature-kit [module…] | list | off"] --> M5["No workflow: skills loaded on demand<br/>for hand-driven work"]
 ```
+
+| Workflow | Orchestrator | Executor |
+| --- | --- | --- |
+| **DIRECT** | One Implementer subagent runs the edge-case checklist, writes code and tests, and reports; the orchestrator relays blocking questions and runs integration | The session does it in the current checkout (or a worktree if asked). No gates before integration; a critic only if asked |
+| **SDD** | Every role is a subagent (§4) | The session specifies, plans, implements and tests. The Test Designer runs in a session the programmer opens, so it never sees the plan. Critic and audits are subagents |
+| **EVO** | Every role is a subagent (§5) | The session runs the increments with one card; gates 3 and 5 are merged. Critic and audits are subagents, one per increment ([`executor.md`](executor.md)) |
 
 | Command | Effect |
 | --- | --- |
-| `/feature <description>` | A new feature is added to the portfolio. Features already in progress are never reset. |
-| `/feature resume <slug>…` | Continues features from their `handoff.md`, after a freshness check. |
-| `/feature status` | Board of every feature in progress, plus the ones other orchestrators claim. |
+| `/feature <request>` | Recommends a workflow with its evidence, asks the role, and starts. In an orchestrating session, adds to the portfolio; features in progress are never reset. |
+| `/feature role <role> <slug>` | A session that runs one role of an executor's feature, from the brief the executor wrote. |
+| `/feature resume <slug>…` | Continues features from their `handoff.md` or card, after a freshness check. |
+| `/feature status` | Board of every feature in progress, plus the ones other sessions claim. |
 | `/feature continue <answer>` | A fresh session answers a pending gate, using `memory.md` and `decisions/` on disk. |
 | `/feature hub`, `/feature join <hub> <group>` | Hierarchical mode (§10). |
-| `/feature-lean <description>` | Separate skill: one session, one feature, by increments, no orchestrator relay; the only artifacts are a card and one review per increment. Steps below. |
-| `/feature-kit` | Separate skill. It exposes the roles and knowledge as modules (explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, card) without phases, gates, artifacts or worktrees. Only `review` launches subagents: a clean critic and, if asked, a verifier. |
+| `/feature-kit` | Separate skill. It exposes the roles and skills as modules (edge-cases, explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, card, specialists) plus the programmer's, repository's and modules' own skills, without phases, gates, artifacts or worktrees. Only `review` launches subagents. |
 
-**`/feature-lean` steps** (detailed in [`lean.md`](lean.md)):
-Lean follows `workflows/evolutionary.md` without its separate agents, in one increment or several as the programmer chooses: no specification, the card's intent record, decisions and cases carry what the feature must do.
-1. Intent pass: the intent record, the reach of broad statements, the nearest analog, the main flows, and the cases of every flow (edge, error, security and worst case, each with what the analog does).
-2. ⛔ Gate 1: consolidated intent and completion criteria, blocking questions, approach (options with their security consequence and probed worst case), how many increments (the programmer's choice) and the cases.
-3. Per increment: code and a test for every case, a status for each testing technique, fuzz or property tests at trust boundaries, the quality gate; one clean critic (opus) on the increment's diff, plus the specialist audits you chose; each finding checked against the code.
-4. ⛔ Increment gate, the only one per increment: results, findings and discoveries, deferred edge cases, a new consolidated intent, and the next increment.
-5. Fixes test-first, then the next increment if there is one; the programmer may regroup what remains.
-6. ⛔ Mutation testing once (Critical or chosen), acceptance, integration and cleanup.
-
-All three skills have `disable-model-invocation: true`: they load only when the programmer types the command.
+Both skills have `disable-model-invocation: true`: they load only when the programmer types the command.
 
 ## 3. Startup of a feature
 
@@ -120,24 +120,27 @@ Source: `SKILL.md` §2.
 
 ```mermaid
 flowchart TB
-    S0["0 · Read project memory<br/>git-common-dir/feature-workflow/memory.md"] --> S1["1 · Parse the request<br/>new · resume · status · continue · hub · join"]
-    S1 --> CL{"Claim held by another<br/>live orchestrator?"}
+    S0["0 · Read project memory<br/>git-common-dir/feature-workflow/memory.md"] --> S1["1 · Parse the request<br/>new · role · resume · status · continue · hub · join"]
+    S1 --> CL{"Claim held by another<br/>live session?"}
     CL -->|"yes"| STOP["Do not touch the feature,<br/>report to the programmer"]
     CL -->|"no"| S2["2 · Project context<br/>from memory, or CLAUDE.md / README / commands,<br/>Repository Analyst if many files"]
-    S2 --> S3["3 · Create the worktree<br/>EnterWorktree name=slug, record path, branch, base,<br/>ExitWorktree keep: the orchestrator stays outside"]
-    S3 --> S4["4 · Intensity<br/>Lite · Medium · High, Critical forces High"]
+    S2 --> S4["4 · Skill index<br/>frontmatter of library, user, repo and module skills"]
     S4 --> S5{"5 · Workflow chosen<br/>by a flag?"}
-    S5 -->|"no"| S5b["Assess uncertainty per dimension with evidence,<br/>present the workflows neutrally, the programmer chooses"]
+    S5 -->|"no"| S5b["Assess each dimension with evidence,<br/>RECOMMEND a workflow, the programmer validates"]
     S5 -->|"yes"| S6
-    S5b --> S6["6 · Load the workflow file<br/>sdd-direct.md or evolutionary.md"]
+    S5b --> S6{"6 · Role chosen<br/>by a flag?"}
+    S6 -->|"no"| S6b["Neutral question: orchestrator or executor"]
+    S6 -->|"yes"| S3
+    S6b --> S3["3 · Worktree<br/>orchestrator: create, record, leave it<br/>executor: create and stay (DIRECT: checkout unless asked)"]
+    S3 --> S7["7 · Load the workflow file<br/>direct.md · sdd.md · evo.md"]
 ```
 
-- **Uncertainty dimensions** for the workflow choice: requirement clarity, functional uncertainty, technical feasibility, architectural uncertainty, expected discoveries, need for prototypes. Feature size alone never decides.
+- **Dimensions** for the workflow recommendation: requirement clarity, functional uncertainty, technical feasibility, architectural uncertainty, expected discoveries, need for prototypes, risk and reach. The workflow and the review level are the only two recommendations the agent makes; the role is a neutral question.
 - **Worktree failures** (not a git repository, a git error, already inside a worktree session) stop the feature and are presented to the programmer. The orchestrator never falls back to the shared checkout.
 
-## 4. SDD Direct
+## 4. SDD
 
-For well-understood features. Source: `workflows/sdd-direct.md`. ⛔ is a human gate: it stops this feature only, and other features keep moving.
+For well-understood features. Source: `workflows/sdd.md`. ⛔ is a human gate: it stops this feature only, and other features keep moving.
 
 ```mermaid
 flowchart TB
@@ -177,9 +180,9 @@ flowchart TB
 - Mutation testing and review ran as decided.
 - Regressions were evaluated, and no blocking issue is hidden.
 
-## 5. Evolutionary Development and Hybrid
+## 5. EVO and Hybrid
 
-For features with open requirements or technical unknowns. Source: `workflows/evolutionary.md`. **There is no specification:** the intent record (`intent.md`), the programmer's decisions (`decisions/`) and the designed cases (`testing-plan.md`, the executable criteria) carry what the feature must do, increment by increment, main flows first.
+For features with open requirements or technical unknowns. Source: `workflows/evo.md`. **There is no specification:** the intent record (`intent.md`), the programmer's decisions (`decisions/`) and the designed cases (`testing-plan.md`, the executable criteria) carry what the feature must do, increment by increment, main flows first.
 
 ```mermaid
 flowchart TB
@@ -200,29 +203,31 @@ flowchart TB
 - **Hypotheses** are the team's, kept in the plan's *Increments* with their status (Hypothesis, Under exploration, Confirmed, Rejected) and evidence. The programmer's words stay in the intent record.
 - **Deferred edge cases** need a programmer decision naming the increment that will cover them; they never accumulate silently.
 - **Prototypes** live outside production paths. They are discarded unless the programmer promotes them.
-- **Hybrid:** SDD Direct for the feature as a whole, with a specification; Phases 2–4 apply only to the uncertain area, marked *Under exploration*, until it can be specified.
+- **Hybrid:** SDD for the feature as a whole, with a specification; Phases 2–4 apply only to the uncertain area, marked *Under exploration*, until it can be specified.
 
-## 6. Intensity levels
+## 6. Skills and their classification
 
-Set per feature or per group. Source: `protocols/intensity.md`.
+Source: `protocols/skills.md`. Every piece of knowledge is a skill whose frontmatter says where it can be used.
 
-| Aspect | Lite | Medium | High |
-| --- | --- | --- | --- |
-| Workflow | SDD Direct | SDD Direct, Evolutionary, Hybrid | SDD Direct, Evolutionary, Hybrid |
-| Repository Analyst | no | only if the memory lacks the evidence | yes |
-| Specification Writer | no: the orchestrator writes the card's spec section | yes | yes |
-| Planner | no: the orchestrator writes one approach | main decision only | full solution space |
-| Test Designer | no | yes, from the spec, in parallel with the Planner | yes, every technique |
-| Implementer | code **and** its unit and E2E tests | production code only | same as Medium |
-| Tester | no | implements and runs the designed cases, with E2E | same, plus every technique and mutation testing |
-| Review (default the recommendation starts from) | R0 | R1 | R2 |
-| Specialists | you choose at the spec + plan gate | you choose at the spec gate | you choose at the spec gate (mandatory ones run if Critical) |
-| Mutation testing | no | asked at the plan gate | yes |
-| Gates | one spec+plan gate, then acceptance | spec, plan, defects, acceptance | all |
-| Artifacts | one `feature.md` card (target 500 lines) + `decisions/` | full set, with size targets (overflow goes to linked files, never cut) | full set |
-| Agent questions | yes | yes | yes |
+| Field | Values |
+| --- | --- |
+| `kind` | `guide`: read by whoever does the phase · `specialist`: runs as its own agent in its phases |
+| `use-in` | `intent` · `spec` · `plan` · `test-design` · `implement` · `test` · `review` · `audit` · or `general` |
+| `workflows` | `direct` · `sdd` · `evo` (all when omitted) |
+| `signals` | paths, terms, trust boundaries that make it relevant |
+| `mandatory-when` | `critical` for specialists that must run on Critical features |
 
-Critical features always run at High.
+```mermaid
+flowchart LR
+    L1["library<br/>skills/feature/knowledge · specialists"] --> L2["~/.claude/feature-skills/<br/>the programmer's"] --> L3["repo/.claude/feature-skills/<br/>the repository's"] --> L4["module/.claude/feature-skills/<br/>active when the feature touches the module"]
+    L4 --> IX["Index: frontmatter only<br/>same name: the more specific wins"]
+    IX --> PH["Each phase: guides whose use-in covers it,<br/>listed by path in the agent's brief"]
+    IX --> SP["Specialists: signals → facts at the first gate →<br/>the programmer chooses phases"]
+```
+
+- **Library classification:** `edge-cases` general; `specification-guide` intent, spec, test-design; `code-quality` implement, test, review; `design-patterns` plan, implement; `testing-techniques` test-design, test; `e2e-testing` test-design, test; the six specialists in their phases.
+- **DIRECT** has no phases: it loads skills on demand; `--no-skills` leaves only the edge-case checklist.
+- **Why not `.claude/skills/`:** Claude Code loads those descriptions into every session; these folders load only when the workflow runs.
 
 ## 7. Agent questions
 
@@ -275,7 +280,7 @@ flowchart LR
     STOP -->|"yes"| RT["Tester re-runs affected<br/>regression and E2E"]
 ```
 
-- **Review level:** the recommendation starts from the intensity default (Lite R0, Medium R1, High R2, Critical R2). A standing "accept your recommendation" covers only that default; a deviation is asked every time.
+- **Review level:** the recommendation starts from the default (R1 for SDD and EVO, R2 for Critical; DIRECT runs no critic unless asked). A standing "accept your recommendation" covers only that default; a deviation is asked every time.
 - **Automatic fixes** happen only at R2. Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
 - **Convergence:** round 1 reviews the whole diff. Later rounds review only the fixes, and report only Blocker and Major findings.
 - **Clean context:** the critic and the verifier never read the spec, plan, decisions, handoffs, implementation report or earlier rounds. Each round launches a **new** critic on the whole diff from the base.
@@ -324,7 +329,7 @@ flowchart TB
 ```
 
 - **Single orchestrator, several features:**
-  - Each feature has its own workflow, intensity, gates, artifacts and agents.
+  - Each feature has its own workflow, gates, artifacts and agents.
   - A gate in one feature never blocks another.
   - Agents of the same phase launch together across features.
   - Overlapping files between features are reported early, as facts.
@@ -336,16 +341,16 @@ flowchart TB
   - The principal never prioritizes features: that stays the programmer's decision.
 ### Specialists
 
-Source: `protocols/specialists.md`.
+Source: `protocols/skills.md`.
 
 ```mermaid
 flowchart LR
-    IX["Index: one line per specialist<br/>built-in → ~/.claude/feature-specialists/ → repo/.claude/feature-specialists/<br/>(same name: project wins)"] --> SG["Signals matched<br/>paths · spec terms · trust boundaries"]
-    SG --> G{"⛔ First gate<br/>matching specialists as facts,<br/>you choose who runs in which slot"}
-    G --> S1["spec slot<br/>questions on the draft"]
-    G --> S2["plan slot<br/>facts per option, no ranking"]
-    G --> S3["test-design slot<br/>cases in testing-plan.md"]
-    G --> S4["audit slot<br/>clean, opus, executed evidence"]
+    IX["Specialists in the skill index<br/>library → user → repo → module<br/>(same name: the more specific wins)"] --> SG["Signals matched<br/>paths · spec terms · trust boundaries"]
+    SG --> G{"⛔ First gate<br/>matching specialists as facts,<br/>you choose who runs in which phase"}
+    G --> S1["spec phase<br/>questions on the draft"]
+    G --> S2["plan phase<br/>facts per option, no ranking"]
+    G --> S3["test-design phase<br/>cases in testing-plan.md"]
+    G --> S4["audit phase<br/>clean, opus, executed evidence"]
     S1 & S2 --> GA{"⛔ Spec and plan gates"}
     S4 --> GD{"⛔ Defects / findings gate<br/>merged with the critic, by domain"}
 ```
@@ -368,7 +373,7 @@ flowchart LR
     O -->|"reads the gate from disk + consistency check"| DK
 ```
 
-- **Phases:** SDD Direct has Specification, Planning, Build and Fixes. Evolutionary Development has Intent, Approach, Increment and Evolution.
+- **Phases:** SDD has Specification, Planning, Build and Fixes. EVO has Intent, Approach, Increment and Evolution.
 - **Experimental, never run.** By design the decisions are the same: the runner cannot reach the programmer, so it must stop at each gate. That has not been tested.
 - **What changes:** you see results at the gates instead of agent by agent, and you can stop a whole runner but not steer it mid-phase.
 
@@ -380,17 +385,17 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 
 | Agent | Executor · standard model | Responsible for | Reads | Writes | Never |
 | --- | --- | --- | --- | --- | --- |
-| **Orchestrator** | main session | Talking to the programmer, worktrees, intensity and workflow selection, the intent record `intent.md` (original request, consolidated intent confirmed at each gate, statements since), briefs, verifying returns, relaying questions, gates, decision records, handoffs between phases, delegation log, final report, integration and cleanup on approval | Only the skill files the current step needs; artifacts; reports | `intent.md`, `decisions/`, handoffs for read-only roles, `delegations.md`, `reports/review/rounds.md`, `final-report.md`, `memory.md`, claims | Recommend or rank options (except the review level), write production code, approve on the programmer's behalf, integrate or delete without confirmation |
+| **Orchestrator** | main session | Talking to the programmer, worktrees, workflow recommendation and role, the intent record `intent.md` (original request, consolidated intent confirmed at each gate, statements since), briefs, verifying returns, relaying questions, gates, decision records, handoffs between phases, delegation log, final report, integration and cleanup on approval | Only the skill files the current step needs; artifacts; reports | `intent.md`, `decisions/`, handoffs for read-only roles, `delegations.md`, `reports/review/rounds.md`, `final-report.md`, `memory.md`, claims | Recommend or rank options (except the workflow and the review level), write production code, approve on the programmer's behalf, integrate or delete without confirmation |
 | **Repository Analyst** | `Explore` · haiku (sonnet for large or unfamiliar code) | Evidence for one task: components, dependencies, conventions, existing behavior, tests and commands, architecture style, quality and E2E tooling; observed vs inferred | The feature worktree, only what the brief needs | Nothing: returns a context report of about 600 words | Recommend approaches, assume a stack without evidence, modify files |
-| **Specification Writer** | `general-purpose` · opus (sonnet for short, clear requests; never haiku) | Turning the request into the current reading of its intent (not a closed contract): the source version of the intent record, the reach of its broad statements, FR/NFR, constraints, invariants, Given/When/Then criteria, what is outside the intent (and who drew each boundary) and open questions, each item traced to a source; Hybrid statuses; applying approved spec changes. Not used in Evolutionary Development | `intent.md`, handoff, the specification guide and template, the repository (read-only) | `specification.md` (Draft) | Invent requirements, resolve ambiguity, include implementation details, write vague criteria to avoid a question |
+| **Specification Writer** | `general-purpose` · opus (sonnet for short, clear requests; never haiku) | Turning the request into the current reading of its intent (not a closed contract): the source version of the intent record, the reach of its broad statements, FR/NFR, constraints, invariants, Given/When/Then criteria, what is outside the intent (and who drew each boundary) and open questions, each item traced to a source; Hybrid statuses; applying approved spec changes. Not used in EVO | `intent.md`, handoff, the specification guide and template, the repository (read-only) | `specification.md` (Draft) | Invent requirements, resolve ambiguity, include implementation details, write vague criteria to avoid a question |
 | **Planner** | `Plan` · opus (sonnet for one mechanical approach; never haiku) | The solution space: viable approaches in the neutral format, per-option outlines that follow the quality standard, the E2E harness, other decisions needed, excluded options with the constraint they violate | Handoff, spec sections, code, registry | Nothing: returns the decision block | Choose, rank, change requirements, add speculative abstractions |
 | **Test Designer** | `general-purpose` · sonnet (opus if Critical; never haiku) | Test cases derived from the approved spec alone, in parallel with the Planner: each technique applied or justified, error, security, worst-case and E2E cases, traceability from every AC to its cases | Spec, analyst report, testing techniques, E2E guide (never the plan or code) | `testing-plan.md` | Invent expected results, design around an implementation, write test code |
-| **Implementer** | `general-purpose` · sonnet (haiku if mechanical, opus if risky) | Production code for the approved plan only, to the quality standard. Self-review against the critic's checklist before the quality gate, so review finds little to rework. Runs the existing tests; **writes no tests** (Lite is the exception). Makes the Tester's reproducing tests pass when resumed for fixes. | Handoff, plan, testing plan, quality standard, design patterns, registry | Production code, `implementation-report.md`, handoff to testing, Lite card result | Write tests (outside Lite), drift from the plan silently, add comments, leave quality violations unreported, expand scope |
+| **Implementer** | `general-purpose` · sonnet (haiku if mechanical, opus if risky) | Production code for the approved plan only, to the quality standard. Self-review against the critic's checklist before the quality gate, so review finds little to rework. Runs the existing tests; **writes no tests** (DIRECT is the exception). Makes the Tester's reproducing tests pass when resumed for fixes. | Handoff, plan, testing plan, quality standard, design patterns, registry | Production code, `implementation-report.md`, handoff to testing, DIRECT report | Write tests (outside DIRECT), drift from the plan silently, add comments, leave quality violations unreported, expand scope |
 | **Tester** | `general-purpose` · sonnet (haiku for re-runs, opus for hard state) | The only author of tests: implements every designed case, runs functional, regression and E2E testing, explores beyond the plan, mutation testing if decided, validation against the spec. Keeps failing tests as reproductions for fixes. Resumed to re-run after fixes. | Handoff, testing plan, spec, testing techniques, E2E guide | Tests, case statuses in `testing-plan.md`, `reports/e2e/`, `validation-report.md`, handoff | Change a designed expected result, decide one the spec leaves open, weaken or skip failing tests, report a test it did not run as passed |
 | **Clean Code Critic** | `general-purpose` · opus (never haiku) | Maximally critical review from scratch: names, responsibilities, function design, structure, patterns misused, registry violations, places the request's words reach that the diff leaves untouched; each finding with a concrete case | The original request and the programmer's statements, verbatim; code, `git diff <base>`, project conventions, quality standard, registry | `reports/review/round-<n>-critic.md` | Read the spec, plan, handoffs or earlier rounds; be reused across rounds |
-| **Phase runner** (phased mode) | `general-purpose` · sonnet (opus if Critical; never haiku) | Orchestrating one phase of one feature: delegating its steps, choosing models, verifying returns, relaying agent questions, writing the gate's Pending decisions | Its brief, `SKILL.md` §4, the workflow steps in range, intensity and agent-questions protocols | `delegations.md`, `decisions/` (Pending), `handoff.md` | Talk to the programmer, pass a gate, run startup or integration, be reused for the next phase |
+| **Phase runner** (phased mode) | `general-purpose` · sonnet (opus if Critical; never haiku) | Orchestrating one phase of one feature: delegating its steps, choosing models, verifying returns, relaying agent questions, writing the gate's Pending decisions | Its brief, `SKILL.md` §4, the workflow steps in range, skills and agent-questions protocols | `delegations.md`, `decisions/` (Pending), `handoff.md` | Talk to the programmer, pass a gate, run startup or integration, be reused for the next phase |
 | **Finding Verifier** | `general-purpose` · sonnet (never haiku) | Trying to refute each finding against the code: VALID, INVALID or AMBIGUOUS; fix class; recurring findings marked as candidates | The critic's report, the code | `reports/review/round-<n>-verification.md` | Read the spec or plan, fix code, accept a finding without checking it |
-| **Specialists** | `general-purpose` · sonnet in `spec`/`plan`/`test-design`, opus in `audit` (never haiku there) | Domain expertise in the slots you activate: questions on the spec draft, facts per plan option (never a recommendation), test cases, and a clean audit with executed evidence (exploit, query plan, timing, screenshot) | Advisory slots: request, spec, options. Audit: the diff and the code it reaches only | Questions, facts, cases in `testing-plan.md`, `reports/review/<name>.md` | Add requirements, recommend options, report unproven findings as confirmed, install tools, be resumed in `audit` |
+| **Specialists** | `general-purpose` · sonnet in `spec`/`plan`/`test-design`, opus in `audit` (never haiku there) | Domain expertise in the phases you activate: questions on the spec draft, facts per plan option (never a recommendation), test cases, and a clean audit with executed evidence (exploit, query plan, timing, screenshot) | Advisory phases: request, spec, options. Audit: the diff and the code it reaches only | Questions, facts, cases in `testing-plan.md`, `reports/review/<name>.md` | Add requirements, recommend options, report unproven findings as confirmed, install tools, be resumed in `audit` |
 
 **Floors:** no haiku for specification, planning, critic, verifier or phase runner. Critical features use opus for specification, planning, the critic and phase runners.
 
@@ -422,7 +427,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
     │   └── final-report.md            orchestrator
     ├── delegations.md           orchestrator        role · model · reason · outcome
     └── handoff.md               outgoing agent      overwritten at each transition
-    (Lite: feature.md card + decisions/ instead of the set above)
+    (EVO as executor: feature.md card + decisions/ instead of the set above; DIRECT: none unless asked)
 
 <repo>/.quality/ or <git-common-dir>/quality/   project-wide registry, after the programmer's approval
 <git-common-dir>/feature-workflow/memory.md      project memory, ≤ 80 lines, never committed
@@ -430,7 +435,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 ```
 
 **Handoffs** transfer knowledge, not conversation (`protocols/context-handoff.md`):
-- **Transitions:** Request → Specification, Specification → Planning, Planning → Implementation, Implementation → Testing, Intent → Planning and Intent → Test design (Evolutionary), Testing → Evolution (Evolutionary), and Testing → Finalization. Each one has a checklist.
+- **Transitions:** Request → Specification, Specification → Planning, Planning → Implementation, Implementation → Testing, Intent → Planning and Intent → Test design (EVO), Testing → Evolution (EVO), and Testing → Finalization. Each one has a checklist.
 - **Content:** handoffs reference artifacts by path and section instead of copying them, and record freshness (commit, branch, dirty state, artifact versions).
 - **Critics and verifiers** never read handoffs.
 
@@ -443,4 +448,4 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 5. **No silent drift:** deviations, scope changes and behavior changes go back to the programmer.
 6. **Ask, don't guess:** gaps become questions relayed by the orchestrator, never invented requirements.
 7. **Clean review:** whoever reviews code never saw it being written.
-8. **Pay only for what is needed:** progressive loading, intensity levels, a model chosen per delegation, and batched launches and verification. Correctness still beats economy.
+8. **Pay only for what is needed:** progressive loading, skills indexed by frontmatter, three workflows from DIRECT up, a model chosen per delegation, and batched launches and verification. Correctness still beats economy.

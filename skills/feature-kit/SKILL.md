@@ -23,12 +23,14 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 1. **Lazily.** Do not read any module now, except the ones named in the request. Read a module the first time the current task needs it, by the triggers below, or when the programmer names it ("plan this", "use ponytail", "test it").
 2. **Announce it** in one line, e.g. `Loaded: test (testing-techniques.md)`. Do not re-read a module already loaded in this session unless the context was compacted.
 3. **Take the method, drop the process.** Role files are written for subagents inside the workflow. From them, apply the method, the checklists and the quality rules; ignore what belongs to the workflow: worktree location checks, handoffs, report files, artifact paths, delegation logs and gates. Write a file only when the programmer asks for one.
-4. **Project knowledge first.** If the repository has a registry, at `<repo>/.quality/` or locally at `$(git rev-parse --git-common-dir)/quality/` (`config.json`, `anti-patterns.md`, `rules/`), its limits and registry override the library defaults whenever the `quality` module is active.
+4. **Your own skills too.** The skill index of the workflow (`protocols/skills.md` §Where skills come from) applies here: build it from the frontmatter the first time a module loads, and load a skill of the programmer (`~/.claude/feature-skills/`), the repository (`<repo>/.claude/feature-skills/`) or a module of it (`<module>/.claude/feature-skills/`, when you work on files under `<module>`) when its signals match or its `use-in` covers what you are doing. A more specific skill replaces the library's with the same name. Announce each one like a module.
+5. **Project knowledge first.** If the repository has a registry, at `<repo>/.quality/` or locally at `$(git rev-parse --git-common-dir)/quality/` (`config.json`, `anti-patterns.md`, `rules/`), its limits and registry override the library defaults whenever the `quality` module is active.
 
 ## Catalog
 
 | Module | Load when | Read |
 | --- | --- | --- |
+| `edge-cases` | before writing code for a request: reach of broad statements, nearest analog, cases per input | `knowledge/edge-cases.md` |
 | `explore` | mapping unfamiliar code, finding conventions, build and test commands | `roles/repository-analyst.md` |
 | `spec` | the requirement is vague, contradictory or missing acceptance criteria | `knowledge/specification-guide.md`; the method of `roles/spec-writer.md` (every item traced to a source; gaps become questions to the programmer) |
 | `plan` | choosing how to implement something with more than one viable approach | `roles/planner.md`, then `protocols/neutral-decisions.md` before presenting options |
@@ -40,7 +42,7 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 | `e2e` | a change is user-facing and needs end-to-end evidence | `knowledge/e2e-testing.md` |
 | `gate` | checking a change against the quality limits | run `python3 <library>/scripts/quality_gate.py --repo <repo> --base <ref>`; uses `.quality/config.json` when present |
 | `review` | the programmer asks for a review | see below |
-| `specialist <name>` | the work touches a specialist's domain (security, ux-ui, database, network, performance, observability, or the project's or programmer's own) | the specialist file, found as `protocols/specialists.md` §Where specialists come from describes. Apply its slot sections as checklists. Its `audit` slot runs as a clean subagent only if the programmer asks, like `review` |
+| `specialist <name>` | the work touches a specialist's domain (security, ux-ui, database, network, performance, observability, or the project's or programmer's own) | the specialist file, found as `protocols/skills.md` §Where skills come from describes. Apply its phase sections as checklists. Its `audit` phase runs as a clean subagent only if the programmer asks, like `review` |
 | `card` | the programmer wants a single-file record of the change (target 500 lines, overflow to linked files) | `templates/feature-card.md` |
 
 **`review`.** A reviewer that wrote the code is biased toward it. So for a review, spawn a clean subagent (model `opus`) briefed only with `roles/reviewer.md`, the repository path and the diff range: never the conversation, the plan or your own reasoning. If the programmer asks to verify its findings, spawn a second clean subagent (model `sonnet`) with `roles/verifier.md` and the findings. Present the verified findings; fix only what the programmer approves. For a quick self-check instead, the programmer must ask for it explicitly, and you say it is not a clean review.
@@ -54,4 +56,4 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 
 The kit stays active for the session. After a context compaction, the catalog may be lost: if you no longer have this table, say so and ask the programmer to run `/feature-kit` again.
 
-**Escalating.** If the work grows into something that needs gates, parallel features or artifacts, you may tell the programmer that `/feature` exists, once. Never start it yourself.
+**Escalating.** If the work grows into something that needs gates, parallel features or artifacts, you may tell the programmer once that `/feature` exists, with its DIRECT, SDD and EVO workflows, as orchestrator or executor. Never start it yourself.

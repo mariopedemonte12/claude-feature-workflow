@@ -1,3 +1,11 @@
+---
+name: e2e-testing
+kind: guide
+summary: End-to-end tests through the real entry point: harnesses, flows, evidence
+use-in: [test-design, test]
+signals:
+  - terms: ["page", "screen", "endpoint", "CLI", "command", "API", "user"]
+---
 # End-to-End Testing Guide
 
 End-to-end (E2E) tests exercise the feature **the way its user does, through the real entry point**: the browser, the HTTP API, the CLI, the app. Unit and integration tests show the parts work. E2E shows the assembled system delivers the acceptance criteria.

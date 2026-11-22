@@ -25,25 +25,25 @@ A runner handles one phase of one feature, from its first step to the first ⛔ 
 
 | Workflow | Phase | Steps | Ends at |
 | --- | --- | --- | --- |
-| SDD Direct | Specification | 1 (analyst) – 2 | ⛔ 3 spec gate |
-| SDD Direct | Planning | 4 – 5, and the plan gate's content | ⛔ 6 plan gate |
-| SDD Direct | Build | 7 – 11 and the review at the validated level | ⛔ defects and candidates gate (or a deviation gate) |
-| SDD Direct | Fixes | approved fixes, affected tests, new critic if R1/R2 | ⛔ defects gate again, or step 12 then ⛔ 13 acceptance |
-| Evolutionary | Intent | 1 – 2 | ⛔ 3 |
-| Evolutionary | Approach | 4 | ⛔ 5 |
-| Evolutionary | Increment | 6 – 9 | ⛔ 9 reassess, or ⛔ 13 validation |
-| Evolutionary | Evolution | 11, then 6 of the next increment | ⛔ 10 of the next increment |
+| SDD | Specification | 1 (analyst) – 2 | ⛔ 3 spec gate |
+| SDD | Planning | 4 – 5, and the plan gate's content | ⛔ 6 plan gate |
+| SDD | Build | 7 – 11 and the review at the validated level | ⛔ defects and candidates gate (or a deviation gate) |
+| SDD | Fixes | approved fixes, affected tests, new critic if R1/R2 | ⛔ defects gate again, or step 12 then ⛔ 13 acceptance |
+| EVO | Intent | 1 – 2 | ⛔ 3 |
+| EVO | Approach | 4 | ⛔ 5 |
+| EVO | Increment | 6 – 9 | ⛔ 9 reassess, or ⛔ 13 validation |
+| EVO | Evolution | 11, then 6 of the next increment | ⛔ 10 of the next increment |
 
-At Lite intensity, phased mode adds a runner without removing work: the orchestrator runs Lite features directly unless the programmer insists.
+Phased mode applies only to orchestrated SDD and EVO features. A DIRECT feature is one agent, so a runner would add a level without removing work.
 
 ## The orchestrator in phased mode
 
 It keeps everything that needs the programmer or spans features:
-- startup (`SKILL.md` §2): memory, claims, worktree creation, intensity, workflow selection;
+- startup (`SKILL.md` §2): memory, claims, worktree creation, workflow recommendation, role;
 - `intent.md`, and recording every answer and statement in it;
 - gates: presenting, recording decisions, choosing what the next phase runs;
 - relaying agent questions (`protocols/agent-questions.md`) between runners and the programmer;
-- the portfolio, overlaps between features, project memory, integration and cleanup (SDD Direct steps 14–15).
+- the portfolio, overlaps between features, project memory, integration and cleanup (SDD steps 14–15).
 
 **At each runner return:**
 1. Present the gate **from disk**: the Pending decision records and the spec's open questions the runner wrote, not its summary. The programmer sees exactly what was written.
@@ -59,7 +59,7 @@ You are the phase runner for the <Phase> phase of feature "<slug>" in a multi-ag
 You are not the orchestrator and you cannot talk to the programmer. Read and follow
 <absolute path to protocols/phase-runners.md> §The phase runner.
 Feature worktree: <path> (branch <branch>, base <commit>). Feature folder: <path>. Never call EnterWorktree.
-Workflow file: <absolute path>, steps <from> – <to>. Intensity: <level>. Criticality: <level>.
+Workflow file: <absolute path>, steps <from> – <to>. Criticality: <level>.
 Decisions in force: <D-IDs, one line each>
 Task: run the steps above until the first ⛔ gate, then return.
 ```
@@ -68,7 +68,7 @@ Task: run the steps above until the first ⛔ gate, then return.
 
 You orchestrate one phase of one feature.
 
-1. **Read**: `SKILL.md` §4 (roles, models, delegation practice, briefs, verification, escalation), the steps of the workflow file the brief names, `protocols/intensity.md`, and `protocols/agent-questions.md`. Read the other protocols and templates only when a step in your range calls for them. You do not run startup, claims, memory or gates.
+1. **Read**: `SKILL.md` §4 (roles, models, delegation practice, briefs, verification, escalation), the steps of the workflow file the brief names, `protocols/skills.md` §Loading, and `protocols/agent-questions.md`. Read the other protocols and templates only when a step in your range calls for them. You do not run startup, claims, memory or gates.
 2. **Delegate** each step to its role exactly as `SKILL.md` §4 describes: model choice per delegation, logged in `delegations.md`; briefs in its format; parallel launches where independent. Roles never delegate further.
 3. **Verify** what each agent returns against the artifacts and the diff before using it, and remove any recommendation or preference ordering from options.
 4. **Agent questions.** Answer from evidence what you can. For the rest, stop: record them as `protocols/agent-questions.md` §For the orchestrator, steps 1–2, describes (including the agent's ID in `handoff.md`) and return with `QUESTIONS`. When resumed with the answers, record them and resume that agent with `SendMessage`; if it cannot be resumed, relaunch it with its work so far.
