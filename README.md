@@ -35,7 +35,7 @@ When you work on a feature by hand, `/feature-kit` makes the workflow's knowledg
 ## `/feature`: the full workflow
 
 
-- **The spec is a reading of your intent, not a closed contract.** Your request evolves as you talk: every statement of yours goes, verbatim, to an intent record that the spec cites as its source. The spec maps where the broad statements in your words reach, and marks which boundaries you drew and which are the agent's reading. Anything a later phase finds that it did not foresee comes back to you as a discovery, framed against your own words, never dismissed as "not in the spec".
+- **The spec is a reading of your intent, not a closed contract.** Your request evolves as you talk: every statement of yours that changes the intent goes, verbatim, to an intent record that is consolidated with your confirmation at each gate, and that the spec cites as its source. The spec maps where the broad statements in your words reach, and marks which boundaries you drew and which are the agent's reading. Anything a later phase finds that it did not foresee comes back to you as a discovery, framed against your own words, never dismissed as "not in the spec".
 - **Two workflows, chosen per feature by uncertainty, not size.**
   - **SDD Direct:** for well-understood features.
   - **Evolutionary Spec-Driven Development (ESDD):** for features with open requirements or technical unknowns.
@@ -108,7 +108,7 @@ Then start a new Claude Code session.
 A typical SDD Direct run:
 
 1. **Workflow selection.** The orchestrator assesses uncertainty per dimension, with evidence, and you choose the workflow.
-2. **Specification.** The Specification Writer turns your request (kept in `intent.md`, the intent record: your original request and every later statement of yours, verbatim, plus a *Current intent* you confirm at each gate) into intent, requirements, constraints, invariants and acceptance criteria, each traced to its source. Its questions come to you through the orchestrator. You approve it and set the criticality.
+2. **Specification.** The Specification Writer turns your request (kept in `intent.md`, the intent record: your original request, a consolidated intent you confirm at each gate, and your statements since, verbatim) into intent, requirements, constraints, invariants and acceptance criteria, each traced to its source. Its questions come to you through the orchestrator. You approve it and set the criticality.
 3. **Planning and test design.** In parallel, the Planner maps the viable approaches and the Test Designer derives the test cases from the spec. Both are presented at the same gate: you choose an approach, approve the testing plan, and decide mutation testing; the orchestrator recommends a review level (R0 gate only · R1 single critic · R2 review cycle) and you validate it.
 4. **Implementation.** The Implementer writes production code for the approved plan, without tests. Any deviation comes back to you as a decision.
 5. **Testing and review.** The Tester implements the designed cases and runs them, and a clean critic reviews in parallel. Fixes go back to the same Implementer, which makes the Tester's failing tests pass. At R2, a verifier refutes false findings, behavior-preserving fixes are applied automatically and listed at the next gate with a revert option, and a new clean critic reviews only those fixes (3 critic rounds per feature at most, across every path). At R1, every finding goes to you. Defects come back to you as decisions.

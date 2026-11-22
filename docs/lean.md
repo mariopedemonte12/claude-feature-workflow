@@ -64,7 +64,7 @@ Nothing else from the library is loaded.
 ### 3. Specification pass
 
 Written into the card before any code:
-- **The intent record.** The request evolves as you talk, so the card keeps your original request verbatim, every later statement of yours verbatim (S-1, S-2…, the latest winning), and a short *Current intent* you confirm at each gate. The rest of the pass is the current reading of that record, not a closed contract: where they diverge, your words win.
+- **The intent record.** The request evolves as you talk, so the card keeps your original request verbatim, a consolidated intent you confirm at each gate, and your statements since, verbatim (S-1, S-2…), only those that change the intent. At each gate the session proposes a new consolidated version; once you confirm it, the absorbed statements move to an appendix, so the card does not grow with the conversation. The rest of the pass is the current reading of that record, not a closed contract: where they diverge, your words win.
 - **Reach of the intent:** for each broad statement ("everywhere that…", "all…", "consistently"), the search run and the places found so far, including subclasses, overrides and copies of the same list.
 - **Outside the intent:** what a reader might assume is included, marked as the session's reading, for you to confirm at gate 1.
 - **Nearest analog:** the existing feature of the project most like this one, with its `path:line`, and how it handles each case: empty and invalid input, whitespace, exceptions raised by user-supplied objects, escaping and safe-marking, error messages. If there is none, the card says so.

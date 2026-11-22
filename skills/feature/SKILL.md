@@ -24,7 +24,7 @@ The programmer has deliberately activated this workflow. From now until they say
 4. **Separation of concerns.** Specification (what/why) ≠ plan (how) ≠ implementation ≠ validation. Each feature's artifacts and decisions stay separate from every other feature's.
 5. **Explicit uncertainty.** Label claims Confirmed / Hypothesis / Under exploration / Rejected. Never present a hypothesis as fact. Never invent requirements to fill gaps.
 6. **Evidence over assertion.** Report only what was actually executed. A test that was not run is never "passed".
-7. **No silent drift, in either direction.** No scope expansion, plan deviation or behavior change without telling the programmer, and without their approval when it touches their decisions. The specification is the current reading of the programmer's intent, not a closed contract (`knowledge/specification-guide.md` §What a specification is): what any phase discovers that it did not foresee is presented to the programmer as a *discovery*, framed against the intent record (`protocols/neutral-decisions.md` rule 15), never dismissed as out of scope and never implemented silently. The request itself evolves as the programmer talks: every statement goes to the intent record, and every gate shows the *Current intent* when it changed since the previous gate, for the programmer to confirm or correct.
+7. **No silent drift, in either direction.** No scope expansion, plan deviation or behavior change without telling the programmer, and without their approval when it touches their decisions. The specification is the current reading of the programmer's intent, not a closed contract (`knowledge/specification-guide.md` §What a specification is): what any phase discovers that it did not foresee is presented to the programmer as a *discovery*, framed against the intent record (`protocols/neutral-decisions.md` rule 15), never dismissed as out of scope and never implemented silently. The request itself evolves as the programmer talks: every statement that changes the intent goes to the intent record, and every gate with new statements proposes the new consolidated intent, for the programmer to confirm or correct (`templates/intent.md`).
 8. **Correctness over economy.** Saving cost, context or transitions never justifies skipping necessary verification.
 9. **You never change project code.** Every code change goes through the Implementer. A problem you notice in a diff is reported as a finding, never fixed by you.
 
@@ -86,7 +86,7 @@ If the conversation was compacted and you lost details of this workflow, re-read
 
 ## 4. Roles, executors and models
 
-You handle everything that needs dialogue with the programmer: workflow selection, keeping each feature's intent record (`intent.md`: the original request, every later statement of the programmer verbatim, and the *Current intent* they confirm at each gate), relaying agent questions, presenting decisions, recording approvals, finalization. The Specification Writer writes the spec; you own the conversation that feeds it (`intent.md`) and its gate. Subagents cannot talk to the programmer: they ask through you, following `protocols/agent-questions.md`. Claude Code lets subagents spawn their own up to a depth limit (3 by default), but **feature roles never delegate**: all delegation goes through the orchestrator, or through a phase runner in phased mode (`protocols/phase-runners.md`). If you are a sub-orchestrator (`protocols/hierarchy.md`), "the programmer" in this skill means your channel to them: the principal, unless the programmer writes to you directly.
+You handle everything that needs dialogue with the programmer: workflow selection, keeping each feature's intent record (`intent.md`: the original request, the consolidated intent they confirmed, and their statements since), relaying agent questions, presenting decisions, recording approvals, finalization. The Specification Writer writes the spec; you own the conversation that feeds it (`intent.md`) and its gate. Subagents cannot talk to the programmer: they ask through you, following `protocols/agent-questions.md`. Claude Code lets subagents spawn their own up to a depth limit (3 by default), but **feature roles never delegate**: all delegation goes through the orchestrator, or through a phase runner in phased mode (`protocols/phase-runners.md`). If you are a sub-orchestrator (`protocols/hierarchy.md`), "the programmer" in this skill means your channel to them: the principal, unless the programmer writes to you directly.
 
 | Role | Executor (`subagent_type`) | Standard `model` | Role file |
 | --- | --- | --- | --- |
@@ -173,7 +173,7 @@ If you need an answer only the programmer can give, stop and ask as <absolute pa
 Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in neutral format.
 ```
 
-**Critic, Verifier and specialist `audit` briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature or its implementation. The critic's brief adds the programmer's own words from `intent.md`, verbatim: `Original request: <…>` and `Programmer's statements: <S-n, each verbatim>`. Nothing else about intent: never the *Current intent* summary or the specification, so the critic can check the reach of the intent (`roles/reviewer.md`). The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
+**Critic, Verifier and specialist `audit` briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature or its implementation. The critic's brief adds the programmer's own words from `intent.md`, verbatim: `Original request: <…>`, `Consolidated intent (confirmed, version n): <…>` and `Statements since: <S-n, each verbatim>`. Nothing else about intent: never an unconfirmed proposal, the history or the specification, so the critic can check the reach of the intent (`roles/reviewer.md`). The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
 
 Never paste conversation history, whole artifacts or another feature's context into a brief.
 
@@ -200,7 +200,8 @@ Gates are **per feature**: a pending gate blocks only its own feature. Stop that
 ```
 <repo>/.claude/worktrees/<slug>/       # the feature's worktree (own branch)
 └── <features-root>/<slug>/             # e.g. docs/features/<slug>/
-├── intent.md                         # intent record: original request + programmer's statements (S-n) + Current intent
+├── intent.md                         # intent record: original request + consolidated intent + statements since (S-n)
+├── intent-history.md                 # absorbed statements, verbatim, by consolidation version; not read by default
 ├── specification.md
 ├── implementation-plan.md
 ├── testing-plan.md

@@ -3,8 +3,8 @@
 ## Intent
 The intent record, as `templates/intent.md` describes. The programmer's words are the source; everything else in this card is the current reading of them, not a closed contract.
 - Original request: > verbatim, never edited.
-- Programmer's statements: append-only table, verbatim: S-n · date · statement · prompted by (Q-n, D-n, gate, unprompted) · what it changes. The latest statement on a point wins.
-- Current intent: version, the gate where the programmer confirmed it, and a few lines.
+- Consolidated intent: version, the gate where the programmer confirmed it, absorbed S-IDs, and a few lines.
+- Statements since the last consolidation: verbatim, only those that change the intent: S-n · date · statement · prompted by (Q-n, D-n, gate, unprompted) · what it changes. Absorbed statements move to the card appendix, under the version that absorbed them.
 
 ## Scope
 - Reach: for each broad statement of the programmer's words, the search run and the places found so far.

@@ -11,7 +11,7 @@
 
 This specification is the current reading of the intent record, not a closed contract (`knowledge/specification-guide.md` §What a specification is). Where it and the record diverge, the record wins and the divergence is a question.
 
-**Source:** `intent.md`, Current intent version <n>, statements up to S-<n>.
+**Source:** `intent.md`, consolidated intent version <n>, statements up to S-<n>.
 
 ## Intent
 
