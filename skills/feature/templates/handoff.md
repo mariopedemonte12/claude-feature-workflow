@@ -9,6 +9,7 @@
 | Status | Active · Paused · Done |
 | Workflow | DIRECT · SDD · EVO · Hybrid |
 | Role of the session | Orchestrator · Executor |
+| Gate profile | full · key · auto, with per-gate changes (`protocols/gates.md`) |
 | Feature worktree | <absolute path to .claude/worktrees/<slug>> · branch <name> · base commit `abc1234` |
 | Related features | <slug>: <relation, e.g. "both modify src/x.ts">, or "none" |
 | Phase / step | … |

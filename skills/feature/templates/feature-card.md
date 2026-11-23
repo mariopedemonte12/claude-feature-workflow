@@ -29,7 +29,7 @@ The executable criteria: no other section restates what the feature must do.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Decisions
-- Workflow and role of the session. Approach: … (alternatives, one line each). Answers to questions: Q-1 → … (date). Pending decisions live in `decisions/`.
+- Workflow, role of the session and gate profile. Decisions the agent took at gates that were off are marked *Decided by agent (gate <name>)*. Approach: … (alternatives, one line each). Answers to questions: Q-1 → … (date). Pending decisions live in `decisions/`.
 
 ## Skills
 Skills that applied, by phase, with their location (library · programmer · repository · module `<path>`); specialists run and their phases.

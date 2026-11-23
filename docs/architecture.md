@@ -128,7 +128,7 @@ flowchart TB
     CL -->|"no"| S2["2 · Project context<br/>from memory, or CLAUDE.md / README / commands,<br/>Repository Analyst if many files"]
     S2 --> S4["4 · Skill index<br/>frontmatter of library, user, repo and module skills"]
     S4 --> S5{"5 · Workflow chosen<br/>by a flag?"}
-    S5 -->|"no"| S5b["Assess each dimension with evidence,<br/>RECOMMEND a workflow, the programmer validates"]
+    S5 -->|"no"| S5b["Assess each dimension with evidence,<br/>RECOMMEND a workflow and a gate profile,<br/>the programmer validates"]
     S5 -->|"yes"| S6
     S5b --> S6{"6 · Role chosen<br/>by a flag?"}
     S6 -->|"no"| S6b["Question: orchestrator or executor"]
@@ -138,6 +138,23 @@ flowchart TB
 ```
 
 - **Dimensions** for the workflow recommendation: requirement clarity, functional uncertainty, technical feasibility, architectural uncertainty, expected discoveries, need for prototypes, risk and reach. The role is a question; as with every decision, the agent may recommend one, labeled.
+- **Gate profile** (`protocols/gates.md`), recommended with the workflow: `full` (every gate) for likely Critical features, `key` (the default) for SDD and EVO, `auto` for DIRECT. Per-gate changes with `--gates key,+increment,-intent`.
+
+| Gate | `full` | `key` | `auto` |
+| --- | --- | --- | --- |
+| `intent` (spec approval, intent gate) | stops | stops | agent |
+| `specialists` | stops | agent: mandatory and `--with` run | agent |
+| `bootstrap` (registry) | stops | stops | agent: local registry only |
+| `approach` | stops | stops when options differ in API, data, dependencies or shared structure | agent |
+| `depth` (testing plan, mutation, review level, E2E harness) | stops | agent: defaults | agent |
+| `increment` (EVO) | stops | report and continue | report and continue |
+| `defects` | stops | review cycle fixes what the intent covers | same |
+| `discoveries` | stops | stops when outside or contradicting the intent | agent: not built, listed |
+| `candidates` | stops | at acceptance | listed only |
+| `acceptance` | stops | stops | stops |
+
+A gate that is off is decided by the agent with its recommendation, recorded as *Decided by agent* and listed in the final report. **Hard stops** in every profile: integration, cleanup, installing anything new, migrating non-test data, breaking a public interface not asked for, a discovery that contradicts the programmer's words, and a feature that turns out Critical outside `full`. Questions are always allowed.
+
 - **Worktree failures** (not a git repository, a git error, already inside a worktree session) stop the feature and are presented to the programmer. The orchestrator never falls back to the shared checkout.
 
 ## 4. SDD
@@ -392,7 +409,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 
 | Agent | Executor · standard model | Responsible for | Reads | Writes | Never |
 | --- | --- | --- | --- | --- | --- |
-| **Orchestrator** | main session | Talking to the programmer, worktrees, workflow recommendation and role, the intent record `intent.md` (original request, consolidated intent confirmed at each gate, statements since), briefs, verifying returns, relaying questions, gates, decision records, handoffs between phases, delegation log, final report, integration and cleanup on approval | Only the skill files the current step needs; artifacts; reports | `intent.md`, `decisions/`, handoffs for read-only roles, `delegations.md`, `reports/review/rounds.md`, `final-report.md`, `memory.md`, claims | Recommend or rank options (except the workflow and the review level), write production code, approve on the programmer's behalf, integrate or delete without confirmation |
+| **Orchestrator** | main session | Talking to the programmer, worktrees, workflow recommendation and role, the intent record `intent.md` (original request, consolidated intent confirmed at each gate, statements since), briefs, verifying returns, relaying questions, gates, decision records, handoffs between phases, delegation log, final report, integration and cleanup on approval | Only the skill files the current step needs; artifacts; reports | `intent.md`, `decisions/`, handoffs for read-only roles, `delegations.md`, `reports/review/rounds.md`, `final-report.md`, `memory.md`, claims | Hide a recommendation in the order or wording of options, write production code, approve on the programmer's behalf at a gate that is on, integrate or delete without confirmation |
 | **Repository Analyst** | `Explore` · haiku (sonnet for large or unfamiliar code) | Evidence for one task: components, dependencies, conventions, existing behavior, tests and commands, architecture style, quality and E2E tooling; observed vs inferred | The feature worktree, only what the brief needs | Nothing: returns a context report of about 600 words | Recommend approaches, assume a stack without evidence, modify files |
 | **Specification Writer** | `general-purpose` · opus (sonnet for short, clear requests; never haiku) | Turning the request into the current reading of its intent (not a closed contract): the source version of the intent record, the reach of its broad statements, FR/NFR, constraints, invariants, Given/When/Then criteria, what is outside the intent (and who drew each boundary) and open questions, each item traced to a source; Hybrid statuses; applying approved spec changes. Not used in EVO | `intent.md`, handoff, the specification guide and template, the repository (read-only) | `specification.md` (Draft) | Invent requirements, resolve ambiguity, include implementation details, write vague criteria to avoid a question |
 | **Planner** | `Plan` · opus (sonnet for one mechanical approach; never haiku) | The solution space: viable approaches in the decision format, per-option outlines that follow the quality standard, the E2E harness, other decisions needed, excluded options with the constraint they violate | Handoff, spec sections, code, registry | Nothing: returns the decision block | Choose, rank, change requirements, add speculative abstractions |
@@ -452,7 +469,8 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 2. **Artifacts are the source of truth.** Any feature can be resumed in a new session from its folder.
 3. **Separation of concerns:** spec (what and why) ≠ plan (how) ≠ implementation ≠ validation, and each feature is separate from every other.
 4. **Explicit uncertainty and evidence:** claims carry a status. A test that was not run is never "passed".
-5. **No silent drift:** deviations, scope changes and behavior changes go back to the programmer.
+5. **No silent drift:** deviations, scope changes and behavior changes go back to the programmer, at a gate or, when its gate is off, as a decision recorded and reported.
+9. **Supervision is chosen per feature:** the gate profile sets how often the programmer is stopped; what is hard to undo always stops.
 6. **Ask, don't guess:** gaps become questions relayed by the orchestrator, never invented requirements.
 7. **Clean review:** whoever reviews code never saw it being written.
 8. **Pay only for what is needed:** progressive loading, skills indexed by frontmatter, three workflows from DIRECT up, a model chosen per delegation, and batched launches and verification. Correctness still beats economy.

@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Pending · Decided · Deferred · Superseded by D-NNN |
+| Status | Pending · Decided · Decided by agent (gate <name> off) · Deferred · Superseded by D-NNN |
 | Category | requirement · scope · architecture · dependency · strategy · risk · verification · other |
 | Presented | YYYY-MM-DD |
 | Decided | YYYY-MM-DD (by the programmer) |

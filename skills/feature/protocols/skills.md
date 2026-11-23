@@ -77,7 +77,7 @@ These folders are not Claude Code's own `.claude/skills/`: that folder's descrip
 
 1. **Detect signals.** Check each specialist's signals against the request, the spec draft or intent pass, and the analyst's evidence, or, at the audit phase, the real diff.
 2. **Present them as facts** at the feature's first gate. One line per matching specialist: which signals matched (paths, terms), the phases it offers, and the estimated cost (about USD 0.15–0.30 per phase). Specialists without a match are not listed, unless the programmer asks for the full list.
-3. **The programmer chooses** which specialists run and in which phases. Matching signals are facts; your recommendation of which to run, if you have one, is labeled as such.
+3. **The programmer chooses** which specialists run and in which phases, at the `specialists` gate. With that gate off (`protocols/gates.md`), the mandatory ones and those named with `--with` run, and the others are listed with their signals for the programmer to add. Matching signals are facts; your recommendation of which to run, if you have one, is labeled as such.
 4. **Flag:** `--with <name>[,<name>…]` in the request activates those specialists in all their phases. The programmer may restrict them at the gate.
 5. **Mandatory:** a specialist with `mandatory-when: critical` runs on a Critical feature whenever one of its signals matches. State it; do not ask. The built-in `security` specialist is mandatory this way.
 6. **Re-check signals** against the real diff before verification, and in EVO at each increment. A specialist whose signals now match but was not chosen is asked about again.

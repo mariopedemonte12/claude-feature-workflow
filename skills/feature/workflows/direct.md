@@ -20,7 +20,7 @@ One session does the whole feature with the edge-case checklist: no specificatio
 
 **6. Report.** Files changed; test commands and their real results; the reach found and the cases covered; questions asked and answers; anything you saw that the request seems to reach and you did not do, as a discovery (`protocols/decisions.md` rule 9), never dropped silently; self-review findings and their fixes.
 
-**7. ⛔ Integration.** Present it (merge, pull request, leave the branch or changes as they are), with the facts: uncommitted changes, commits ahead and behind. Execute only what is chosen.
+**7. ⛔ Integration** (hard stop). DIRECT has no other gate in any profile (`protocols/gates.md`); its blocking questions (step 3) are asked in every profile. Present it (merge, pull request, leave the branch or changes as they are), with the facts: uncommitted changes, commits ahead and behind. Execute only what is chosen.
 
 ## Where the work happens
 

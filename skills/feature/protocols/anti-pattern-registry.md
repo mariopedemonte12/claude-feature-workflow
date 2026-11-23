@@ -59,7 +59,7 @@ When the registry passes 400 lines, split it by area (`anti-patterns/<area>.md`)
 
 1. The Repository Analyst reports the architecture style, the folder organization, and the lint, format and architecture tools already installed.
 2. The orchestrator selects the seed catalogs from `knowledge/anti-patterns/` that match that evidence: `general.md` always, plus whichever of `feature-folders.md`, `layered.md`, `frontend-ui.md`, `backend-api.md` and `tests.md` apply.
-3. ⛔ Present to the programmer, following `protocols/decisions.md`:
+3. ⛔ `[gate: bootstrap]` Present to the programmer, following `protocols/decisions.md` (with the gate off, `protocols/gates.md`: a registry local to the clone, the `general` seeds and the default limits, nothing versioned, reported to the programmer):
    - the seed entries, so they choose which to adopt (all, some, none);
    - the limits in `config.json`, with the defaults stated as defaults, next to the repository's own figures (how many files already exceed each limit);
    - `allowDocstrings`, with the evidence of whether the project documents its public units with docstrings;
@@ -100,7 +100,7 @@ Candidate format, one row per candidate:
 
 A candidate needs a concrete case, as a review finding does. "Could be cleaner" is not a candidate.
 
-**3. Register.** ⛔ At the defects gate (or before final acceptance, if there are no defects), the orchestrator presents the candidates. For each one, the options are: add as a new entry · record as an occurrence of AP-NNN · reject (reason recorded). The programmer decides. The orchestrator then updates `anti-patterns.md`.
+**3. Register.** ⛔ `[gate: candidates]` At the defects gate (or before final acceptance, if there are no defects), the orchestrator presents the candidates. For each one, the options are: add as a new entry · record as an occurrence of AP-NNN · reject (reason recorded). The programmer decides. The orchestrator then updates `anti-patterns.md`.
 
 **4. Enforce.** For each approved entry, the levels of §Enforcement levels are presented at the same gate, in their order: the ones that can work for that entry with what each changes and costs, and the ones that cannot, with why. The programmer chooses. A level that changes project code (architecture, types, a test) is work in the feature's scope only when the programmer says so; otherwise it is proposed as its own change. For an entry enforced by a check, the Implementer writes the rule in the approved tool with at least one invalid case (must match) and one valid case (must not match), runs the rule's tests, adds or updates the `checks` command in `config.json`, and sets the entry's `Detection` to `automated`. **Prove every new check, type or test on a real past mistake:** it must fail on the occurrence recorded in *Seen* (check out that commit or reproduce the code in a scratch file) and pass on the fixed code; record where it was proven in *Enforced by*. A manual entry seen in two or more features is proposed for a higher level at the next gate.
 
