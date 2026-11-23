@@ -48,13 +48,14 @@ A `guide` may declare any phase. A `specialist` declares only `spec`, `plan`, `t
 
 ## Where skills come from
 
-Four locations, from the most general to the most specific. **A more specific skill replaces a more general one with the same `name`.** Say which file you used whenever two exist.
+Five locations, from the most general to the most specific. **A more specific skill replaces a more general one with the same `name`.** Say which file you used whenever two exist.
 
 | Order | Location | Scope |
 | --- | --- | --- |
 | 1 | `<skill dir>/knowledge/*.md`, `<skill dir>/specialists/*.md` | The library |
 | 2 | `~/.claude/feature-skills/*.md` | The programmer's own, for every project |
-| 3 | `<repository>/.claude/feature-skills/*.md` | The repository's own, versioned with it |
+| 3 | `$(git rev-parse --git-common-dir)/feature-skills/*.md` | The repository's own, local to this clone: never committed, shared by its worktrees (used by generated skills when the programmer keeps them out of the repository, `protocols/verification-skills.md`) |
+| 3 | `<repository>/.claude/feature-skills/*.md` | The repository's own, versioned with it. With a local skill of the same name, the versioned one wins |
 | 4 | `<module>/.claude/feature-skills/*.md`, for any directory `<module>` inside the repository | One module's own. Active only for a feature that reads or changes files under `<module>` |
 
 `~/.claude/feature-specialists/` and `<repository>/.claude/feature-specialists/`, the earlier names, are still read, at the same level as `feature-skills/` next to them.
@@ -65,7 +66,7 @@ These folders are not Claude Code's own `.claude/skills/`: that folder's descrip
 
 ## Loading: index first, file on use
 
-1. At the start of a feature, read **only the frontmatter** of every skill in the four locations (`sed -n '1,/^---$/p'` after the first line) and keep a one-line-per-skill index: name, kind, location, `use-in`, `workflows`, signals, `mandatory-when`.
+1. At the start of a feature, read **only the frontmatter** of every skill in the five locations (`sed -n '1,/^---$/p'` after the first line) and keep a one-line-per-skill index: name, kind, location, `use-in`, `workflows`, signals, `mandatory-when`.
 2. Read a guide's body when its phase starts and it applies: no signals, or a signal matches. Read a specialist's file only once it is activated, and only the sections of its active phases (`## Slot: <phase>`).
 3. **Briefing an agent** for a phase: list in its brief the absolute paths of the guides that apply to that phase, after its role file (`Skills for this phase: <path>, <path>`). Never paste their content. Library guides a role file already names are not listed again.
 4. Announce each skill outside the library in one line when it first applies, e.g. `Skill: payments-rules (repo) → implement, review`.
@@ -113,6 +114,7 @@ Group findings by domain at the gate, so the programmer can decide a domain at o
 - **Copy a template:** start from a library file of the same kind.
 - **Choose `use-in` narrowly.** A rule about how code is written is `implement, review`; a rule about what a feature must do is `intent, spec, test-design`. `general` is for knowledge every phase needs, and costs a read in every phase.
 - **Choose signals from facts:** paths, file types, imported libraries, request terms. Avoid signals that match almost every feature.
+- **Generated skills.** `protocols/verification-skills.md` writes two kinds from the repository itself: `verify-<app>` (drive the real app) and `formal-<area>` (a formal property of the code). They are ordinary guides once written.
 - **Module skills** hold what is true of that module only: its invariants, its test fixtures, the analog to imitate. What is true of the whole repository goes in the repository's folder.
 - **Specialist audit sections need evidence:** each one states what counts as executed evidence in its domain.
 - **Scope:** clean-code findings belong to the critic, and acceptance criteria to the Tester.

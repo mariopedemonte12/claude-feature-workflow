@@ -14,6 +14,8 @@ The Tester owns E2E testing. It is mandatory for every feature with a user-facin
 
 ## 1. Choose the harness by surface
 
+If the repository has a `verify-<app>` skill (`protocols/verification-skills.md`), use its Launch, Doctor, Drive, Evidence and Cleanup sections and its feature map first; if a journey it describes no longer works, decide with evidence whether it is a defect or drift of the skill. If there is no scripted way to drive the app, the status may be Blocked, and generating that skill is an option at the next gate.
+
 Use what the project already has. Installing a harness, or downloading browsers for it, adds a dev dependency, which is a programmer decision settled at the plan gate. If the plan did not settle it, return to the orchestrator before installing anything.
 
 | Surface | Harness | How the test drives it |

@@ -24,7 +24,7 @@ The checklist every workflow runs before code, whoever runs it. In DIRECT it is 
 
 ## Probes
 
-For a change involving parsers, regular expressions, escaping or safe-marking, run a quick probe before settling the approach: a timing loop that doubles the input size, and an injection string. Report what it printed.
+For a change involving parsers, regular expressions, escaping or safe-marking, run a quick probe before settling the approach: a timing loop that doubles the input size, and an injection string. Report what it printed. Any number you report or decide on follows `knowledge/measurement.md`, even for a probe: at least the error count and whether the work happened.
 
 ## After code
 

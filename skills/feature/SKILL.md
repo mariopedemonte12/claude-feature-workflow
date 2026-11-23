@@ -1,7 +1,7 @@
 ---
 name: feature
 description: Feature workflow with three types of work (DIRECT, SDD, EVO) and two roles for the session (orchestrator of one or several features, each in its own git worktree, or executor of one feature), with human decision gates, neutral option presentation, classified skills, per-delegation model selection and shared artifacts. Manual invocation only.
-argument-hint: "<what you want built> [--direct | --sdd | --evo] [--orchestrate | --execute] [--no-skills] [--phased] [--with <specialist>,…] | role <role> <slug> | continue <answer> | resume <slug>... | status | hub | join <hub> <group>"
+argument-hint: "<what you want built> [--direct | --sdd | --evo] [--orchestrate | --execute] [--no-skills] [--phased] [--with <specialist>,…] | role <role> <slug> | correct | verify-skill app|formal [<target>] | continue <answer> | resume <slug>... | status | hub | join <hub> <group>"
 disable-model-invocation: true
 ---
 
@@ -44,6 +44,8 @@ How features are grouped is the programmer's choice too: several features under 
    - `hub`: become the **principal orchestrator** of a hierarchy of sub-orchestrators. Read `protocols/hierarchy.md` and follow its principal role; ask the programmer for the groups and the transport.
    - `join <hub> <group>`: become the **sub-orchestrator** of `<group>`, reporting to the principal session `<hub>` through cross-session messaging. Read `protocols/hierarchy.md` §Sub-orchestrator and follow it.
    - `role <role> <slug>`: this session runs **one role** of a feature that an executor session runs, opened by the programmer. Read `protocols/executor.md` §Sessions the programmer opens and follow it; nothing else in this skill applies.
+   - `correct`: a correction sweep of the mistakes agents repeat in this repository. Read `protocols/anti-pattern-registry.md` §Correction sweep and follow it; it is not a feature.
+   - `verify-skill app [<surface>]` or `verify-skill formal [<area or bug>]`: generate a project verification skill. Read `protocols/verification-skills.md` and follow it; it is not a feature.
    - `resume <slug> [<slug>…]`: for each slug, locate its worktree (`.claude/worktrees/<slug>`, shown by `git worktree list`) and the feature folder inside it, read its `handoff.md` (or the card's *State*, for a feature with a card), confirm the role of this session for it (the one recorded, unless the programmer changes it), check freshness (`protocols/context-handoff.md` §Freshness), and report the current state and next step, tagged `[slug]`. Then continue.
    - `<description> [flags]`: a **new feature**. Give it a short kebab-case slug, unique among the features in progress, and state it. A workflow flag (`--direct`, `--sdd`, `--evo`; `--esdd` is an old name of `--evo`) means the programmer has already chosen its workflow; a role flag (`--orchestrate`, `--execute`) means they have chosen this session's role; `--no-skills` turns the skills off for it (`protocols/skills.md`). `--phased` runs an orchestrated feature in phased mode, which is **experimental and has never been run** (`protocols/phase-runners.md`): say so when it is chosen. `--lite`, `--medium` and `--high` are old flags: intensities no longer exist; say so in one line and continue. The description may contain several features: give each its slug.
    - Empty: if features are in progress, show the board and ask what to do; otherwise ask what the programmer wants built.
@@ -84,6 +86,9 @@ How features are grouped is the programmer's choice too: several features under 
 | Writing the approved plan | `templates/implementation-plan.md` |
 | Project without `.quality/`, or anti-pattern candidates to present | `protocols/anti-pattern-registry.md`, then the matching `knowledge/anti-patterns/*.md` seeds |
 | Recommending the review level, and running review | `protocols/review-cycle.md` |
+| `correct`; the programmer corrects work in a way that applies to other changes | `protocols/anti-pattern-registry.md` (§Correction sweep, §Enforcement levels) |
+| `verify-skill`; an end-to-end status Blocked for lack of a way to drive the app; a Critical feature with concurrency, retries, a state machine, a parser or unsafe code; a diff touching a verification skill's paths | `protocols/verification-skills.md` |
+| Any measured number to report or decide on | `knowledge/measurement.md` |
 | Every new feature, before its first gate; a phase starts; `--with`; the programmer asks about skills or specialists | `protocols/skills.md` |
 | A feature runs in phased mode (experimental), or the programmer asks about it | `protocols/phase-runners.md` |
 | `hub`, `join`, another orchestrator's claim found, or the programmer mentions several orchestrators | `protocols/hierarchy.md` |

@@ -93,6 +93,8 @@ Tool availability: use what the project already has. Adding a dev dependency is 
 
 **Not applicable** to stateless logic.
 
+**Show the machine** as a statechart when the programmer must judge it (`protocols/verification-skills.md` §Statecharts). When the order of events matters more than tests can reach (concurrent actors, retries, crash and restart), a model checker covers every order within a bound: a `formal-<area>` skill, if the repository has one, runs here; otherwise generating one is an option at the gate.
+
 ---
 
 ## Mutation Testing

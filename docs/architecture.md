@@ -110,7 +110,9 @@ flowchart LR
 | `/feature status` | Board of every feature in progress, plus the ones other sessions claim. |
 | `/feature continue <answer>` | A fresh session answers a pending gate, using `memory.md` and `decisions/` on disk. |
 | `/feature hub`, `/feature join <hub> <group>` | Hierarchical mode (§10). |
-| `/feature-kit` | Separate skill. It exposes the roles and skills as modules (edge-cases, explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, card, specialists) plus the programmer's, repository's and modules' own skills, without phases, gates, artifacts or worktrees. Only `review` launches subagents. |
+| `/feature correct` | Correction sweep: classes of repeated mistakes, enforced at the level the programmer chooses (§9). |
+| `/feature verify-skill app\|formal [<target>]` | Generates a repository verification skill (§6). |
+| `/feature-kit` | Separate skill. It exposes the roles and skills as modules (edge-cases, explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, measure, correct, verify-skill, formal-skill, card, specialists) plus the programmer's, repository's and modules' own skills, without phases, gates, artifacts or worktrees. Only `review` launches subagents. |
 
 Both skills have `disable-model-invocation: true`: they load only when the programmer types the command.
 
@@ -219,13 +221,14 @@ Source: `protocols/skills.md`. Every piece of knowledge is a skill whose frontma
 
 ```mermaid
 flowchart LR
-    L1["library<br/>skills/feature/knowledge · specialists"] --> L2["~/.claude/feature-skills/<br/>the programmer's"] --> L3["repo/.claude/feature-skills/<br/>the repository's"] --> L4["module/.claude/feature-skills/<br/>active when the feature touches the module"]
+    L1["library<br/>skills/feature/knowledge · specialists"] --> L2["~/.claude/feature-skills/<br/>the programmer's"] --> L3["git-common-dir/feature-skills/ · repo/.claude/feature-skills/<br/>the repository's: local or versioned"] --> L4["module/.claude/feature-skills/<br/>active when the feature touches the module"]
     L4 --> IX["Index: frontmatter only<br/>same name: the more specific wins"]
     IX --> PH["Each phase: guides whose use-in covers it,<br/>listed by path in the agent's brief"]
     IX --> SP["Specialists: signals → facts at the first gate →<br/>the programmer chooses phases"]
 ```
 
-- **Library classification:** `edge-cases` general; `specification-guide` intent, spec, test-design; `code-quality` implement, test, review; `design-patterns` plan, implement; `testing-techniques` test-design, test; `e2e-testing` test-design, test; the six specialists in their phases.
+- **Library classification:** `edge-cases` general; `specification-guide` intent, spec, test-design; `code-quality` plan, implement, test, review; `design-patterns` plan, implement; `measurement` plan, test, review, audit (by signals); `testing-techniques` test-design, test; `e2e-testing` test-design, test; the six specialists in their phases.
+- **Generated skills** (`protocols/verification-skills.md`): `/feature verify-skill app` writes `verify-<app>` (launch, doctor, drive, evidence, cleanup, feature map; test-design, test, review); `/feature verify-skill formal` writes `formal-<area>` (a property checked by a model checker or verifier, with its coverage record and sync commit; plan, test, review). Each is proven once before handover, and checked for drift when a diff touches its paths.
 - **DIRECT** has no phases: it loads skills on demand; `--no-skills` leaves only the edge-case checklist.
 - **Why not `.claude/skills/`:** Claude Code loads those descriptions into every session; these folders load only when the workflow runs.
 
@@ -298,15 +301,19 @@ flowchart LR
     IMP -->|"new occurrences"| CAND["reports/anti-pattern-candidates.md"]
     CAND --> GATE{"⛔ Candidates gate<br/>approve · reject · automate"}
     GATE -->|"approved"| REG
-    GATE -->|"automate"| RULE["lint rule: ast-grep · Semgrep ·<br/>import rules · project linter"]
+    GATE -->|"enforce at a level"| RULE["architecture · types · check (ast-grep, Semgrep,<br/>import rules, linter) · test · review"]
     RULE --> REG
 ```
+
+**Enforcement levels** go from making the mistake impossible (architecture, types) to catching it (a check, a test) to describing it (review); the programmer chooses per entry, and each new check is proven on a real past occurrence. The programmer's own corrections become candidates. `/feature correct` sweeps commits, reverts and review comments for classes of repeated mistakes (two occurrences make a class) and enforces the chosen ones, one commit each.
 
 The **quality standard** applies to every agent that writes code:
 - **Smallest complete change:** reuse what exists, then the standard library, then an installed dependency, then the minimum new code.
 - **No comments,** except `shortcut: <limit>, <when to upgrade>` markers and tool directives.
 - **Limits as signals of mixed responsibilities:** file ≤ 400 lines, function ≤ 30, parameters ≤ 4, cyclomatic complexity ≤ 10, nesting ≤ 3.
 - **Structure:** declarative names, single responsibility, feature folders when the project already uses them (the existing structure wins), and patterns only for problems present now.
+- **Root causes:** reproduce, ask whether the triggering state is legitimate (if not, a guard hides the bug), fix the pattern; after two failed fixes with one premise, write the premise down and test it before a third.
+- **Design principles:** model the domain in data structures, data shape before logic, validation only at boundaries, subtract before adding.
 
 The **quality gate** checks only the feature's changes against its base:
 - file length, flagged only for files that are new or grew;
