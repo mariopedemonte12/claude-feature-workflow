@@ -33,9 +33,10 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 | `edge-cases` | before writing code for a request: reach of broad statements, nearest analog, cases per input | `knowledge/edge-cases.md` |
 | `explore` | mapping unfamiliar code, finding conventions, build and test commands | `roles/repository-analyst.md` |
 | `spec` | the requirement is vague, contradictory or missing acceptance criteria | `knowledge/specification-guide.md`; the method of `roles/spec-writer.md` (every item traced to a source; gaps become questions to the programmer) |
-| `plan` | choosing how to implement something with more than one viable approach | `roles/planner.md`, then `protocols/neutral-decisions.md` before presenting options |
-| `decide` | any choice that belongs to the programmer | `protocols/neutral-decisions.md` |
-| `quality` (alias `ponytail`) | writing or changing code | `knowledge/code-quality.md`, plus the project's `.quality/anti-patterns.md` if present |
+| `plan` | choosing how to implement something with more than one viable approach | `roles/planner.md`, then `protocols/decisions.md` before presenting options |
+| `decide` | any choice that belongs to the programmer | `protocols/decisions.md`: the options with their facts, what you left out, and your labeled recommendation |
+| `writing` | writing documentation, a README, a PR description, a commit message or a report | `knowledge/writing.md` |
+| `quality` (alias `ponytail`) | writing or changing code, debugging, or shaping the types and modules of a change | `knowledge/code-quality.md` (including §Root causes and §10 Design principles), plus the project's `.quality/anti-patterns.md` if present |
 | `patterns` | a design pattern is being considered or a structure feels forced | `knowledge/design-patterns.md` |
 | `antipatterns` | creating or updating the project's anti-pattern registry or lint rules | `protocols/anti-pattern-registry.md` and the matching `knowledge/anti-patterns/*.md` |
 | `test` | writing or evaluating tests | `knowledge/testing-techniques.md`; the method section of `roles/tester.md` |
@@ -43,6 +44,10 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 | `gate` | checking a change against the quality limits | run `python3 <library>/scripts/quality_gate.py --repo <repo> --base <ref>`; uses `.quality/config.json` when present |
 | `review` | the programmer asks for a review | see below |
 | `specialist <name>` | the work touches a specialist's domain (security, ux-ui, database, network, performance, observability, or the project's or programmer's own) | the specialist file, found as `protocols/skills.md` §Where skills come from describes. Apply its phase sections as checklists. Its `audit` phase runs as a clean subagent only if the programmer asks, like `review` |
+| `measure` | reporting or deciding on a measured number: a speedup, a regression, a latency, an eval result | `knowledge/measurement.md` |
+| `correct` | the programmer wants the mistakes agents repeat in this repository made impossible, or corrects you in a way that applies beyond this change | `protocols/anti-pattern-registry.md` §Enforcement levels and §Correction sweep (its ⛔ steps become questions to the programmer) |
+| `verify-skill` | the programmer wants a scripted way for agents to drive the real app and capture evidence | `protocols/verification-skills.md` §Where the skill lives, §App verification |
+| `formal-skill` | concurrency, retries, a state machine, a parser or unsafe code need more than tests; or a state machine should be shown as a statechart | `protocols/verification-skills.md` §Formal verification, §Statecharts |
 | `card` | the programmer wants a single-file record of the change (target 500 lines, overflow to linked files) | `templates/feature-card.md` |
 
 **`review`.** A reviewer that wrote the code is biased toward it. So for a review, spawn a clean subagent (model `opus`) briefed only with `roles/reviewer.md`, the repository path and the diff range: never the conversation, the plan or your own reasoning. If the programmer asks to verify its findings, spawn a second clean subagent (model `sonnet`) with `roles/verifier.md` and the findings. Present the verified findings; fix only what the programmer approves. For a quick self-check instead, the programmer must ask for it explicitly, and you say it is not a clean review.

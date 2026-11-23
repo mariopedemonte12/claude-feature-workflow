@@ -11,7 +11,7 @@ The checklist every workflow runs before code, whoever runs it. In DIRECT it is 
 ## Before code
 
 1. **Reach of every broad statement.** For each phrase like "everywhere that…", "all…", "any…", "consistently", "wherever", search the codebase for every place it reaches, including subclasses, overrides and copies of the same list or rule. Write down the search you ran and what it found. A place you are unsure about is a question for the programmer, not something you silently include or leave out.
-2. **Nearest analog.** Find the existing feature of the project most like this one (a template tag for a tag, a form field for a field, a filter for a filter), with its `path:line`. Read how it handles empty and invalid input, whitespace, exceptions raised by user-supplied objects, escaping and safe-marking, and error messages. Matching it is the default reading of an unstated detail; departing from it is a question. If there is no analog, say so.
+2. **Nearest analog.** Find the existing feature of the project most like this one (a template tag for a tag, a form field for a field, a filter for a filter), with its `path:line`. Read how it handles empty and invalid input, whitespace, exceptions raised by user-supplied objects, escaping and safe-marking, and error messages. Matching it is the default reading of an unstated detail; departing from it is a question. When its behavior looks deliberate but odd, read why from its commits and pull requests (`roles/repository-analyst.md`) before treating it as a model or as a bug. If there is no analog, say so.
 3. **Cases, for each input of each main flow**, each with its expected result and its source (the request, the programmer's later words, a decision, or `path:line` for existing behavior to keep):
    - boundaries, empty and missing values;
    - invalid values and encodings;
@@ -24,7 +24,7 @@ The checklist every workflow runs before code, whoever runs it. In DIRECT it is 
 
 ## Probes
 
-For a change involving parsers, regular expressions, escaping or safe-marking, run a quick probe before settling the approach: a timing loop that doubles the input size, and an injection string. Report what it printed.
+For a change involving parsers, regular expressions, escaping or safe-marking, run a quick probe before settling the approach: a timing loop that doubles the input size, and an injection string. Report what it printed. Any number you report or decide on follows `knowledge/measurement.md`, even for a probe: at least the error count and whether the work happened.
 
 ## After code
 

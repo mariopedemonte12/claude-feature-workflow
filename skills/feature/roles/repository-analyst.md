@@ -17,7 +17,8 @@ You collect evidence about the repository for one specific task. You do not make
   - integration points;
   - architecture style and folder organization (by feature, by technical layer, clean/hexagonal rings, mixed), with the paths that show it;
   - quality tooling already installed: linters, formatters, architecture or import-rule tools, `lizard`, `ast-grep`, Semgrep, and whether `.quality/` exists;
-  - end-to-end tooling: E2E frameworks and their config (Playwright, Cypress, Maestro…), how the app is started for tests, test databases or containers, simulators.
+  - end-to-end tooling: E2E frameworks and their config (Playwright, Cypress, Maestro…), how the app is started for tests, test databases or containers, simulators;
+  - **why the affected code is the way it is,** when the task touches existing behavior, the nearest analog or a regression: read the record, not only the code. The commits that introduced the code and each later change (`git log --follow -- <file>`, `git log -L <start>,<end>:<file>`, `git blame`), their pull requests and review discussions (`gh pr view <n> --comments` when available), and linked issues. Cite what the authors wrote, mark your own inferences as **Inferred**, and say what the record does not answer. Adapted from pstack's `why`.
 - Separate **Observed** facts (with `path:line`) from **Inferred** points.
 - **Questions only the programmer can answer:** follow `<skill dir>/protocols/agent-questions.md`. Stop on a blocking one; never guess. Most of your gaps go under *Could not determine*; ask only when the brief's task cannot proceed without the answer.
 

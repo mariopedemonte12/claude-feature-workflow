@@ -31,7 +31,7 @@ For each option, add facts:
 - I/O per operation;
 - caching and its invalidation cost.
 
-**Probe** the options that involve parsers, regular expressions or nested loops: run a timing loop that doubles the input size, and report what it printed. The cost is then measured, not estimated.
+**Probe** the options that involve parsers, regular expressions or nested loops: run a timing loop that doubles the input size, and report what it printed. The cost is then measured, not estimated. Vet each number with `knowledge/measurement.md` before reporting it.
 
 ## Slot: test-design
 
@@ -52,5 +52,6 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - repeated work inside loops;
   - unbounded memory;
   - extra I/O or queries on a hot path.
-- **Evidence rule:** each finding cites its timing table or profile. A finding without measurements is a *Possible risk*.
+- **Vet every number** with `knowledge/measurement.md` (the seven questions): run count, range and limiter go with it.
+- **Evidence rule:** each finding cites its timing table or profile. A finding without measurements is a *Possible risk*. A measurement whose verdict is inconclusive is a *Possible risk* too, with the gap named.
 - **Output:** `reports/review/performance.md` (with a card: `performance.md` beside it). Return at most 150 words.

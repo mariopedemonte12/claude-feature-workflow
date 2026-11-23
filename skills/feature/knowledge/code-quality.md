@@ -1,8 +1,8 @@
 ---
 name: code-quality
 kind: guide
-summary: Code quality standard: size limits, naming, structure, errors, dependencies, test-first for defects, the quality gate
-use-in: [implement, test, review]
+summary: Code quality standard: smallest change, root causes, size limits, naming, structure, design principles, test-first for defects, the quality gate
+use-in: [plan, implement, test, review]
 ---
 # Code Quality Standard
 
@@ -10,7 +10,7 @@ Binding for every line of code an agent writes in this workflow: production code
 
 The order of priority is: **correct → safe → holds under the expected load → tested → readable → lean.** No rule below justifies cutting the first four.
 
-Part of this standard adapts the "smallest complete change" discipline of Ponytail (github.com/DietrichGebert/ponytail, MIT), and the surgical-change and test-first rules of the Karpathy-inspired guidelines (github.com/forrestchang/andrej-karpathy-skills, MIT). It is stricter than Ponytail on comments (no "why" comments; only `shortcut:` markers and tool directives): the rules here win.
+Part of this standard adapts the "smallest complete change" discipline of Ponytail (github.com/DietrichGebert/ponytail, MIT), and the surgical-change and test-first rules of the Karpathy-inspired guidelines (github.com/forrestchang/andrej-karpathy-skills, MIT). It is stricter than Ponytail on comments (no "why" comments; only `shortcut:` markers and tool directives): the rules here win. The root-cause rules (§1) and the design principles (§10) adapt principle skills of pstack (github.com/cursor/plugins, pstack, MIT).
 
 ## 1. The smallest complete change
 
@@ -27,7 +27,7 @@ Then take the first rung that fully works:
 - Be lazy about the solution, never about the change: finish every caller, test and fixture the change breaks.
 - No abstraction, wrapper, option, configuration or "for later" code that the spec or plan does not need.
 - Code you move or merge keeps its error handling and validation.
-- Bug fix: find every caller of the function you touch and fix the root cause once, in the shared code.
+- Bug fix: find every caller of the function you touch and fix the root cause once, in the shared code (§Root causes).
 - Between options of equal size, take the one that is correct on edge cases.
 - No handling for scenarios that cannot happen: a value that the type, a prior check or the caller's contract already guarantees. Input at a trust boundary is never in that category: user, network, file and environment input can always be anything.
 - Before reporting, re-read your diff: if the same behavior fits in a fraction of the code, rewrite it.
@@ -37,6 +37,19 @@ Then take the first rung that fully works:
 - Remove the imports, variables and functions that **your** change made unused. Dead code that existed before the change is mentioned in the report, never deleted: it may be reachable in ways the diff does not show.
 
 **Test first for defects.** A bug fix, and every fix of a Blocker or Major finding that changes behavior, starts with a test that reproduces the defect. When separate Tester and Implementer agents run (orchestrated SDD and EVO), the Tester writes that test and the Implementer makes it pass; in DIRECT, in executor mode and in hand-driven work, the same agent writes both. Run it, see it fail for the stated reason, then fix the code and see it pass. Report both runs. A behavior-preserving fix instead runs the affected tests before and after, and both runs pass.
+
+**Root causes.** Fix the fault, not the place where it surfaced. The root cause is the first place the system did something it should not do, or failed to handle a state it should handle.
+- Reproduce first. Ask "why" until the answer is a wrong decision in the code. When the state is unclear, instrument the code and read the actual values; never guess.
+- **Is the state legitimate?** If the state that triggered the symptom can legitimately happen, handle it where the code broke. If it should never exist, a check at that point hides the bug: find what produced the state and fix it there. Guards, retries, swallowed errors, clamped values and discarded state are the usual ways a bug gets hidden.
+- Fix the pattern, not the instance: search for every place with the same fault and list them. The ones inside the approved scope are fixed; the others are a discovery for the programmer (`protocols/decisions.md` rule 9), never fixed silently.
+- If finding the deciding fact took a deep dig, name in the report the cheap, always-on signal that would have shown it at first look (a log line, an assertion, a metric). Proposed, not built.
+
+**When fixes keep failing: attack the premise.** When two or more fixes that share one premise have failed the same check (the same test, gate or finding), suspect the premise, not the fixes. Before a third fix:
+1. write the premise down: the one sentence every failed fix assumed;
+2. test it: find an observation that would come out differently if the premise were false, and make it. Look at how the failures are distributed, not only at how large they are;
+3. if the evidence contradicts the premise, look for what the failures share that it did not predict, and change what causes it instead of adding a mechanism that cleans up after it.
+
+Report the premise, the observation and its result. A fix started before the premise is written and tested is not allowed.
 
 **Never cut:** validation at trust boundaries, error handling that prevents data loss, security, accessibility, anything the spec requires.
 
@@ -131,3 +144,12 @@ Before writing, read the project's anti-pattern registry (`.quality/anti-pattern
 ## 9. Quality gate
 
 Before reporting, run `python3 <skill dir>/scripts/quality_gate.py --repo <worktree> --base <base commit>` and the project's own lint and format commands. Fix every violation in code you wrote. Report the output verbatim in the implementation report, including the checks it says were skipped.
+
+## 10. Design principles
+
+Shape before logic. The Planner applies them when it designs, the Implementer when it writes, and the critic checks them. Each one yields to the existing structure of the project (§6) and to the approved scope (§1).
+
+- **Model the domain.** Encode the domain in a data structure instead of scattering it across conditionals: a state machine instead of scattered booleans or phase checks, a typed model instead of loose parameters, a map, registry or discriminated union instead of branching spread across files, a reducer instead of ad hoc mutations, an index or normalized collection where the access pattern calls for it. The right structure makes invalid states unrepresentable and deletes branches. Do not force it: keep boring code when the shape is clear, local and unlikely to grow, and distrust an abstraction that adds indirection without removing branches or invalid states. The sign that this step was skipped: a feature that grows an if/else chain by one more branch, or a second boolean that must stay in sync with the first.
+- **Data shape first.** Define the core types before the logic, trace every access pattern, and choose structures that match the dominant paths. DRY the structure, not every line. Before sharing state between actors, ask what happens if another actor modifies it concurrently; if the answer is not "nothing", isolate it. In a plan, what helps every later step (shared types, test fixtures, the verification harness) goes first.
+- **Boundary discipline.** Validate, narrow types and handle errors where data crosses a system boundary: CLI arguments, configuration, files, network, external APIs, user input. Parse raw data into domain types there. Inside, trust the types: no re-validation and no redundant nil checks (§1, scenarios that cannot happen). Keep transport and framework types out of the domain's public surface, and business logic in pure functions that a thin shell calls (§5). Two tests: is this data crossing a boundary right now? If not, the validation is redundant. Can this be a pure function the shell calls? If yes, extract it.
+- **Subtract before you add.** When the approved change can be built on a simpler base, remove first and build second: dead code, redundant validators and stub references that the change itself makes obsolete go in the first commit, then the feature. No speculative validators, parsers or guards beyond what the spec or the cases demand. Pre-existing dead code outside the change's reach is still only mentioned (§1, surgical changes): its removal is a proposal the programmer approves, and when approved it lands as its own commit before the feature's.

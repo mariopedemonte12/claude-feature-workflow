@@ -10,7 +10,7 @@ Features can be orchestrated in three **modes**. None is mandatory; the programm
 
 A **group** is a named set of features (kebab-case, e.g. `billing`, `onboarding`) that one sub-orchestrator runs. Which features form a group, and how many groups exist, is the programmer's decision. The principal may report facts that bear on it (features that touch the same files belong in one group more cheaply than in two).
 
-Every mode keeps the rules of `SKILL.md`: one worktree per feature, gates per feature, artifacts as the source of truth, neutrality, and **one orchestrator per feature**.
+Every mode keeps the rules of `SKILL.md`: one worktree per feature, gates per feature, artifacts as the source of truth, the decision protocol, and **one orchestrator per feature**.
 
 ## Claims: who orchestrates what
 
@@ -70,7 +70,7 @@ Every message starts with a header line, then the body:
 | Type | From → to | Body |
 | --- | --- | --- |
 | `STATUS` | sub → principal | phase / step, running agents, pending decisions, overlaps noticed; at most 120 words |
-| `DECISION-REQUEST` | sub → principal | id `slug/D-NNN`; what it blocks (the whole feature · part of it · nothing yet); the decision in the neutral format of `protocols/neutral-decisions.md`, self-contained |
+| `DECISION-REQUEST` | sub → principal | id `slug/D-NNN`; what it blocks (the whole feature · part of it · nothing yet); the decision in the format of `protocols/decisions.md`, self-contained |
 | `DECISION` | principal → sub | id; the programmer's answer, verbatim where it matters |
 | `QUESTION` / `ANSWER` | either way | a clarification that is not a decision |
 | `OVERLAP` | principal → subs | the facts of a cross-group overlap and the decision id if the programmer must resolve it |
@@ -85,13 +85,13 @@ The principal presents pending requests as **one queue**, with the ordering crit
 1. requests that block a whole feature, then those that block part of it, then those that block nothing yet;
 2. within each level, in the order they arrived.
 
-This orders by consequence of waiting, as severity orderings do (`protocols/neutral-decisions.md` rule 11). It never ranks the options inside a request. The programmer may answer in any order, defer any request, or set their own priority for a group; the principal follows it until told otherwise.
+This orders by consequence of waiting, as severity orderings do (`protocols/decisions.md`). It never ranks the options inside a request. The programmer may answer in any order, defer any request, or set their own priority for a group; the principal follows it until told otherwise.
 
-Every request keeps its own neutral presentation, untouched by the principal except to remove preference language, as rule 16 of that protocol requires.
+Every request keeps its own presentation and its sub-orchestrator's recommendation; the principal adds its own only when it differs, labeled, as rule 10 of that protocol requires.
 
 ## Transports for the hierarchical mode
 
-How sub-orchestrators run and exchange messages is chosen by the programmer when the hub starts, presented with the neutral protocol (alphabetical):
+How sub-orchestrators run and exchange messages is chosen by the programmer when the hub starts, presented with the decision protocol:
 
 | Transport | How it works | Facts |
 | --- | --- | --- |

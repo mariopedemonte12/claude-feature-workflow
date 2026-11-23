@@ -1,7 +1,7 @@
 ---
 name: specification-guide
 kind: guide
-summary: What a specification is, the reach of the intent, discoveries, ambiguity checklist, acceptance criteria
+summary: What a specification is, deepening the request, the reach of the intent, discoveries, ambiguity checklist, acceptance criteria
 use-in: [intent, spec, test-design]
 workflows: [sdd, evo]
 ---
@@ -25,9 +25,22 @@ A discovery is recorded in the specification's *Discoveries* table (the card's, 
 
 - **What was found,** with evidence (`path:line`, a probe, a failing case).
 - **Relation to the intent:** *Covered by the programmer's words* (quote them, from the original request or a statement, with its S-ID), *Implied by the intent* (the reasoning, marked as reading), *Outside what the programmer stated*, or *Contradicts the original request or a statement*. Cite the latest statement on the point: it wins.
-- **Options,** in the neutral format: for example, change the code, change the specification, accept as a known limitation, or defer it to another feature. Each option states its effect on the work already done (files, tests, a later gate).
+- **Options,** in the decision format: for example, change the code, change the specification, accept as a known limitation, or defer it to another feature. Each option states its effect on the work already done (files, tests, a later gate).
 
 The programmer's decision updates the specification through its change log, like any other change. A discovery *covered by the programmer's words* that the specification missed is a specification defect: say so. The programmer's decision on a discovery is itself a statement: it is appended to the intent record before the specification changes.
+
+## Deepen the request
+
+Before writing the requirements (SDD step 2, EVO intent pass), make the reading of the request **deeper, not bigger**. Answer four questions, adapted from the `sharpen` skill of pstack (github.com/cursor/plugins, MIT):
+
+1. **What would a top professional in this field do here that the request does not ask for?** Each answer is a reading or a question for the programmer, related to the intent as rule 9 of `protocols/decisions.md` describes. Nothing enters the scope without their word.
+2. **What is the rawest material to start from,** instead of what has already been digested: real inputs, logs, data, the library's source rather than its docs, the standard or RFC rather than a summary of it, the existing behavior observed in a run.
+3. **Which methods and tools** that discipline uses would settle the open points: a probe, a measurement (`knowledge/measurement.md`), a formal model, a reference implementation, a property test.
+4. **What, other than the agent or the programmer, would show the result is right:** an external oracle such as a reference implementation, a test suite of the standard, recorded production inputs, a formal model, another tool's output on the same input.
+
+**Empirical forks** (behavior, timing, which approach works) are settled by a probe or a disposable prototype, and what was observed is reported as facts in the options' fields. Choices of product or preference, which no experiment settles, are the programmer's. Neither gets a recommendation: `protocols/decisions.md` applies.
+
+Write the answers in the intent pass or the specification's context, a few lines each; an answer that adds nothing is written as "none found".
 
 ## Process
 
