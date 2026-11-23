@@ -63,12 +63,12 @@ Written into the card before any code:
 
 One message, every item in full:
 - the consolidated intent and completion criteria, and the readings to confirm;
-- blocking questions, each with what the analog does as a fact, never as a recommendation; questions that only later increments need wait for them;
-- the approach: options in the neutral format, each with its security consequence and its worst case (probed for parsers, regular expressions, escaping or safe-marking);
-- how many increments, as a neutral question (one for the whole feature, one per main flow, or your own grouping), with the cases in full; an edge case you want to defer needs your decision naming the increment that will cover it;
+- blocking questions, each with what the analog does as a fact and the agent's recommendation; questions that only later increments need wait for them;
+- the approach: options in the decision format, each with its security consequence and its worst case (probed for parsers, regular expressions, escaping or safe-marking);
+- how many increments, as a question (one for the whole feature, one per main flow, or your own grouping), with the cases in full; an edge case you want to defer needs your decision naming the increment that will cover it;
 - choices by convention, one line each, which you may override;
 - the specialists whose signals match, as facts, and which of them run;
-- criticality: Critical makes mutation testing mandatory, once at the end; for a Standard feature, a neutral question;
+- criticality: Critical makes mutation testing mandatory, once at the end; for a Standard feature, a question;
 - approve, change or reject.
 
 ### 5. Implementation and tests, per increment

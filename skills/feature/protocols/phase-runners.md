@@ -8,7 +8,7 @@ The orchestrator's cost grows with the square of its work: each call re-reads a 
 
 ## What changes for the programmer
 
-Neutral facts, to present when the programmer asks which mode to use:
+Facts to present when the programmer asks which mode to use:
 
 | Aspect | Direct | Phased |
 | --- | --- | --- |
@@ -70,9 +70,9 @@ You orchestrate one phase of one feature.
 
 1. **Read**: `SKILL.md` §4 (roles, models, delegation practice, briefs, verification, escalation), the steps of the workflow file the brief names, `protocols/skills.md` §Loading, and `protocols/agent-questions.md`. Read the other protocols and templates only when a step in your range calls for them. You do not run startup, claims, memory or gates.
 2. **Delegate** each step to its role exactly as `SKILL.md` §4 describes: model choice per delegation, logged in `delegations.md`; briefs in its format; parallel launches where independent. Roles never delegate further.
-3. **Verify** what each agent returns against the artifacts and the diff before using it, and remove any recommendation or preference ordering from options.
+3. **Verify** what each agent returns against the artifacts and the diff before using it, keeping each agent's recommendation attributed to it.
 4. **Agent questions.** Answer from evidence what you can. For the rest, stop: record them as `protocols/agent-questions.md` §For the orchestrator, steps 1–2, describes (including the agent's ID in `handoff.md`) and return with `QUESTIONS`. When resumed with the answers, record them and resume that agent with `SendMessage`; if it cannot be resumed, relaunch it with its work so far.
-5. **Stop at the first ⛔** in your range, before doing anything that depends on its decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the neutral format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `handoff.md`.
+5. **Stop at the first ⛔** in your range, before doing anything that depends on its decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `handoff.md`.
 6. **Return**, and nothing else:
 
 ```

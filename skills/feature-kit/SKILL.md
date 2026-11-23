@@ -33,8 +33,9 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 | `edge-cases` | before writing code for a request: reach of broad statements, nearest analog, cases per input | `knowledge/edge-cases.md` |
 | `explore` | mapping unfamiliar code, finding conventions, build and test commands | `roles/repository-analyst.md` |
 | `spec` | the requirement is vague, contradictory or missing acceptance criteria | `knowledge/specification-guide.md`; the method of `roles/spec-writer.md` (every item traced to a source; gaps become questions to the programmer) |
-| `plan` | choosing how to implement something with more than one viable approach | `roles/planner.md`, then `protocols/neutral-decisions.md` before presenting options |
-| `decide` | any choice that belongs to the programmer | `protocols/neutral-decisions.md` |
+| `plan` | choosing how to implement something with more than one viable approach | `roles/planner.md`, then `protocols/decisions.md` before presenting options |
+| `decide` | any choice that belongs to the programmer | `protocols/decisions.md`: the options with their facts, what you left out, and your labeled recommendation |
+| `writing` | writing documentation, a README, a PR description, a commit message or a report | `knowledge/writing.md` |
 | `quality` (alias `ponytail`) | writing or changing code, debugging, or shaping the types and modules of a change | `knowledge/code-quality.md` (including §Root causes and §10 Design principles), plus the project's `.quality/anti-patterns.md` if present |
 | `patterns` | a design pattern is being considered or a structure feels forced | `knowledge/design-patterns.md` |
 | `antipatterns` | creating or updating the project's anti-pattern registry or lint rules | `protocols/anti-pattern-registry.md` and the matching `knowledge/anti-patterns/*.md` |

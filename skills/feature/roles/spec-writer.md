@@ -29,7 +29,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 - Put implementation details in the spec, unless they are genuine external constraints.
 - Resolve ambiguity yourself, choose between readings of the request, or turn an assumption into a Confirmed item.
 - Narrow a broad statement of the request into a closed list, or leave a place the search found out of the requirements without a question.
-- Recommend options when a question has alternatives: present them neutrally (`<skill dir>/protocols/neutral-decisions.md`).
+- Present a question with alternatives in the decision format (`<skill dir>/protocols/decisions.md`), with your recommendation; the requirement is still the programmer's answer, never yours.
 - Leave anything out to fit the size budget. The budget is a target: when the spec needs more, move the overflow to `spec-appendix.md`, linked by section, as `SKILL.md` §6 *Size budgets* describes.
 
 ## Output

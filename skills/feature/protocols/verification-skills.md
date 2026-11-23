@@ -7,13 +7,13 @@ Two generators of **project skills** that let any later feature verify its work 
 | App verification | `/feature verify-skill app [<surface>]` | `verify-<app>.md` and its feature map | Behavior, by driving the real app the way a user does |
 | Formal verification | `/feature verify-skill formal [<area or bug>]` | `formal-<area>.md` and its model or harness | One property for every case in a stated scope: every order of steps in a model, every input up to a bound, or every input |
 
-**When they run:** only when the programmer asks, from `/feature`, `/feature-kit` (modules `verify-skill` and `formal-skill`), or at a gate where an end-to-end status was **Blocked** for lack of a way to drive the app, or a Critical feature touches concurrency, retries, a state machine, a parser or unsafe code. At a gate it is offered as an option among others (`protocols/neutral-decisions.md`), with its cost.
+**When they run:** only when the programmer asks, from `/feature`, `/feature-kit` (modules `verify-skill` and `formal-skill`), or at a gate where an end-to-end status was **Blocked** for lack of a way to drive the app, or a Critical feature touches concurrency, retries, a state machine, a parser or unsafe code. At a gate it is offered as an option among others (`protocols/decisions.md`), with its cost.
 
 **Cost.** Each run is one session's work plus the runs of the app or the tool. A tool or runtime not installed (a browser for Playwright, Java and TLC for TLA+, a verifier) is a dependency: installing it is the programmer's decision, asked before.
 
 ## Where the skill lives
 
-Asked once per repository, neutrally, with the facts of the repository (its own project or a contribution; what its `.gitignore` and contributing guide say about tool files):
+Asked once per repository, with the facts of the repository (its own project or a contribution; what its `.gitignore` and contributing guide say about tool files):
 
 | Location | Path | What follows |
 | --- | --- | --- |
@@ -76,7 +76,7 @@ A good target is a **promise the code makes**, where a break harms users and tes
 
 ### 2. Let the question choose the tool
 
-The tool that answers the question at the lowest cost, presented neutrally with what each needs installed:
+The tool that answers the question at the lowest cost, each with what it needs installed:
 - whether events can happen in a bad order (concurrency, retries, protocols, product flows): a model checker over a small model of the design; TLA+ with TLC fits any language;
 - whether the code itself behaves for every input (memory safety, overflow, a data-structure invariant): a verifier that runs on the code (for example Kani, CBMC, Dafny, a symbolic executor), or bounded checking;
 - a property that must hold at every size, where a bound is not enough: a proof assistant;

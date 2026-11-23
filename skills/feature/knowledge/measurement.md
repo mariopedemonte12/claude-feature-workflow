@@ -35,5 +35,5 @@ Every number this workflow reports or decides on is vetted here first: a probe's
 - Lead with the verdict: faster, slower, no measurable difference, or **inconclusive**.
 - Give the number with its unit, the run count, the range and the limiter: "p50 41 ms → 33 ms, median of 7 runs per side, range 32 to 35 ms after, bound by JSON parsing on one core."
 - The verdict is inconclusive when a difference is claimed but the limiter is unnamed, a side ran untuned, or questions 4 and 7 were not checked. Name the gap. Inconclusive is not a pass.
-- At a gate, a number in an option's fields (`protocols/neutral-decisions.md`) carries its run count, range and limiter, or is marked *Unknown*.
+- At a gate, a number in an option's fields (`protocols/decisions.md`) carries its run count, range and limiter, or is marked *Unknown*.
 - A pull request body carries one primary number; the runs, range and limiter evidence go in the feature's reports.

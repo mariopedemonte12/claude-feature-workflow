@@ -1,4 +1,4 @@
-# D-NNN: <neutral question>
+# D-NNN: <question>
 
 | Field | Value |
 | --- | --- |
@@ -12,7 +12,7 @@
 
 ## Options presented
 
-The options exactly as presented: alphabetical, neutral format (`protocols/neutral-decisions.md`).
+The options exactly as presented, in the decision format (`protocols/decisions.md`), with the recommendation given (by whom) and the options not shown.
 
 ## Excluded options
 

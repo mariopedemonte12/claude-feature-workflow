@@ -59,7 +59,7 @@ When the registry passes 400 lines, split it by area (`anti-patterns/<area>.md`)
 
 1. The Repository Analyst reports the architecture style, the folder organization, and the lint, format and architecture tools already installed.
 2. The orchestrator selects the seed catalogs from `knowledge/anti-patterns/` that match that evidence: `general.md` always, plus whichever of `feature-folders.md`, `layered.md`, `frontend-ui.md`, `backend-api.md` and `tests.md` apply.
-3. ⛔ Present to the programmer, following `protocols/neutral-decisions.md`:
+3. ⛔ Present to the programmer, following `protocols/decisions.md`:
    - the seed entries, so they choose which to adopt (all, some, none);
    - the limits in `config.json`, with the defaults stated as defaults, next to the repository's own figures (how many files already exceed each limit);
    - `allowDocstrings`, with the evidence of whether the project documents its public units with docstrings;
@@ -69,7 +69,7 @@ When the registry passes 400 lines, split it by area (`anti-patterns/<area>.md`)
 
 The bootstrap happens once per project. If another feature in progress also bootstraps or edits `.quality/`, report the overlap as described in `protocols/multi-feature.md`.
 
-## Automation options (presented neutrally, in this order)
+## Automation options
 
 | Option | What it detects | Cost |
 | --- | --- | --- |
@@ -102,7 +102,7 @@ A candidate needs a concrete case, as a review finding does. "Could be cleaner" 
 
 **3. Register.** ⛔ At the defects gate (or before final acceptance, if there are no defects), the orchestrator presents the candidates. For each one, the options are: add as a new entry · record as an occurrence of AP-NNN · reject (reason recorded). The programmer decides. The orchestrator then updates `anti-patterns.md`.
 
-**4. Enforce.** For each approved entry, the levels of §Enforcement levels are presented at the same gate, in their order and neutrally: the ones that can work for that entry with what each changes and costs, and the ones that cannot, with why. The programmer chooses. A level that changes project code (architecture, types, a test) is work in the feature's scope only when the programmer says so; otherwise it is proposed as its own change. For an entry enforced by a check, the Implementer writes the rule in the approved tool with at least one invalid case (must match) and one valid case (must not match), runs the rule's tests, adds or updates the `checks` command in `config.json`, and sets the entry's `Detection` to `automated`. **Prove every new check, type or test on a real past mistake:** it must fail on the occurrence recorded in *Seen* (check out that commit or reproduce the code in a scratch file) and pass on the fixed code; record where it was proven in *Enforced by*. A manual entry seen in two or more features is proposed for a higher level at the next gate.
+**4. Enforce.** For each approved entry, the levels of §Enforcement levels are presented at the same gate, in their order: the ones that can work for that entry with what each changes and costs, and the ones that cannot, with why. The programmer chooses. A level that changes project code (architecture, types, a test) is work in the feature's scope only when the programmer says so; otherwise it is proposed as its own change. For an entry enforced by a check, the Implementer writes the rule in the approved tool with at least one invalid case (must match) and one valid case (must not match), runs the rule's tests, adds or updates the `checks` command in `config.json`, and sets the entry's `Detection` to `automated`. **Prove every new check, type or test on a real past mistake:** it must fail on the occurrence recorded in *Seen* (check out that commit or reproduce the code in a scratch file) and pass on the fixed code; record where it was proven in *Enforced by*. A manual entry seen in two or more features is proposed for a higher level at the next gate.
 
 **5. Retire.** The programmer may retire an entry (status Retired, with a decision reference). Rules of retired entries are removed from `checks`.
 
@@ -127,7 +127,7 @@ Assume every future contributor is an agent that sees only the files it opened, 
 The programmer may ask, outside any feature, for a sweep of the mistakes agents keep repeating in this repository:
 
 1. **Find the mistake classes.** Read the recent commits, reverts, review comments of pull requests (`gh` when available), the registry's *Seen* lines and rejected candidates, the features' `reports/anti-pattern-candidates.md`, and the repository's agent instruction files. Group the mistakes into classes; a class counts once it has happened twice. Each class cites its occurrences (commit, `path:line`, review comment).
-2. **⛔ Present** each class with its evidence, whether the registry already has it (and at which level), and the levels that can work and those that cannot, under `protocols/neutral-decisions.md`. The programmer chooses which classes to enforce, at which level, and where the work happens: a branch of its own (a worktree, `protocols/executor.md` §Worktree) or a feature.
+2. **⛔ Present** each class with its evidence, whether the registry already has it (and at which level), and the levels that can work and those that cannot, under `protocols/decisions.md`. The programmer chooses which classes to enforce, at which level, and where the work happens: a branch of its own (a worktree, `protocols/executor.md` §Worktree) or a feature.
 3. **Enforce and prove,** one commit per class: write the architecture change, type, check or test; show it failing on a real past occurrence and passing on the current code; run the same command the CI runs. Update or add the registry entry, with *Enforced by*.
 4. **Report** each class with its evidence, the level chosen, where it was proven, and why the higher levels were not used. Integration is a ⛔ gate as in any workflow.
 

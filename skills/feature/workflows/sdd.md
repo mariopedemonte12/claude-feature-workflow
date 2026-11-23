@@ -29,18 +29,18 @@ Relay the questions of either agent as `protocols/agent-questions.md` describes.
 The Planner returns implementation options, or a single option with the excluded alternatives when only one is viable. If it returns questions (a spec gap, a constraint only the programmer knows), relay them and resume it as `protocols/agent-questions.md` describes before presenting options; an answer that changes the approved spec goes back to the Specification Writer as a spec change.
 
 **6. ⛔ Decide.**
-- Check that the planner's output follows `protocols/neutral-decisions.md` (fix ordering or wording if needed) and present it.
+- Check that the planner's output follows `protocols/decisions.md` (fix ordering or wording if needed) and present it.
 - In the same gate, present the **testing plan** in summary: case counts per technique, the ACs each covers, any AC without a case, and the Test Designer's questions. The programmer approves it or asks for changes.
 - In the same gate, settle verification depth:
   - **Critical feature:** mutation testing and the R2 review cycle are mandatory. State this; do not ask.
-  - **Standard feature:** ask neutrally whether to run mutation testing, stating what it adds (what it can detect) and what it costs (time, tooling, possible new dev dependency). For review, **recommend** a level (R0 / R1 / R2) starting from the default (R1; R2 for Critical), with its evidence, as `protocols/review-cycle.md` §Recommending the level describes; the programmer validates or changes it.
+  - **Standard feature:** ask whether to run mutation testing, with your recommendation, stating what it adds (what it can detect) and what it costs (time, tooling, possible new dev dependency). For review, **recommend** a level (R0 / R1 / R2) starting from the default (R1; R2 for Critical), with its evidence, as `protocols/review-cycle.md` §Recommending the level describes; the programmer validates or changes it.
 - In the same gate, present the **plan-phase facts** of every active specialist next to each option, and re-check the specialists against the plan's files: one that now matches but was not chosen is offered again (`protocols/skills.md` §Activation).
-- In the same gate, settle the **end-to-end harness** when the project has none for this surface: present what installing it involves (packages, browser downloads, containers) and the alternatives (a simulation harness, Blocked with its residual risk) as neutral options. End-to-end testing itself is not optional for user-facing features; only how it runs is decided here.
+- In the same gate, settle the **end-to-end harness** when the project has none for this surface: present what installing it involves (packages, browser downloads, containers) and the alternatives (a simulation harness, Blocked with its residual risk) as options. End-to-end testing itself is not optional for user-facing features; only how it runs is decided here.
 - Record the decision in `decisions/` (`templates/decision-record.md`).
 - Write `implementation-plan.md` (`templates/implementation-plan.md`) for the approved approach only, with a one-line mention of each alternative not chosen and the decision reference.
 - Write the Planning → Implementation handoff.
 
-**7. Implement.** Brief the Implementer (`roles/implementer.md`). It writes production code only, follows the code quality standard, and reviews its own diff against the critic's checklist before the quality gate. It writes no tests. If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ present it neutrally, update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and the Implementation → Testing handoff.
+**7. Implement.** Brief the Implementer (`roles/implementer.md`). It writes production code only, follows the code quality standard, and reviews its own diff against the critic's checklist before the quality gate. It writes no tests. If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ present it (`protocols/decisions.md`), update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and the Implementation → Testing handoff.
 
 ## Phase 3: Testing and validation
 
@@ -55,7 +55,7 @@ The Planner returns implementation options, or a single option with the excluded
 
 **Review**, at the validated level (`protocols/review-cycle.md`). First re-check the level against the real diff. R1: one clean critic (`roles/reviewer.md`) **in parallel** with testing. R2: the first critic runs in parallel with testing, then the verify → fix → new-critic cycle; after it ends, the Tester re-runs the regression and E2E scenarios the fixes affect. R0: no review agent.
 
-**Defects, discrepancies and discoveries.** ⛔ Present them to the programmer, including review findings that the cycle does not fix automatically and every discovery in `specification.md` §Discoveries. Each item states its relation to the intent (`protocols/neutral-decisions.md` rule 15). Fix now / accept as a known limitation / change the spec are options under the neutral protocol; a fix that the programmer's words cover but the spec missed also updates the spec, which is stated as an effect, not as a disadvantage. Fixes go back to the **same** Implementer, resumed with `SendMessage` and the defect IDs (`SKILL.md` §4, *Reusing agents*). The reproducing test is the Tester's failing test. Then resume the same Tester to re-run the affected tests, and, when the level is R1 or R2, a new clean critic on the fix diff within the feature's cap of 3 critic rounds (`protocols/review-cycle.md`).
+**Defects, discrepancies and discoveries.** ⛔ Present them to the programmer, including review findings that the cycle does not fix automatically and every discovery in `specification.md` §Discoveries. Each item states its relation to the intent (`protocols/decisions.md` rule 9). Fix now / accept as a known limitation / change the spec are options under the decision protocol; a fix that the programmer's words cover but the spec missed also updates the spec, which is stated as an effect, not as a disadvantage. Fixes go back to the **same** Implementer, resumed with `SendMessage` and the defect IDs (`SKILL.md` §4, *Reusing agents*). The reproducing test is the Tester's failing test. Then resume the same Tester to re-run the affected tests, and, when the level is R1 or R2, a new clean critic on the fix diff within the feature's cap of 3 critic rounds (`protocols/review-cycle.md`).
 
 **Anti-pattern candidates.** ⛔ In the same gate (or before acceptance if there were no defects), present `reports/anti-pattern-candidates.md` as described in `protocols/anti-pattern-registry.md` §The learning loop, steps 3–4. Update the registry with what the programmer approves; approved rule automation goes to the Implementer.
 
@@ -65,7 +65,7 @@ The Planner returns implementation options, or a single option with the excluded
 
 **13. ⛔ Acceptance.** The programmer decides final acceptance.
 
-**14. ⛔ Integration.** The feature's code and artifacts live on its worktree branch. Present how to integrate it as a neutral decision, for example: merge into the target branch, rebase then merge, open a pull request, or leave the branch unmerged for now. Include the facts:
+**14. ⛔ Integration.** The feature's code and artifacts live on its worktree branch. Present how to integrate it as a decision (`protocols/decisions.md`), for example: merge into the target branch, rebase then merge, open a pull request, or leave the branch unmerged for now. Include the facts:
 - uncommitted changes in the worktree;
 - commits ahead of and behind the target;
 - files changed by this feature that also changed on the target since the base (intersect `git diff --name-only <base>` run in the worktree with `git diff --name-only <base> <target>`);

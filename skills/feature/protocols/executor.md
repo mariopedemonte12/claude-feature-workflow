@@ -14,12 +14,12 @@ One feature per executor session. Several features at once means several session
 
 ## Principles
 
-The principles of `SKILL.md` §1 apply, except 9: the executor changes project code, because it is the one doing the work. Read `protocols/neutral-decisions.md` before the first decision and follow it, including rules 13b (no defaults by silence), 15 (scope framed against the intent record) and 16.
+The principles of `SKILL.md` §1 apply, except 9: the executor changes project code, because it is the one doing the work. Read `protocols/decisions.md` before the first decision and follow it, including rules 7 (no defaults by silence), 9 (scope framed against the intent record) and 10 (relaying).
 
 ## Worktree
 
 - **Create and stay:** call `EnterWorktree` with `name: "<slug>"` (load it with ToolSearch if deferred) and **stay in it**. Record its path, branch and base commit (`git rev-parse --short HEAD`).
-- **On failure:** if it cannot be created, stop and present the situation neutrally. Never work in the shared checkout on your own.
+- **On failure:** if it cannot be created, stop and present the situation to the programmer. Never work in the shared checkout on your own.
 - **Claim:** write the feature's claim (`protocols/hierarchy.md` §Claims) with `orchestrator` set to this session and `mode: "executor"`, so orchestrators and other sessions see it.
 
 ## Artifacts
@@ -36,7 +36,7 @@ The card has a target of 500 lines, never a cut: keep the card as the summary, m
 Follow `workflows/evo.md`, with these changes:
 
 1. **Intent pass** (steps 1–2), in the card. *Intent*: the original request verbatim and a proposed consolidated intent, version 1, with the completion criteria. *Scope*: the reach of each broad statement, with the search run. *Nearest analog*, *Main flows*, and the *Cases* of every main flow, from `knowledge/edge-cases.md` §Before code. Cases of later flows may be revised when their increment starts.
-2. **Gates 3 and 5 are one gate**, in one message, each item in full: consolidated intent and readings to confirm; blocking questions with what the analog does; the approach (several viable: neutral format, each option with **Security consequence** and **Worst case**, probed or Unknown; one viable: it, with the excluded alternatives); **increments** as a neutral question (one for the whole feature, one per main flow, or another grouping), with the cases in full; choices by convention, one line each; specialists; criticality and mutation testing; the review level you recommend; approve · change · reject. If `spec` or `plan` specialists run, bring their questions back in a short gate 1b before implementing.
+2. **Gates 3 and 5 are one gate**, in one message, each item in full: consolidated intent and readings to confirm; blocking questions with what the analog does; the approach (several viable: the decision format, each option with **Security consequence** and **Worst case**, probed or Unknown; one viable: it, with the excluded alternatives); **increments** as a question (one for the whole feature, one per main flow, or another grouping), with the cases in full; choices by convention, one line each; specialists; criticality and mutation testing; the review level you recommend; approve · change · reject. If `spec` or `plan` specialists run, bring their questions back in a short gate 1b before implementing.
 3. **Each increment** (steps 6–11): you implement the flow and write a test for every case of the increment, with each technique of `knowledge/testing-techniques.md` given a status, fuzz or property tests on every input that crosses a trust boundary, and an end-to-end test when the flow is user-facing and the project has a harness. Run the tests, lint, type checks and `scripts/quality_gate.py`. Record in the card's *State* the commit where the increment started. Then the critic and the active audits on the increment's diff; check every finding (§Checking findings); then the ⛔ increment gate as `workflows/evo.md` step 10 describes.
 4. **Fixes:** for each Blocker or Major that changes behavior, first a test that reproduces it, seen failing, then the fix (`knowledge/code-quality.md` §Test first for defects). A second critic on the fixes runs only if the programmer asks; a fixed audit finding gets a new auditor on the fix diff.
 5. **Finalization** (steps 12–13): mutation testing once when chosen or Critical; the card's *Result*; then ⛔ acceptance, integration and cleanup.
@@ -72,7 +72,7 @@ At R2 (`protocols/review-cycle.md`), the verifier is a second clean subagent (`s
 
 ## Checking findings
 
-Check every finding of the critic and the specialists against the code, re-run their evidence, merge duplicates, and add your result next to each in its report: **Reproduced** with evidence · **Not reproduced** with what you tried · **Unclear**. Discard nothing: the programmer sees every finding, with its relation to the intent (`protocols/neutral-decisions.md` rule 15). When the programmer's words cover a finding, say so with the quote and its S-ID; updating the cases or the spec is an effect of the fix, never an argument against it.
+Check every finding of the critic and the specialists against the code, re-run their evidence, merge duplicates, and add your result next to each in its report: **Reproduced** with evidence · **Not reproduced** with what you tried · **Unclear**. Discard nothing: the programmer sees every finding, with its relation to the intent (`protocols/decisions.md` rule 9). When the programmer's words cover a finding, say so with the quote and its S-ID; updating the cases or the spec is an effect of the fix, never an argument against it.
 
 ## Sessions the programmer opens
 

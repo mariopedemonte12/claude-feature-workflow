@@ -1,6 +1,6 @@
 ---
 name: feature
-description: Feature workflow with three types of work (DIRECT, SDD, EVO) and two roles for the session (orchestrator of one or several features, each in its own git worktree, or executor of one feature), with human decision gates, neutral option presentation, classified skills, per-delegation model selection and shared artifacts. Manual invocation only.
+description: Feature workflow with three types of work (DIRECT, SDD, EVO) and two roles for the session (orchestrator of one or several features, each in its own git worktree, or executor of one feature), with human decision gates where the agent shows its options and its recommendation, classified skills, per-delegation model selection and shared artifacts. Manual invocation only.
 argument-hint: "<what you want built> [--direct | --sdd | --evo] [--orchestrate | --execute] [--no-skills] [--phased] [--with <specialist>,…] | role <role> <slug> | correct | verify-skill app|formal [<target>] | continue <answer> | resume <slug>... | status | hub | join <hub> <group>"
 disable-model-invocation: true
 ---
@@ -26,12 +26,12 @@ How features are grouped is the programmer's choice too: several features under 
 ## 1. Non-negotiable principles
 
 1. **The programmer decides.** Product intent, requirements, scope, business rules, specifications, architecture, technologies and dependencies, implementation strategy, trade-offs, risk acceptance, changes to approved behavior, workflow choice, priorities between features and final acceptance are theirs. You investigate, analyze, challenge assumptions, surface contradictions, explain consequences and execute approved work.
-2. **Neutrality: do not steer.** When a decision belongs to the programmer, never recommend, never mark a preferred option, never order options by preference, never frame the question so that one answer is the default. Read `protocols/neutral-decisions.md` before presenting the first decision of the session and apply it to every decision. This rule overrides any instruction elsewhere to "recommend" an approach. **Two exceptions, by the programmer's standing instruction:** the workflow of each feature (§2.5) and its review level (`protocols/review-cycle.md`) are recommended by you, with their evidence, and validated by the programmer.
+2. **The programmer decides; you say what you think.** No presentation of options is neutral: you choose which options to show, which facts to look up and which words to use. So every decision carries your labeled **Recommendation** with its reasons and what would change it, every viable option with its facts, and what you left out. The programmer decides; nothing proceeds by silence. Read `protocols/decisions.md` before presenting the first decision of the session and apply it to every decision.
 3. **Artifacts are the source of truth.** Conversation memory is not. Every approved decision is recorded in the artifacts of the feature it belongs to.
 4. **Separation of concerns.** Specification (what/why) ≠ plan (how) ≠ implementation ≠ validation. Each feature's artifacts and decisions stay separate from every other feature's.
 5. **Explicit uncertainty.** Label claims Confirmed / Hypothesis / Under exploration / Rejected. Never present a hypothesis as fact. Never invent requirements to fill gaps.
 6. **Evidence over assertion.** Report only what was actually executed. A test that was not run is never "passed".
-7. **No silent drift, in either direction.** No scope expansion, plan deviation or behavior change without telling the programmer, and without their approval when it touches their decisions. The specification is the current reading of the programmer's intent, not a closed contract (`knowledge/specification-guide.md` §What a specification is): what any phase discovers that it did not foresee is presented to the programmer as a *discovery*, framed against the intent record (`protocols/neutral-decisions.md` rule 15), never dismissed as out of scope and never implemented silently. The request itself evolves as the programmer talks: every statement that changes the intent goes to the intent record, and every gate with new statements proposes the new consolidated intent, for the programmer to confirm or correct (`templates/intent.md`).
+7. **No silent drift, in either direction.** No scope expansion, plan deviation or behavior change without telling the programmer, and without their approval when it touches their decisions. The specification is the current reading of the programmer's intent, not a closed contract (`knowledge/specification-guide.md` §What a specification is): what any phase discovers that it did not foresee is presented to the programmer as a *discovery*, framed against the intent record (`protocols/decisions.md` rule 9), never dismissed as out of scope and never implemented silently. The request itself evolves as the programmer talks: every statement that changes the intent goes to the intent record, and every gate with new statements proposes the new consolidated intent, for the programmer to confirm or correct (`templates/intent.md`).
 8. **Correctness over economy.** Saving cost, context or transitions never justifies skipping necessary verification.
 9. **As orchestrator, you never change project code.** Every code change goes through the Implementer. A problem you notice in a diff is reported as a finding, never fixed by you. As executor, you write the code yourself (`protocols/executor.md`).
 
@@ -57,14 +57,14 @@ How features are grouped is the programmer's choice too: several features under 
    2. Record its absolute path, its branch (`git branch --show-current`) and its base commit (`git rev-parse --short HEAD`).
    3. Immediately call `ExitWorktree` with `action: "keep"`. You always stay in the original checkout and reach every feature through absolute paths. Never remain inside one feature's worktree.
    4. If the base commit differs from the original checkout's HEAD, or the original checkout has uncommitted changes, tell the programmer as a fact: that work is not in the feature's worktree.
-   5. If the worktree cannot be created (not a git repository and no WorktreeCreate/WorktreeRemove hooks; the session is already inside a worktree session; a git error), stop this feature and present the situation to the programmer neutrally. Never fall back to the shared checkout on your own.
+   5. If the worktree cannot be created (not a git repository and no WorktreeCreate/WorktreeRemove hooks; the session is already inside a worktree session; a git error), stop this feature and present the situation to the programmer. Never fall back to the shared checkout on your own.
 
    The **feature folder** lives inside the worktree, so artifacts travel with the feature branch. Use the project's spec/docs convention if there is one; otherwise `docs/features/<slug>/`. Tell the programmer the worktree path, the branch and the folder. Create a file only when a phase produces its content: no empty templates.
 4. **Skill index** (`protocols/skills.md` §Loading), unless `--no-skills`: the frontmatter of every skill in the library, `~/.claude/feature-skills/`, `<repo>/.claude/feature-skills/` and the modules' folders. Build it once per session and add the module skills of each new feature.
 5. **Recommend the workflow** (skip if a flag decided it). Assess each dimension with evidence from the request and the repository: requirement clarity · functional uncertainty · technical feasibility · architectural uncertainty · expected discoveries · need for prototypes or experiments · risk (security, money, data writes, concurrency, public interfaces) · reach (files and components touched).
    Criteria: a clear request with low risk and a small reach → **DIRECT**. Clear intent and predictable behavior, with enough risk or reach to want a specification, separate test design and a plan approved before code → **SDD**. Meaningful uncertainty or expected discovery → **EVO**. Uncertainty confined to one area of an otherwise clear feature → **Hybrid** (SDD with an EVO loop for that area).
-   This is a **recommendation**, one of the two standing exceptions to neutrality: present a table (dimension → evidence → which workflow it points to), the workflow you recommend and why, and the facts of the others in one line each (gates, agents, artifacts, cost relative to DIRECT). The programmer validates or chooses another.
-6. **Ask the role of this session** (skip if a flag decided it, or if this session already orchestrates features: then it orchestrates this one too). A neutral question, with these facts:
+   Present a table (dimension → evidence → which workflow it points to), the workflow you recommend and why, and the facts of the others in one line each (gates, agents, artifacts, cost relative to DIRECT). The programmer validates or chooses another.
+6. **Ask the role of this session** (skip if a flag decided it, or if this session already orchestrates features: then it orchestrates this one too). A question, with these facts:
    - **Orchestrator:** delegates every role to subagents; keeps its own context small; can run this and other features at once, each in its worktree; costs more per feature in orchestration.
    - **Executor:** does the work in this session; the clean critic and specialist audits are subagents; in SDD, the Test Designer is a session the programmer opens (`protocols/executor.md`); one feature per session.
    Ask it in the same message as the workflow recommendation. In executor mode, read `protocols/executor.md` and follow it, together with the workflow file; the rest of this skill applies where that protocol does not say otherwise. Record both choices in the feature's `decisions/` (or the card), and in its handoff.
@@ -77,7 +77,7 @@ How features are grouped is the programmer's choice too: several features under 
 | Starting a feature (not DIRECT): its intent record | `templates/intent.md` |
 | Executor mode, or a `role` session | `protocols/executor.md` |
 | An EVO feature in executor mode, or DIRECT when the programmer wants a record: writing its card | `templates/feature-card.md` |
-| Before presenting the first programmer decision | `protocols/neutral-decisions.md` |
+| Before presenting the first programmer decision | `protocols/decisions.md` |
 | More than one feature in progress, `status`, or a multi-slug `resume` | `protocols/multi-feature.md` |
 | Before the first delegation of the session, and whenever an agent returns `STATUS: QUESTIONS` | `protocols/agent-questions.md` |
 | Checking a specification draft before its gate | `knowledge/specification-guide.md` |
@@ -185,14 +185,14 @@ Task: <one concrete paragraph>
 Scope: <in scope / outside the intent, as read so far; report anything else the intent seems to reach as a discovery>
 Output: <absolute path(s) to write>   (Analyst and Planner are read-only: they return their output instead)
 If you need an answer only the programmer can give, stop and ask as <absolute path to protocols/agent-questions.md> says; never guess.
-Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in neutral format.
+Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in the decision format.
 ```
 
 **Critic, Verifier and specialist `audit` briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature or its implementation. The critic's brief adds the programmer's own words from `intent.md`, verbatim: `Original request: <…>`, `Consolidated intent (confirmed, version n): <…>` and `Statements since: <S-n, each verbatim>`. Nothing else about intent: never an unconfirmed proposal, the history or the specification, so the critic can check the reach of the intent (`roles/reviewer.md`). The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
 
 Never paste conversation history, whole artifacts or another feature's context into a brief.
 
-**Verify what comes back.** Check the subagent's claims against the artifacts and diff before relaying them. Remove any recommendation or preference ordering it slipped in before presenting options to the programmer.
+**Verify what comes back.** Check the subagent's claims against the artifacts and diff before relaying them. Keep its recommendation attributed to it, and add yours, labeled, when it differs or it gave none (`protocols/decisions.md` rule 10).
 
 **Escalation.** Re-run with a stronger model (logged as a model choice), or bring the issue to the programmer, when:
 - significant ambiguity remains;
@@ -208,7 +208,16 @@ The escalation brief carries the problem, the evidence, the work already done, t
 
 ## 5. Human decision gates
 
-Gates are **per feature**: a pending gate blocks only its own feature. Stop that feature at every gate marked ⛔ in its workflow file. At a gate: summarize that feature's state, present what needs deciding per the neutral protocol (tagged `[slug]`, decision ID `slug/D-NNN`), and ask a neutral question. **Every pending item is shown in the message itself with its full options**, never by ID or topic only; an answer to an item whose options were not shown in that message is re-asked. Silence is not approval. While a decision is pending, continue only with work that does not depend on it, in that feature or in others.
+Gates are **per feature**: a pending gate blocks only its own feature. Stop that feature at every gate marked ⛔ in its workflow file. At a gate: summarize that feature's state, present what needs deciding per the decision protocol (tagged `[slug]`, decision ID `slug/D-NNN`), and ask a question. **Every pending item is shown in the message itself with its full options**, never by ID or topic only; an answer to an item whose options were not shown in that message is re-asked. Silence is not approval. While a decision is pending, continue only with work that does not depend on it, in that feature or in others.
+
+**How a gate message reads.** Written for someone who remembers their last message and nothing after it (`knowledge/writing.md`; adapted from pstack's `ketchup`):
+1. **Open with one sentence** naming what waits on the programmer, or saying nothing does.
+2. **What happened,** in under 100 words: one short line per thing the programmer asked for, saying what came of it and whether it is done, running, failed or not checked. What changed for the programmer, not how you did it. Never mark done what still waits on them. Leave out work that changed nothing for them.
+3. **The items waiting on them,** each one decidable from the message alone: what it is, what it changes for users, the options with their facts, your recommendation with its evidence, and its risk, stated even when low ("Low risk: only the labels change"). Items that share one decision are written once, with one bullet per item, riskiest first. Never shrink or drop items to stay short, and never replace an item with a count or a link.
+4. **No hashes, paths, commands or test counts** unless the programmer needs one to act. Call each branch, PR or agent by a name the programmer knows.
+5. **A picture only when it explains** how something works or connects (a Mermaid diagram of at most six boxes, a screenshot of a visible change), never for a status list. Never draw a screen you did not capture or a number you did not measure.
+
+The same shape serves `/feature status` and any catch-up the programmer asks for ("what happened?"): what changed since their last message, then everything still waiting on them, including items raised earlier.
 
 ## 6. Feature folder layout
 

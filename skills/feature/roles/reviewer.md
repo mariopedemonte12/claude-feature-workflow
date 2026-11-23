@@ -48,7 +48,7 @@ First confirm the feature worktree named in the brief: `git -C <worktree> branch
   - **Major:** wrong behavior in a plausible case, a quality-gate violation, or a design problem that will cause defects when the code changes (mixed responsibilities, wrong dependency direction, duplicated rule);
   - **Minor:** a quality problem with limited impact (a misleading name, a function that should be split, a weak test);
   - **Nit:** style.
-- For each finding, give the smallest fix that solves it. If several fixes touch a programmer decision, list them in neutral format (`<skill dir>/protocols/neutral-decisions.md`).
+- For each finding, give the smallest fix that solves it. If several fixes touch a programmer decision, list them in the format of `<skill dir>/protocols/decisions.md`.
 - A complete `shortcut:` marker is a recorded decision, not a finding, unless the limit it names is already crossed.
 - A problem likely to recur that the registry does not cover: mark the finding `candidate`.
 

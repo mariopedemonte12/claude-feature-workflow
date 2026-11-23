@@ -41,7 +41,7 @@ Then take the first rung that fully works:
 **Root causes.** Fix the fault, not the place where it surfaced. The root cause is the first place the system did something it should not do, or failed to handle a state it should handle.
 - Reproduce first. Ask "why" until the answer is a wrong decision in the code. When the state is unclear, instrument the code and read the actual values; never guess.
 - **Is the state legitimate?** If the state that triggered the symptom can legitimately happen, handle it where the code broke. If it should never exist, a check at that point hides the bug: find what produced the state and fix it there. Guards, retries, swallowed errors, clamped values and discarded state are the usual ways a bug gets hidden.
-- Fix the pattern, not the instance: search for every place with the same fault and list them. The ones inside the approved scope are fixed; the others are a discovery for the programmer (`protocols/neutral-decisions.md` rule 15), never fixed silently.
+- Fix the pattern, not the instance: search for every place with the same fault and list them. The ones inside the approved scope are fixed; the others are a discovery for the programmer (`protocols/decisions.md` rule 9), never fixed silently.
 - If finding the deciding fact took a deep dig, name in the report the cheap, always-on signal that would have shown it at first look (a log line, an assertion, a metric). Proposed, not built.
 
 **When fixes keep failing: attack the premise.** When two or more fixes that share one premise have failed the same check (the same test, gate or finding), suspect the premise, not the fixes. Before a third fix:

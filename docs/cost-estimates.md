@@ -53,7 +53,7 @@ The real commit changes 478 lines in 27 files.
 - **`/feature` found it and lost it at the gate.** Its round-1 critic reported it with a probe, and the verifier confirmed it. The defects gate presented the fix as *"behavior change beyond current spec; spec amendment"*, and the simulated programmer accepted it as a known limitation. The specification had narrowed the request's "everywhere" into a closed list.
 - **`/feature-lean` did not find it:** its critic read `View.dispatch` but not the subclasses. It found a backward-compatibility case the real commit does not document: existing views with an attribute named `query`.
 - **`/feature` also committed `.quality/`** into Django's tree, which the blind reviewer counted as blocking the merge.
-- **Changes made from this run:** the specification is now the current reading of the intent, not a closed contract. It quotes the request, maps the reach of its broad statements and records later discoveries. Gates frame scope against the request (`neutral-decisions.md` rule 15), and the critic receives the request verbatim and checks the intent's reach. The registry's location (local or versioned) is now asked at bootstrap.
+- **Changes made from this run:** the specification is now the current reading of the intent, not a closed contract. It quotes the request, maps the reach of its broad statements and records later discoveries. Gates frame scope against the request (`decisions.md` rule 9), and the critic receives the request verbatim and checks the intent's reach. The registry's location (local or versioned) is now asked at bootstrap.
 - **Limits:** one feature, n=1, a simulated programmer. A human would likely have approved the `RedirectView` fix, giving `/feature` 48/48 at 16× the cost.
 
 ## Model

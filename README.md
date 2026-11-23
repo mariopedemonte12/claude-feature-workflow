@@ -27,7 +27,7 @@ Hybrid is SDD with an EVO loop for one uncertain area.
 
 **Grouping is yours too:** several features under one orchestrator, independent sessions (each orchestrating or executing), or a hierarchy of orchestrators under a hub.
 
-The workflow recommendation and the review level are the only two things the agent recommends. Every other decision is presented neutrally.
+Every decision is yours. The agent shows the viable options with their facts, what it left out, and its labeled recommendation with what would change it.
 
 ## Skills, classified by where they apply
 
@@ -35,7 +35,7 @@ Every piece of knowledge the workflow uses is a **skill** with a classification 
 
 | Location | Scope |
 | --- | --- |
-| `skills/feature/knowledge/`, `skills/feature/specialists/` | The library: code quality (with root causes and design principles), testing techniques, E2E, design patterns, specification guide, edge-case checklist, measurement,  security, UI/UX, database, network, performance and observability specialists |
+| `skills/feature/knowledge/`, `skills/feature/specialists/` | The library: code quality (with root causes and design principles), testing techniques, E2E, design patterns, specification guide, edge-case checklist, measurement, writing (messages, docs, PRs and commits); security, UI/UX, database, network, performance and observability specialists |
 | `~/.claude/feature-skills/` | Yours, for every project |
 | `<git-common-dir>/feature-skills/` | The repository's, local to your clone and never committed |
 | `<repo>/.claude/feature-skills/` | The repository's, versioned with it |
@@ -64,7 +64,7 @@ Measured before this version, under the earlier names: `/feature-lean` is today'
 ## What every workflow shares
 
 - **The spec is a reading of your intent, not a closed contract.** Your request evolves as you talk: every statement of yours that changes the intent goes, verbatim, to an intent record that is consolidated with your confirmation at each gate. The spec (SDD) or the cases (EVO) cite it as their source and map where the broad statements in your words reach. Anything a later step finds that it did not foresee comes back to you as a discovery, framed against your own words, never dismissed as "not in the spec".
-- **Neutral decision gates.** Options are never recommended or ranked: they are sorted alphabetically, given symmetric pros and cons, described with verifiable facts instead of adjectives, and excluded options are listed with the constraint they violate.
+- **Decision gates with an open recommendation.** No presentation of options is neutral, since the agent picks the options and the words. So each decision shows every viable option with verifiable facts instead of adjectives, the options it left out and those excluded by a constraint, and a labeled recommendation with its reasons and the fact that would change it. You decide; nothing proceeds by silence.
 - **A clean critic.** Review is done by a new agent that never saw the code being written, with your own words as its only statement of intent. Its findings come to you; nothing is fixed silently. Review levels: R0 gate only · R1 one critic · R2 critic, verifier and fix cycle (at most 3 rounds).
 - **Code quality standard.** The smallest complete change, no comments except `shortcut:` markers, short functions and files as signals of mixed responsibilities, design patterns only for problems present now. A dependency-free quality gate (`scripts/quality_gate.py`) checks the change.
 - **A per-project anti-pattern registry that learns.** Seeded from catalogs matching the project's architecture; agents record new anti-patterns as candidates; you approve what enters it, and what can be detected mechanically becomes a lint rule.
@@ -86,7 +86,7 @@ One feature per session, in its own worktree (DIRECT works in the current checko
 
 ## `/feature-kit`
 
-When you work by hand, `/feature-kit` makes the skills available as a catalog of modules (edge-cases, explore, spec, plan, decide, quality/ponytail, patterns, anti-patterns, test, e2e, gate, review, measure, correct, verify-skill, formal-skill, card, specialists) plus your own skills from the same folders, loaded only when the task needs one or you name it. No phases, gates, artifacts, worktrees or subagents, except a clean critic when you ask for a review.
+When you work by hand, `/feature-kit` makes the skills available as a catalog of modules (edge-cases, explore, spec, plan, decide, quality/ponytail, patterns, anti-patterns, test, e2e, gate, review, writing, measure, correct, verify-skill, formal-skill, card, specialists) plus your own skills from the same folders, loaded only when the task needs one or you name it. No phases, gates, artifacts, worktrees or subagents, except a clean critic when you ask for a review.
 
 ## Install
 
@@ -154,7 +154,7 @@ skills/feature-kit/
 skills/feature/
 ├── SKILL.md             principles, startup (recommendation, role), roles & model selection, gates
 ├── workflows/           direct.md · sdd.md · evo.md (incl. hybrid)
-├── protocols/           executor.md · skills.md · neutral-decisions.md · agent-questions.md · multi-feature.md · …
+├── protocols/           executor.md · skills.md · decisions.md · agent-questions.md · multi-feature.md · …
 ├── roles/               repository-analyst · spec-writer · planner · test-designer · implementer · tester · reviewer (critic) · verifier
 ├── specialists/         security · ux-ui · database · network · performance · observability (extensible)
 ├── knowledge/           edge-cases · specification-guide · testing-techniques · code-quality · design-patterns · e2e-testing · anti-patterns/
@@ -178,7 +178,7 @@ And once per project, after your approval: the anti-pattern registry (`config.js
 | --- | --- |
 | Standard model per role, deviations and floors | `skills/feature/SKILL.md` §4 |
 | Default feature folder | `SKILL.md` §2.3 |
-| Neutrality rules, e.g. never giving an opinion even when asked | `protocols/neutral-decisions.md` rule 12 |
+| How decisions and recommendations are presented | `protocols/decisions.md` |
 | Add engineering knowledge or a specialist | a skill file in `~/.claude/feature-skills/`, `<repo>/.claude/feature-skills/` or `<module>/.claude/feature-skills/`, with its classification (`protocols/skills.md`) |
 | Workflow recommendation criteria | `SKILL.md` §2.5 |
 | Code quality rules and default limits | `knowledge/code-quality.md`; per project in `.quality/config.json` |
@@ -189,7 +189,7 @@ And once per project, after your approval: the anti-pattern registry (`config.js
 
 A detailed description of the current architecture, with diagrams of every flow and the responsibilities of each agent, is in [`docs/architecture.md`](docs/architecture.md).
 
-The workflow was derived from a longer design document, included as [`docs/master-prompt.md`](docs/master-prompt.md). Its header lists where the skill deliberately departs from it: neutrality instead of recommendations, per-delegation model selection, multi-feature orchestration and a consolidated skills library.
+The workflow was derived from a longer design document, included as [`docs/master-prompt.md`](docs/master-prompt.md). Its header lists where the skill deliberately departs from it: recommendations that must show what they left out, per-delegation model selection, multi-feature orchestration and a consolidated skills library.
 
 Part of the code quality standard and of the review checklist adapts [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (MIT): the smallest-complete-change ladder, `shortcut:` markers, splitting by responsibility rather than line count, and findings that require a concrete case. This workflow is stricter on comments and does not install Ponytail's hooks. The surgical-change rules (every changed line traces to the request, match the existing style, mention pre-existing dead code instead of deleting it) and test-first defect fixes adapt the [Karpathy-inspired guidelines](https://github.com/forrestchang/andrej-karpathy-skills) by Forrest Chang (MIT). Several pieces adapt skills of [pstack](https://github.com/cursor/plugins/tree/main/pstack) by Lauren Tan (MIT): root causes and attacking the premise, the design principles (model the domain, data shape first, boundary discipline, subtract before you add), the measurement checklist, deepening the request, enforcement levels and the correction sweep, the app and formal verification generators, and the statechart rules. They are rewritten to fit this workflow's neutrality and gates; none of pstack's scripts are included.
 

@@ -19,7 +19,7 @@ On `/feature status`, when the programmer asks, or when the state of several fea
 | Feature | Workflow | Phase / step | Running agents | Waiting on the programmer |
 | --- | --- | --- | --- | --- |
 
-Rows are alphabetical by slug.
+Rows are alphabetical by slug. Above the board, the catch-up of `SKILL.md` §5 *How a gate message reads*: one sentence on what waits on the programmer, then what changed since their last message; below it, every pending item in full.
 
 **One orchestrator per feature.** Never resume a feature that another live orchestrator claims (`protocols/hierarchy.md` §Claims). If the programmer asks for that, point out the risk of conflicting edits and let them decide.
 
@@ -41,7 +41,7 @@ Rows are alphabetical by slug.
   2. verify the output;
   3. update that feature's artifacts, `handoff.md` and `delegations.md`;
   4. report to the programmer, tagged.
-- **You do not prioritize features.** When features compete (same files, a shared test environment, your own context capacity), the order, serialization or pausing is the programmer's decision. Present it with the neutral protocol: options alphabetical, by slug where they name features.
+- **You do not prioritize features.** When features compete (same files, a shared test environment, your own context capacity), the order, serialization or pausing is the programmer's decision. Present it with the decision protocol, with your recommendation.
 
 ## Interactions between features
 
@@ -80,4 +80,4 @@ Many features in one session consume your context.
 - When switching to a feature, re-read its `handoff.md` instead of relying on memory.
 - Keep subagent returns short.
 
-If context pressure starts to threaten correctness, tell the programmer and present the options neutrally, for example: pause some features, continue some in another session with `/feature resume <slug>`, or move to the hierarchical mode, where each group of features keeps its own context (`protocols/hierarchy.md`).
+If context pressure starts to threaten correctness, tell the programmer and present the options (`protocols/decisions.md`), for example: pause some features, continue some in another session with `/feature resume <slug>`, or move to the hierarchical mode, where each group of features keeps its own context (`protocols/hierarchy.md`).

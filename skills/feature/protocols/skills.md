@@ -77,7 +77,7 @@ These folders are not Claude Code's own `.claude/skills/`: that folder's descrip
 
 1. **Detect signals.** Check each specialist's signals against the request, the spec draft or intent pass, and the analyst's evidence, or, at the audit phase, the real diff.
 2. **Present them as facts** at the feature's first gate. One line per matching specialist: which signals matched (paths, terms), the phases it offers, and the estimated cost (about USD 0.15–0.30 per phase). Specialists without a match are not listed, unless the programmer asks for the full list.
-3. **The programmer chooses** which specialists run and in which phases. Ask neutrally: matching specialists are facts, not recommendations.
+3. **The programmer chooses** which specialists run and in which phases. Matching signals are facts; your recommendation of which to run, if you have one, is labeled as such.
 4. **Flag:** `--with <name>[,<name>…]` in the request activates those specialists in all their phases. The programmer may restrict them at the gate.
 5. **Mandatory:** a specialist with `mandatory-when: critical` runs on a Critical feature whenever one of its signals matches. State it; do not ask. The built-in `security` specialist is mandatory this way.
 6. **Re-check signals** against the real diff before verification, and in EVO at each increment. A specialist whose signals now match but was not chosen is asked about again.
@@ -89,7 +89,7 @@ Record the choices in the feature's `decisions/`, or the card's *Decisions* when
 | Phase | When | Context | Returns | Rules |
 | --- | --- | --- | --- | --- |
 | `spec` | After the spec draft (EVO: the intent pass), before its gate | Informed: the request, the draft and the analyst's evidence | Questions in its domain, in the format of `protocols/agent-questions.md` | It never adds requirements: gaps are questions. Its questions join the gate. |
-| `plan` | After the Planner's options (or the executor's), before the plan or approach gate | Informed: the spec or intent, and the options | Per option: facts, risks and costs in its domain (lock times, query plans, timeouts, accessibility impact…) | It never recommends or ranks. Its facts are added to each option's fields under the neutral protocol. |
+| `plan` | After the Planner's options (or the executor's), before the plan or approach gate | Informed: the spec or intent, and the options | Per option: facts, risks and costs in its domain (lock times, query plans, timeouts, accessibility impact…) | Its facts are added to each option's fields. It may say which option fares best in its domain, labeled, as a recommendation of that domain only. |
 | `test-design` | Alongside the Test Designer, or the executor's case design | The spec, or the intent record and decisions | Test cases in its domain, in the testing plan's or card's format | Cases come from the statement of what the feature must do. Where it does not settle an expected result, that is a question. |
 | `audit` | After the code, in parallel with the critic | **Clean:** only the diff, the code it reaches and the project's conventions, as the critic (`roles/reviewer.md` §Clean context) | Findings with **executed evidence**: a reproduction, a measurement, a screenshot, a query plan | No evidence, no confirmed finding: it is a *Possible risk*. The model is `opus`, never `haiku`. Never resumed. Never fixed automatically. |
 

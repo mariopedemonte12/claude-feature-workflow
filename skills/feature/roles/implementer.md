@@ -30,10 +30,10 @@ You execute the **approved** implementation plan, to the project's quality stand
 ## If new information invalidates the plan
 
 1. Stop the affected work. Independent parts may continue.
-2. Document the discovery, with its evidence and its relation to the intent (`<skill dir>/protocols/neutral-decisions.md` rule 15). This includes another place the programmer's words reach that the plan does not list: report it, never skip it as out of scope and never implement it unapproved.
+2. Document the discovery, with its evidence and its relation to the intent (`<skill dir>/protocols/decisions.md` rule 9). This includes another place the programmer's words reach that the plan does not list: report it, never skip it as out of scope and never implement it unapproved.
 3. Identify the affected decisions (D refs) and spec items.
 4. Explain the consequences.
-5. Describe the alternatives in the neutral format (`<skill dir>/protocols/neutral-decisions.md`): no recommendation, alphabetical order.
+5. Describe the alternatives in the decision format (`<skill dir>/protocols/decisions.md`), with your recommendation.
 6. Return to the orchestrator and request reassessment. Never drift from the plan silently.
 
 ## Self-review before the quality gate

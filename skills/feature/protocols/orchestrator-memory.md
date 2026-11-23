@@ -44,7 +44,7 @@ Rules:
 
 **At the start of every session** (any `/feature` invocation):
 1. Read `memory.md` if it exists. Trust its Project section instead of exploring the repository again. Check freshness: if `HEAD` differs from the recorded commit, run `git diff --stat <recorded>..HEAD` and refresh only the facts the changes touch.
-2. Read the workflow file of each feature you will act on in this session, and `protocols/neutral-decisions.md` before presenting a decision. Do not preload other protocols.
+2. Read the workflow file of each feature you will act on in this session, and `protocols/decisions.md` before presenting a decision. Do not preload other protocols.
 3. Read the `handoff.md` only of the features the programmer's message concerns.
 
 **At every stop** (a gate, a pending question, the end of the turn):
