@@ -4,7 +4,7 @@ One session does the whole feature with the edge-case checklist: no specificatio
 
 **Skills.** The session may use every skill that applies to DIRECT (`protocols/skills.md` §The classification): the library's, the programmer's, the repository's and the modules'. `--no-skills` turns them all off except `knowledge/edge-cases.md`.
 
-**Artifacts.** None by default: the result is reported in the conversation. If the programmer asks for a record, write `feature.md` from `templates/feature-card.md`, filling only Intent, Scope, Cases and Result.
+**Artifacts.** None by default: the result is reported in the conversation. If the programmer asks for a record, write `feature.md` from `templates/feature-card.md`, filling only Intent, Scope, Cases, Result and State (at every stop).
 
 ## Steps
 

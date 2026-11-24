@@ -6,9 +6,9 @@
 
 `handoff.md` is a message between agents of different phases, in orchestrator mode only. It is written at a phase transition only when the incoming agent is new, in every workflow; a resumed agent gets a brief with the new task and the artifact sections it needs instead. Executor mode never writes one.
 
-The outgoing agent writes it, when its brief says the incoming agent is new. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation.
+The outgoing agent writes it, when its brief's Task line says the incoming agent is new (`SKILL.md` §4 *Briefing a subagent*). The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation.
 
-`handoff.md` lives in the feature folder and is overwritten each time it is written. It holds no resume state: that is `state.md` (§Resume state). History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
+`handoff.md` lives in the feature folder and is overwritten each time it is written. When two new agents start in parallel (SDD step 5: Test Designer and Planner), each gets its own `handoff-<role>.md`. It holds no resume state: that is `state.md` (§Resume state). History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
 
 ## Rules
 
@@ -26,7 +26,7 @@ Structure: `templates/handoff.md`.
 In every workflow, these checklists define what a new agent's handoff carries, and what a resumed agent's brief points to.
 
 **Request → Specification**
-`intent.md` path, its consolidated intent version and last S-ID · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · the role of the session (orchestrator or executor).
+`intent.md` path, its consolidated intent version and last S-ID · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known.
 
 **Intent → Planning** (EVO)
 `intent.md` (consolidated intent version, statements since) · decisions that settle behavior (D refs) · completion criteria · main flows · open questions (blocking ones flagged) · repository references (analyst report, including the nearest analog) · areas of technical uncertainty.
@@ -44,7 +44,7 @@ Approved spec version · confirmed FR/AC/INV IDs · reach of the intent and outs
 Approved approach (D ref) · alternatives not chosen, with the reason only when that prevents re-litigating · technical decisions · affected files and components · dependencies · implementation sequence · risks · `testing-plan.md` (the behaviors the code must handle; the Implementer writes no tests, except `SKILL.md` §4) · decisions still pending and what must not be touched until they are made · verification depth (mutation testing yes or no · review level R0 / R1 / R2) · end-to-end harness · registry entries (AP IDs) relevant to the change.
 
 **Implementation → Testing** (critics and verifiers never read handoffs: `protocols/review-cycle.md` §Clean context)
-Implemented functionality by FR/AC · agent IDs to resume (Implementer, Tester) · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · how to start the system for end-to-end tests · quality gate result · suggested testing focus.
+Implemented functionality by FR/AC · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · how to start the system for end-to-end tests · quality gate result · suggested testing focus.
 
 **Testing → Evolution** (EVO)
 Tests executed, with results and evidence · failures · uncovered scenarios · discrepancies between the intent or cases and the implementation · newly discovered behavior (as hypotheses or discoveries) · deferred edge cases still open · invalidated assumptions · risks · possible intent, case or plan changes, phrased as options with your recommendation, labeled (`protocols/decisions.md`).
@@ -69,7 +69,7 @@ Validation results · status of each acceptance criterion · end-to-end status a
 
 ## Resume state
 
-`state.md` (`templates/state.md`) in the feature folder holds what a fresh session needs to resume: the workflow state, with each resumable agent's ID, and, in EVO, the open questions. Whoever drives the session writes it at every stop (a gate, a pending question, the end of the turn, a pause): the orchestrator, or the SDD executor. In EVO as executor, the card's *State* plays this role. DIRECT keeps neither, unless the programmer asks for a card. Resuming, building the portfolio board and recovering from a compaction read `state.md`, never the handoff.
+`state.md` (`templates/state.md`) in the feature folder holds what a fresh session needs to resume: the workflow state, with each resumable agent's ID, and, in EVO, the open questions. Whoever drives the session writes it at every stop (a gate, a pending question, the end of the turn, a pause): the orchestrator, a phase runner (`protocols/phase-runners.md`), or the SDD executor. In EVO as executor, the card's *State* plays this role. DIRECT keeps neither, unless the programmer asks for a card: then its *State* plays this role. Resuming, building the portfolio board and recovering from a compaction read `state.md`, never the handoff.
 
 ## A transition is complete when
 

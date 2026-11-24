@@ -35,7 +35,7 @@ The executable criteria: no other section restates what the feature must do.
 Skills that applied, by phase, with their location (library · programmer · repository · module `<path>`); specialists run and their phases.
 
 ## State
-Increment # and step · next step · what blocks it.
+Plays the role of `state.md` (`protocols/context-handoff.md` §Resume state), rewritten at every stop: increment # and step · next step · what blocks it · last gate passed (date) · pending decisions (D-NNN) · git (commit · branch · dirty yes/no).
 
 ## Result
 Files changed · test commands with real results, per increment · testing technique statuses · specialists and their results · mutation testing · quality gate result · `shortcut:` markers · known limitations · accepted findings · deferred edge cases never covered.
