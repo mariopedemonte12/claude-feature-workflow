@@ -5,8 +5,8 @@ When you run `/feature` and choose **executor**, the session does the feature's 
 | Workflow | What the executor does itself | What runs elsewhere | Artifacts |
 | --- | --- | --- | --- |
 | DIRECT | Everything: checklist, code, tests, self-review | A clean critic only if you ask | None, or a card if you ask |
-| SDD | Exploration, specification, plan, code, tests, verification | The Test Designer, in a session **you** open with `/feature role test-designer <slug>` (it must design from the spec without seeing the plan); the critic and audits as subagents | `intent.md`, `specification.md`, `implementation-plan.md`, `testing-plan.md`, `decisions/` |
-| EVO | Intent pass, cases, approach, code and tests per increment | The critic and audits as subagents, one per increment | One card, `feature.md`, plus `decisions/` |
+| SDD | Exploration, specification, plan, code, tests, verification | The Test Designer, in a session **you** open with `/feature role test-designer <slug>` (it must design from the spec without seeing the plan); the critic and audits as subagents | `intent.md`, `specification.md`, `implementation-plan.md`, `testing-plan.md`, `decisions/`, `state.md` |
+| EVO | Intent pass, cases, approach, code and tests per increment | The review at the validated level and the audits as subagents, per increment | One card, `feature.md`, plus `decisions/` |
 
 ## When to choose executor, and when orchestrator
 
@@ -14,7 +14,7 @@ When you run `/feature` and choose **executor**, the session does the feature's 
 | --- | --- |
 | One feature per session; several independent features run as parallel sessions | Several features coordinated in one portfolio, with overlap detection |
 | You want to see and steer the work in the conversation | You want each role in its own agent, with its own context and model |
-| The same session writes the code and its tests (except SDD's test design) | Only the Tester writes tests, from cases a Test Designer designed |
+| The same session writes the code and its tests (except SDD's test design) | The Tester writes the tests, from cases a Test Designer designed (DIRECT: one Implementer writes code and tests) |
 | You are on a plan with a usage limit: no orchestrator relay, which was 46% of all tokens in the measured run | The token budget is not a concern |
 
 ## EVO as executor
@@ -26,9 +26,9 @@ flowchart TB
     R(["/feature &lt;request&gt; --evo --execute"]) --> W["1 · Worktree<br/>EnterWorktree name=slug, stay in it<br/>card docs/features/&lt;slug&gt;/feature.md"]
     W --> RD["2 · Read only what is needed<br/>CLAUDE.md, affected code, tests, commands,<br/>registry, code-quality, testing-techniques"]
     RD --> SP["3 · Intent pass, in the card<br/>intent record · reach · nearest analog ·<br/>main flows · cases for every flow"]
-    SP --> G1{"⛔ 4 · Gate 1<br/>consolidated intent and completion criteria<br/>blocking questions with the analog's behavior<br/>approach · how many increments (your choice) · cases · approve / change / reject"}
+    SP --> G1{"⛔ 4 · First gate (EVO gates 3 and 5 merged)<br/>consolidated intent and completion criteria<br/>blocking questions with the analog's behavior<br/>approach · how many increments (your choice) · cases · approve / change / reject"}
     G1 --> IM["5 · Implement the increment<br/>code to the quality standard, a test per case,<br/>technique statuses, lint, quality gate"]
-    IM --> CR["6 · Clean critic on the increment's diff<br/>new opus subagent in the background"]
+    IM --> CR["6 · Review at the validated level on the increment's diff<br/>R0 none · R1 critic · R2 critic, verifier, fixes"]
     CR --> CK["7 · Check each finding<br/>Reproduced · Not reproduced · Unclear"]
     CK --> G2{"⛔ 8 · Increment gate<br/>results · findings and discoveries · deferred edge cases ·<br/>new consolidated intent · next increment"}
     G2 --> FX["9 · Fix and evolve<br/>reproducing test first, then the fix;<br/>consolidate the intent, retire superseded cases"]
@@ -36,9 +36,9 @@ flowchart TB
     FX -->|"completion criteria met"| G3{"⛔ 10 · Mutation testing once, acceptance,<br/>integration, cleanup"}
 ```
 
-The session does all the work itself. The only subagents are the critics (and the specialist audits you chose), one per increment.
+The session does all the work itself. The only subagents are the critics, the verifiers at R2 and the specialist audits you chose, per increment.
 
-**Increments, if you want them.** The executor follows `workflows/evo.md` without its separate agents, and merges its intent and approach gates into gate 1. There is no specification: the card's intent record, its decisions and its cases say what the feature must do. At gate 1 you choose how to deliver it: one increment for the whole feature (one critic and one increment gate, the one-pass flow `/feature-lean` had before), one per main flow (a critic and a gate per flow), or another grouping. At each increment gate you can regroup what remains.
+**Increments, if you want them.** The executor follows `workflows/evo.md` without its separate agents, and merges its intent and approach gates (3 and 5) into one first gate. There is no specification: the card's intent record, its decisions and its cases say what the feature must do. At the first gate you choose how to deliver it: one increment for the whole feature (one critic and one increment gate, the one-pass flow `/feature-lean` had before), one per main flow (a critic and a gate per flow), or another grouping. At each increment gate you can regroup what remains.
 
 ## Step by step
 
@@ -59,9 +59,9 @@ Written into the card before any code:
 - **Main flows:** the feature's main flows, in order, as the possible split into increments.
 - **Cases** for every main flow: every case with its expected result, its source (your request, a statement, a decision, or existing behavior with `path:line`) and what the analog does: boundaries, empty and missing values, invalid values and encodings, error paths, duplicates and ordering, concurrency, security (escaping, injection, safe-marking, authorization), and the worst-case input. Cases of later flows may be revised when their increment starts.
 
-### 4. Gate 1: intent, approach and first increment
+### 4. First gate: intent, approach and first increment
 
-One message, every item in full:
+One message, every item in full; the items of gates that are off in the feature's profile are decided by the session and reported in it:
 - the consolidated intent and completion criteria, and the readings to confirm;
 - blocking questions, each with what the analog does as a fact and the agent's recommendation; questions that only later increments need wait for them;
 - the approach: options in the decision format, each with its security consequence and its worst case (probed for parsers, regular expressions, escaping or safe-marking);
@@ -69,15 +69,16 @@ One message, every item in full:
 - choices by convention, one line each, which you may override;
 - the specialists whose signals match, as facts, and which of them run;
 - criticality: Critical makes mutation testing mandatory, once at the end; for a Standard feature, a question;
+- the review level recommended, and the anti-pattern registry bootstrap when the project has none;
 - approve, change or reject.
 
 ### 5. Implementation and tests, per increment
 
 The session writes the increment's code to the quality standard and a test for every one of its cases. Each testing technique gets a status for the increment; inputs that cross a trust boundary get fuzz or property-based tests; a user-facing flow gets an end-to-end test when the project has a harness. Then lint, type checks and the quality gate. Anything found that the gates did not settle goes to the card's *Discoveries*; only one that blocks the work is asked at once.
 
-### 6. The clean critic, per increment, and the specialist audits you chose
+### 6. The review, per increment, and the specialist audits you chose
 
-A new opus subagent, in the background, reviews the increment's diff from the commit where it started. It sees only that diff, the code it touches, the project's conventions, the quality standard and your own words (original request, confirmed consolidated intent, statements since). It never sees the card or how the code was written. The specialist auditors you chose run alongside it under the same rules. None is ever resumed.
+At the level you validated: R0 no critic; R1 one critic; R2 critic, verifier, fixes and a new critic, up to 3 rounds (Critical is always R2). The critic is a new opus subagent, in the background, reviews the increment's diff from the commit where it started. It sees only that diff, the code it touches, the project's conventions, the quality standard and your own words (original request, confirmed consolidated intent, statements since). It never sees the card or how the code was written. The specialist auditors you chose run alongside it under the same rules. None is ever resumed.
 
 ### 7. Checking the findings
 
@@ -85,11 +86,11 @@ The session checks every finding against the code and re-runs each specialist's 
 
 ### 8. Increment gate
 
-The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments.
+The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments. With the `increment` gate off, it is a report and the work continues.
 
 ### 9. Fix and evolve
 
-A defect that changes behavior is fixed test-first: a test that reproduces it fails, then the fix makes it pass. A specialist's fixed finding gets a new auditor on the fix diff. A second critic on the fixes runs only if you ask. Then the intent is consolidated if you confirmed a new version, cases whose source statement you superseded are retired, and the next increment starts.
+A defect that changes behavior is fixed test-first: a test that reproduces it fails, then the fix makes it pass. A specialist's fixed finding gets a new auditor on the fix diff. At R1, a second critic on the fixes runs only if you ask; at R2 the cycle runs it. Then the intent is consolidated if you confirmed a new version, cases whose source statement you superseded are retired, and the next increment starts.
 
 ### 10. Mutation testing, acceptance, integration and cleanup
 
@@ -106,12 +107,12 @@ The session reads the area, runs the edge-case checklist (reach of every broad s
 ## Several features, resuming, and what persists
 
 - **Parallel features:** one executor session per feature. Each runs in its own worktree, so sessions do not interfere. Each writes a claim, so an orchestrator's `/feature status` shows it, but there is no overlap detection between executor sessions: if two features touch the same files, you find out at integration.
-- **Resume:** `/feature resume <slug>` in a new session finds `.claude/worktrees/<slug>`, enters it, reads the card and continues from its *State*.
+- **Resume:** `/feature resume <slug>` in a new session finds `.claude/worktrees/<slug>`, enters it, reads the card and continues from its *State* (SDD: from `state.md`).
 - **What lives on disk:** the code on the feature branch, `feature.md` and one `review-<increment>.md` per increment. Everything you decided is in the card.
 
 ## Cost and evidence
 
-Measured before this version, when EVO as executor was `/feature-lean`. On Django 6.1, with 3 large features (a `{% switch %}` tag, a `ColorField` and a `naturalduration` filter), each run once with a simulated programmer:
+Measured before this version, when EVO as executor was `/feature-lean` and `/feature` High was SDD as orchestrator (intensities no longer exist). On Django 6.1, with 3 large features (a `{% switch %}` tag, a `ColorField` and a `naturalduration` filter), each run once with a simulated programmer:
 
 | | Plain session | `/feature-lean` v1 | `/feature-lean` v2 (analog + techniques) | `/feature` High (SDD orchestrated) |
 | --- | --- | --- | --- | --- |
@@ -121,16 +122,16 @@ Measured before this version, when EVO as executor was `/feature-lean`. On Djang
 | Turns with the programmer | — | 4 per feature | 4 per feature | 13 |
 | Wall time | — | ~9 min, in parallel | ~10 min, in parallel | hours |
 
-- **Questions surfaced:** in v2, the two behaviors that v1 missed (an exception from a user object inside `{% switch %}`, and surrounding whitespace in `ColorField`) reached gate 1 as explicit questions, with the analog's behavior attached. The simulated programmer chose differently from the analog both times, so the remaining hidden-test miss came from a decision, not an oversight.
+- **Questions surfaced:** in v2, the two behaviors that v1 missed (an exception from a user object inside `{% switch %}`, and surrounding whitespace in `ColorField`) reached the first gate as explicit questions, with the analog's behavior attached. The simulated programmer chose differently from the analog both times, so the remaining hidden-test miss came from a decision, not an oversight.
 - **Real feature, maintainers' tests:** on Django's HTTP QUERY method, `/feature-lean` passed 47/48 of the maintainers' tests for USD 2.61 (5× a plain session), with no regressions. The miss, `RedirectView` without a `query()` handler, is what the reach-of-the-intent step and the critic's intent check now look for. Details in [`cost-estimates.md`](cost-estimates.md).
-- **Discoveries:** anything found after gate 1 that your words seem to reach is recorded in the card's *Discoveries* with its relation to the intent and goes to you, at once if it blocks the work, otherwise at the increment gate.
+- **Discoveries:** anything found after the first gate that your words seem to reach is recorded in the card's *Discoveries* with its relation to the intent and goes to you, at once if it blocks the work, otherwise at the increment gate.
 - **Measured before increments:** every figure above comes from the one-pass `/feature-lean`, which is the single-increment choice. Each extra increment adds a critic and a gate.
 - **Limits:** these figures are n=1, with hidden tests written by the workflow's designers and a simulated programmer. See [`cost-estimates.md`](cost-estimates.md) and the README's *Evidence so far*.
 
 ## What EVO as executor does not do
 
-- **No separate roles:** there is no separate specification, planning, test-design or testing agent. The same session that writes the code writes its tests. That is the main trade-off against orchestrator mode, where only the Tester writes tests and the cases come from a Test Designer who never sees the plan.
-- **Review:** there is no verifier, no automatic fixes and no multi-round cycle. You decide every finding, including the specialists'.
-- **Testing depth:** mutation testing runs once at the end, only for Critical features or when you choose it. There are no disposable prototypes.
-- **Coordination:** there is no portfolio, no claims and no overlap detection across sessions.
-- **Registry:** no anti-pattern registry bootstrap. If the registry exists, the executor reads and respects it, but does not create or extend it.
+- **No separate roles:** there is no separate specification, planning, test-design or testing agent. The same session that writes the code writes its tests. That is the main trade-off against orchestrator mode, where the Tester writes the tests and the cases come from a Test Designer who never sees the plan.
+- **Review:** below R2 there is no verifier, no automatic fixes and no multi-round cycle. A specialist's finding is fixed only on your decision.
+- **Testing depth:** mutation testing runs once at the end, only for Critical features or when you choose it. Prototypes are allowed outside production code, and discarded unless you promote them.
+- **Coordination:** there is no portfolio and no overlap detection across sessions; the claim lets orchestrators see the feature.
+- **Registry:** when the project has none, its bootstrap is part of the first gate; approved anti-pattern candidates extend it.
