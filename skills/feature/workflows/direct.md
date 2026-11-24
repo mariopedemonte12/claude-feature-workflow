@@ -12,7 +12,7 @@ One session does the whole feature with the edge-case checklist: no specificatio
 
 **2. Checklist before code** (`knowledge/edge-cases.md` §Before code): reach of every broad statement, nearest analog, cases per input, probes when they apply.
 
-**3. Questions.** Ask only the blocking ones, in one message, each with what the analog does as a fact, under `protocols/decisions.md`. If there are none, do not stop: say in one line that there were none and continue.
+**3. Questions.** Ask only the blocking ones that refinement (if it ran at startup) left open, in one message, each with what the analog does as a fact, under `protocols/decisions.md`. If there are none, do not stop: say in one line that there were none and continue.
 
 **4. Implement and test.** Code that follows the active guides, a test for every case, the project's tests, lint and type checks, and, if the library guides are active, `python3 <skill dir>/scripts/quality_gate.py --repo <repo> --base <base>`.
 

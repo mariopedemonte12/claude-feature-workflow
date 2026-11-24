@@ -104,7 +104,8 @@ flowchart LR
 
 | Command | Effect |
 | --- | --- |
-| `/feature <request>` | Recommends a workflow with its evidence, asks the role, and starts. In an orchestrating session, adds to the portfolio; features in progress are never reset. |
+| `/feature refine <request>` | Refines a request with the programmer without starting a feature; saves the record locally for `/feature refined <slug>`. |
+| `/feature <request>` | Checks whether the request is ready and refines it if not, recommends a workflow with its evidence, asks the role, and starts. In an orchestrating session, adds to the portfolio; features in progress are never reset. |
 | `/feature role <role> <slug>` | A session that runs one role of an executor's feature, from the brief the executor wrote. |
 | `/feature resume <slug>…` | Continues features from their `handoff.md` or card, after a freshness check. |
 | `/feature status` | Board of every feature in progress, plus the ones other sessions claim. |
@@ -127,7 +128,10 @@ flowchart TB
     CL -->|"yes"| STOP["Do not touch the feature,<br/>report to the programmer"]
     CL -->|"no"| S2["2 · Project context<br/>from memory, or CLAUDE.md / README / commands,<br/>Repository Analyst if many files"]
     S2 --> S4["4 · Skill index<br/>frontmatter of library, user, repo and module skills"]
-    S4 --> S5{"5 · Workflow chosen<br/>by a flag?"}
+    S4 --> R5{"5 · Request ready?<br/>problem, observable outcome,<br/>one reading, context at hand"}
+    R5 -->|"no"| RF["Refine with the programmer<br/>problem · context gaps · readings<br/>→ consolidated intent v1 + verdict"]
+    R5 -->|"yes, or --no-refine"| S5
+    RF --> S5{"Workflow chosen<br/>by a flag?"}
     S5 -->|"no"| S5b["Assess each dimension with evidence,<br/>RECOMMEND a workflow and a gate profile,<br/>the programmer validates"]
     S5 -->|"yes"| S6
     S5b --> S6{"6 · Role chosen<br/>by a flag?"}
@@ -137,7 +141,8 @@ flowchart TB
     S3 --> S7["7 · Load the workflow file<br/>direct.md · sdd.md · evo.md"]
 ```
 
-- **Dimensions** for the workflow recommendation: requirement clarity, functional uncertainty, technical feasibility, architectural uncertainty, expected discoveries, need for prototypes, risk and reach. The role is a question; as with every decision, the agent may recommend one, labeled.
+- **Refinement** (`protocols/refinement.md`) runs before the recommendation when the request is not ready: it names a solution without its problem, its outcome is not observable, several readings survive, or it needs context only someone else has. The session restates the request as a problem, finds what the repository can answer, asks the rest from fixed dimensions, offers two or three readings plus the smallest version, and stops when the programmer confirms version 1 of the intent. It runs in every gate profile (one round in `auto`). `/feature refine` runs it alone, without starting a feature.
+- **Dimensions** for the workflow recommendation, assessed on the refined intent when refinement ran: requirement clarity, functional uncertainty, technical feasibility, architectural uncertainty, expected discoveries, need for prototypes, risk and reach. The role is a question; as with every decision, the agent may recommend one, labeled.
 - **Gate profile** (`protocols/gates.md`), recommended with the workflow: `full` (every gate) for likely Critical features, `key` (the default) for SDD and EVO, `auto` for DIRECT. Per-gate changes with `--gates key,+increment,-intent`.
 
 | Gate | `full` | `key` | `auto` |
