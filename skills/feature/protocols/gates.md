@@ -29,8 +29,8 @@ Integration and cleanup are hard stops, not gates (§Hard stops).
 | `approach` | stops | stops only when more than one viable option has different observable consequences (a public API, data or schema, a dependency, a structure other features will follow); otherwise off | off |
 | `depth` | stops | off: the defaults (review level from `protocols/review-cycle.md`, mutation testing only when Critical, the testing plan as designed, an existing end-to-end harness or the status Blocked) | off, as in `key` |
 | `increment` | stops | off: the increment's results go to the programmer as a report, and the work continues | off, as in `key` |
-| `defects` | stops | off: the review cycle fixes Blocker and Major findings the programmer's words cover; the rest go to acceptance | off, as in `key` |
-| `discoveries` | stops | stops for a discovery *outside what the programmer stated* or that *contradicts* their words; one *covered by* their words is fixed | off: covered ones are fixed; the others are **not built**, only recorded for acceptance |
+| `defects` | stops | off: the Implementer (resumed) fixes the Blocker and Major findings of the critic and the Tester that the programmer's words cover, at any review level, test first when the fix changes behavior; the rest, and every specialist audit finding, go to acceptance | off, as in `key` |
+| `discoveries` | stops | stops for a discovery *outside what the programmer stated* or that *contradicts* their words; one *covered by* their words is fixed | off: covered ones are fixed; those outside the programmer's words are **not built**, only recorded for acceptance; one that **contradicts** them is a hard stop (below) |
 | `candidates` | stops | off: presented together at `acceptance` | off: listed in the final report, not registered |
 | `acceptance` | stops | stops, together with integration | stops, together with integration |
 

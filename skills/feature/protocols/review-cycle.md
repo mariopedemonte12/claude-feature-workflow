@@ -7,7 +7,7 @@ Code review is done by **clean agents**: a fresh subagent that never saw how the
 | Level | What runs | Typical feature |
 | --- | --- | --- |
 | **R0 · Gate only** | The Implementer's quality gate and project lint. No review agent. | Mechanical change: rename, configuration, copy, dependency bump, a change that follows an existing pattern line by line |
-| **R1 · Single critic** | One clean critic, in parallel with the Tester. Its findings go to the defects gate. | Standard feature with new logic of moderate size |
+| **R1 · Single critic** | One clean critic, in parallel with the Tester. Its findings go to the defects gate (unless it is off: `protocols/gates.md`). | Standard feature with new logic of moderate size |
 | **R2 · Review cycle** | Clean critic → clean verifier → automatic fixes → new clean critic, up to 3 rounds. | Every Critical feature; Standard features that are large or complex |
 
 **Critical features always use R2.** The orchestrator states it; it does not ask.
@@ -26,7 +26,7 @@ The recommendation goes in the plan gate (SDD step 6, EVO step 5; with the `dept
 
 ## Specialist audits
 
-Specialists active in their `audit` phase (`protocols/skills.md`) are separate clean agents. They follow the critic's clean-context rules, run in parallel with it, and are never resumed. Their findings are never fixed automatically, at any level: they go to the defects gate, merged with the critic's.
+Specialists active in their `audit` phase (`protocols/skills.md`) are separate clean agents. They follow the critic's clean-context rules, run in parallel with it, and are never resumed. Their findings are never fixed automatically, at any level: they go to the defects gate, merged with the critic's; with that gate off, to acceptance.
 
 ## Clean context
 
@@ -56,7 +56,7 @@ After the loop, the Tester re-runs the regression suite and the E2E scenarios af
 
 ## R1 · Single critic
 
-The critic runs once, in parallel with the Tester, with the same clean context. It double-checks each finding itself before reporting. All findings go to the ⛔ defects gate. **At R1 nothing is fixed automatically**, not even behavior-preserving findings: the orchestrator checks the validated level before routing any fix.
+The critic runs once, in parallel with the Tester, with the same clean context. It double-checks each finding itself before reporting. All findings go to the ⛔ defects gate. **At R1 nothing is fixed automatically**, not even behavior-preserving findings, unless the `defects` gate is off (`protocols/gates.md`). The orchestrator checks the validated level before routing any fix.
 
 ## Automatic fixes are visible
 

@@ -67,6 +67,6 @@ Before reporting, review your own diff against the critic's checklist (`<skill d
 - Pre-existing dead code noticed, mentioned and not removed.
 - Test commands run, with real results (counts, failures). Never report tests you did not run.
 
-**Write `handoff.md`** (Implementation → Testing), following `<skill dir>/protocols/context-handoff.md` and `<skill dir>/templates/handoff.md`. Include the base commit for the diff, the higher-risk areas, how to start the application for end-to-end tests, and a suggested testing focus.
+**Write `handoff.md`** (Implementation → Testing; in EVO do not write it: return the same content in your report, the orchestrator writes `handoff.md` only at a stop), following `<skill dir>/protocols/context-handoff.md` and `<skill dir>/templates/handoff.md`. Include the base commit for the diff, the higher-risk areas, how to start the application for end-to-end tests, and a suggested testing focus.
 
 Return a summary of at most 250 words to the orchestrator. End it with one line on what you did not check.

@@ -161,7 +161,7 @@ Typical deviations (illustrative, not exhaustive):
 
 **Headless launches.** Every subagent runs in the background (`run_in_background: true` where the Agent tool offers it), so its tool calls and output never fill the programmer's screen. You are notified when it finishes. Do not paste, stream or summarize an agent's work as it happens: show the programmer one line when an agent starts or finishes (`[slug] Tester: done, 42/45 cases pass`), and the full content only at gates. Never wait with `sleep`.
 
-**Reusing agents.** Record each agent's ID in the feature's `handoff.md` (§Workflow state, *Agents*). When work returns to a role that already ran for this feature, **resume that same agent** with `SendMessage`, carrying only the new task and its IDs. The agent keeps its context, so it does not re-read the plan, the code or its own earlier work. This covers:
+**Reusing agents.** Record each agent's ID in the feature's `handoff.md` (§Workflow state, *Agents*); in EVO, at every stop. When work returns to a role that already ran for this feature, **resume that same agent** with `SendMessage`, carrying only the new task and its IDs. The agent keeps its context, so it does not re-read the plan, the code or its own earlier work. This covers:
 - testing or review sending fixes back to the Implementer;
 - the Tester re-running after fixes;
 - a spec change going back to the Specification Writer or the Test Designer;
@@ -241,7 +241,7 @@ The same shape serves `/feature status` and any catch-up the programmer asks for
 │             anti-pattern-candidates.md · e2e/ (traces, screenshots, logs)
 │             review/ rounds.md · round-<n>-critic.md · round-<n>-verification.md
 ├── delegations.md                    # one row per delegation (role, model, reason, outcome)
-├── handoff.md                        # latest handoff + workflow state; overwritten at each transition
+├── handoff.md                        # latest handoff + workflow state; overwritten at each transition (EVO: at each stop)
 └── briefs/<role>.md                  # executor mode: briefs for the sessions the programmer opens
 
 <repo>/.quality/ or <git-common-dir>/quality/   # the registry, where the programmer chose at bootstrap; outlives features

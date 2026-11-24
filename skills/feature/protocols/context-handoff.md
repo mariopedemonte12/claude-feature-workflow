@@ -6,7 +6,7 @@
 
 The outgoing agent writes it. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation.
 
-`handoff.md` lives in the feature folder and is overwritten at each transition. History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
+`handoff.md` lives in the feature folder and is overwritten at each transition (in EVO, at each stop). History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
 
 ## Rules
 
@@ -24,7 +24,7 @@ Structure: `templates/handoff.md`.
 **Request → Specification**
 `intent.md` path, its consolidated intent version and last S-ID · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · the role of the session (orchestrator or executor).
 
-In EVO, `handoff.md` is written only when the session stops or the feature is paused; the checklists below still define what each new agent's brief must point to.
+In EVO, `handoff.md` is written at every stop (a gate, a pending question, the end of the turn, a pause), not at internal transitions between agents; the roles return their report instead, and the checklists below still define what each new agent's brief must point to.
 
 **Intent → Planning** (EVO)
 `intent.md` (consolidated intent version, statements since) · decisions that settle behavior (D refs) · completion criteria · main flows · open questions (blocking ones flagged) · repository references (analyst report, including the nearest analog) · areas of technical uncertainty.
@@ -70,5 +70,5 @@ Validation results · status of each acceptance criterion · end-to-end status a
 - the phase deliverable exists;
 - important decisions are recorded;
 - unresolved issues are documented;
-- the handoff is written and checked by the orchestrator;
+- the handoff is written and checked by the orchestrator (in EVO, only at a stop; otherwise the brief names the artifacts);
 - the next agent can start without reconstructing the previous phase.

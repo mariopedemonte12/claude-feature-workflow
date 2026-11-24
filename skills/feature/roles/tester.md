@@ -41,5 +41,5 @@ The handoff (Implementation → Testing), `testing-plan.md` (the designed cases)
   - uncovered scenarios;
   - discrepancies between spec and implementation;
   - remaining risks.
-- **`handoff.md`:** Testing → Finalization (SDD) or Testing → Evolution (EVO), as the brief says. In EVO, list discovered requirements as hypotheses and possible spec or plan changes as options, with your recommendation.
+- **`handoff.md`:** Testing → Finalization (SDD). In EVO, do not write it: return the Testing → Evolution content in your report (the orchestrator writes `handoff.md` only at a stop). List discovered requirements as hypotheses and possible spec or plan changes as options, with your recommendation.
 - **Return** a summary of at most 250 words to the orchestrator.

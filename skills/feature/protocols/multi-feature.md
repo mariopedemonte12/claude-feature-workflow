@@ -12,7 +12,7 @@ Every feature in progress has:
 - a **status**: Active · Paused · Done;
 - a current phase/step, running agents and pending decisions.
 
-Each feature's `handoff.md` (§Workflow state) is its persistent source of truth. The portfolio board is **derived** from those handoffs plus the agents currently running, so there is no separate registry file to keep in sync.
+Each feature's `handoff.md` (§Workflow state; in EVO, written at every stop) is its persistent source of truth. The portfolio board is **derived** from those handoffs plus the agents currently running, so there is no separate registry file to keep in sync.
 
 On `/feature status`, when the programmer asks, or when the state of several features changed in one turn, show the board:
 
@@ -39,7 +39,7 @@ Rows are alphabetical by slug. Above the board, the catch-up of `SKILL.md` §5 *
 - **When an agent finishes:**
   1. identify its feature;
   2. verify the output;
-  3. update that feature's artifacts, `handoff.md` and `delegations.md`;
+  3. update that feature's artifacts and `delegations.md`, and its `handoff.md` (in EVO, at a stop);
   4. report to the programmer, tagged.
 - **You do not prioritize features.** When features compete (same files, a shared test environment, your own context capacity), the order, serialization or pausing is the programmer's decision. Present it with the decision protocol, with your recommendation.
 

@@ -18,7 +18,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 - **One gate per increment.** The intent gate opens the feature, an exploration gate runs only when the approach is in question, and each increment then has a single gate. Anything that does not block the work waits for it.
 - **The Planner runs at the start and when the approach is in question.** You write each increment's entry in the plan yourself.
 - **Mutation testing runs once,** at the end, over all the changed code.
-- **`handoff.md` is written only to resume in another session:** when the session stops or the programmer pauses the feature. Resumed agents keep their context; a new agent's brief names the artifacts and sections it needs, from the transition checklists in `protocols/context-handoff.md`, instead of a handoff file.
+- **`handoff.md` is written at every stop, not at internal transitions:** a gate, a pending question, the end of the turn, a pause (`protocols/orchestrator-memory.md` §Session lifecycle), by the orchestrator. Roles return their report instead of writing a handoff. Resumed agents keep their context; a new agent's brief names the artifacts and sections it needs, from the transition checklists in `protocols/context-handoff.md`, instead of a handoff file.
 - **The final report is short:** it points to the intent record, the cases and the decisions instead of summarizing them.
 
 **Hybrid mode:** when uncertainty is confined to one area, run SDD (`workflows/sdd.md`) for the feature. The specification marks that area *Under exploration* and points here; Phases 2–4 below run only for the area, with its cases tracing to the intent record and decisions, until it is resolved enough for the Specification Writer to specify it.
