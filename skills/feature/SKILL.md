@@ -185,7 +185,7 @@ You are the <Role> for feature "<slug>" in a multi-agent feature workflow.
 Feature worktree: <absolute path to .claude/worktrees/<slug>> (branch <branch>). Every project file you read, run or write is inside it; never touch files outside it.
 Work only through absolute paths into that worktree: start every shell command with `cd <worktree> &&`. First confirm `git -C <worktree> branch --show-current` prints <branch>; if not, stop and report. Never call EnterWorktree.
 1. Read and follow your role file: <absolute path to roles/<role>.md>
-2. Read the handoff: <absolute path to handoff.md inside the worktree>. Open other artifacts only at the sections it references.
+2. Read the handoff: <absolute path to handoff.md inside the worktree>. Open other artifacts only at the sections it references. (In EVO, replace this line with the artifacts the agent needs and their sections, from the checklists in `protocols/context-handoff.md`.)
 Skills for this phase: <absolute paths of the guides that apply, protocols/skills.md §Loading; omit the line if none>
 Task: <one concrete paragraph>
 Scope: <in scope / outside the intent, as read so far; report anything else the intent seems to reach as a discovery>

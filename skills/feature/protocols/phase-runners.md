@@ -28,11 +28,11 @@ A runner handles one phase of one feature, from its first step to the first ⛔ 
 | SDD | Specification | 1 (analyst) – 2 | ⛔ 3 spec gate |
 | SDD | Planning | 4 – 5, and the plan gate's content | ⛔ 6 plan gate |
 | SDD | Build | 7 – 11 and the review at the validated level | ⛔ defects and candidates gate (or a deviation gate) |
-| SDD | Fixes | approved fixes, affected tests, new critic if R2 | ⛔ defects gate again, or step 12 then ⛔ 13 acceptance |
+| SDD | Fixes | approved fixes, affected tests, new critic if R1/R2 | ⛔ defects gate again, or step 12 then ⛔ 13 acceptance |
 | EVO | Intent | 1 – 2 | ⛔ 3 |
 | EVO | Approach | 4 | ⛔ 5 |
 | EVO | Increment | 6 – 9 | ⛔ 10 increment gate |
-| EVO | Evolution | 11 | ⛔ 10 of the next increment, or, after the last, finalization (12 – 13) and ⛔ acceptance |
+| EVO | Evolution | 11, then 6 – 9 of the next increment | ⛔ 10, or finalization (12 – 13) and ⛔ acceptance |
 
 Phased mode applies only to orchestrated SDD and EVO features. A DIRECT feature is one agent, so a runner would add a level without removing work.
 

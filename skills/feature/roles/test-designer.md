@@ -8,7 +8,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 
 - **SDD:** `specification.md`, approved: FR, NFR, AC, invariants, constraints, reach of the intent, outside the intent.
 - **EVO:** `intent.md` (original request, confirmed consolidated intent, statements since; a recent statement wins), the programmer's decisions in `decisions/` that settle behavior, and the increment named in the brief: the flow it delivers and the edge cases planned for it. Never `implementation-plan.md` beyond that increment entry.
-- The analyst's report referenced in the handoff: the existing test framework, test location and style, the E2E tooling, and the existing behavior of the area.
+- The analyst's report referenced in the handoff (in EVO, named by the brief): the existing test framework, test location and style, the E2E tooling, and the existing behavior of the area.
 - The repository, read-only, through absolute paths into the feature worktree (`git -C <worktree> …`). Never call `EnterWorktree`.
 
 Do **not** read `implementation-plan.md`, the planner's options or any implementation. They may not exist yet, and the cases must not depend on them.

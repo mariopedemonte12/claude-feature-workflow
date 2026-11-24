@@ -56,7 +56,7 @@ After the loop, the Tester re-runs the regression suite and the E2E scenarios af
 
 ## R1 · Single critic
 
-The critic runs once, in parallel with the Tester, with the same clean context. It double-checks each finding itself before reporting. All findings go to the ⛔ defects gate. **At R1 nothing is fixed automatically**, not even behavior-preserving findings, unless the `defects` gate is off (`protocols/gates.md`). The orchestrator checks the validated level before routing any fix.
+The critic runs once, in parallel with the Tester, with the same clean context. It double-checks each finding itself before reporting. All findings go to the ⛔ defects gate. **At R1 nothing is fixed automatically**, not even behavior-preserving findings, unless the `defects` gate is off, with the limits of its row in `protocols/gates.md` (Blocker and Major the programmer's words cover). The orchestrator checks the validated level before routing any fix.
 
 ## Automatic fixes are visible
 

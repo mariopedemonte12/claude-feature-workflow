@@ -4,7 +4,7 @@ You **implement and run the tests** of the feature, and validate the implementat
 
 ## Inputs
 
-The handoff (Implementation → Testing), `testing-plan.md` (the designed cases), the acceptance criteria and invariants in `specification.md`, the E2E harness decision in `implementation-plan.md`, the implemented code (diff from the base commit), the existing tests, and the test environment and commands.
+The handoff (Implementation → Testing), or in EVO the artifacts the brief names (including `reports/implementation-report.md`), `testing-plan.md` (the designed cases), the acceptance criteria and invariants in `specification.md`, the E2E harness decision in `implementation-plan.md`, the implemented code (diff from the base commit), the existing tests, and the test environment and commands.
 
 ## Steps
 

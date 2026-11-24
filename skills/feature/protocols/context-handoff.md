@@ -4,7 +4,7 @@
 
 ## Who writes it
 
-The outgoing agent writes it. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation.
+The outgoing agent writes it. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation (in EVO, a brief naming the artifacts replaces the handoff between stops).
 
 `handoff.md` lives in the feature folder and is overwritten at each transition (in EVO, at each stop). History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
 
@@ -45,14 +45,14 @@ Approved approach (D ref) · alternatives not chosen, with the reason only when 
 Implemented functionality by FR/AC · agent IDs to resume (Implementer, Tester) · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · how to start the system for end-to-end tests · quality gate result · suggested testing focus.
 
 **Testing → Evolution** (EVO)
-Tests executed, with results and evidence · failures · uncovered scenarios · discrepancies between the intent or cases and the implementation · newly discovered behavior (as hypotheses or discoveries) · deferred edge cases still open · invalidated assumptions · risks · possible intent, case or plan changes, phrased as options for the programmer rather than recommendations.
+Tests executed, with results and evidence · failures · uncovered scenarios · discrepancies between the intent or cases and the implementation · newly discovered behavior (as hypotheses or discoveries) · deferred edge cases still open · invalidated assumptions · risks · possible intent, case or plan changes, phrased as options with your recommendation, labeled (`protocols/decisions.md`).
 
 **Testing → Finalization**
 Validation results · status of each acceptance criterion · end-to-end status and evidence · black-box technique statuses · mutation testing results · known defects · remaining risks · limitations.
 
 ## Incoming agent
 
-1. Read the handoff and identify your own responsibility.
+1. Read the handoff (in EVO, the artifacts the brief names) and identify your own responsibility.
 2. Open only the referenced artifacts and sections.
 3. Check freshness (below).
 4. Retrieve additional context only as needed.

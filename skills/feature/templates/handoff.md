@@ -1,4 +1,4 @@
-<!-- Overwritten at each transition. Omit any section that has no content. -->
+<!-- Overwritten at each transition (in EVO, at each stop). Omit any section that has no content. -->
 # Handoff: <from role> → <to role>
 
 ## Workflow state

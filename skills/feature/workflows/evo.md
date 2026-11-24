@@ -56,7 +56,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 - **Tester** (`roles/tester.md`), resumed in later increments: implements the increment's designed cases as tests, then explores, to find missing behavior, wrong assumptions, ambiguous rules and integration limits. End-to-end tests through the real entry point (`knowledge/e2e-testing.md`) cover the increment's user-facing flow. Each black-box technique (BVA, Fuzz, Symbolic/Concolic, Decision Table, FSM) gets a status for the increment: Applied / Not applicable + justification / Blocked + explanation.
 - **Review** at the validated level (`protocols/review-cycle.md`), on the increment's diff, re-checking the level against it; the first critic and the active specialist audits run with the Tester. Re-check the specialists' signals against the diff; a newly matching specialist is offered at the gate (`protocols/skills.md`).
 
-**10. ⛔ Increment gate** `[gate: increment, defects, discoveries, candidates]`. The only gate of the increment. With it off, the same message goes to the programmer as a report, the agent decides what it would have asked (`protocols/gates.md`), and the work continues. In one message:
+**10. ⛔ Increment gate** `[gate: increment, defects, discoveries, candidates]`. The only gate of the increment. With it off, the same message goes to the programmer as a report, the agent decides what it would have asked, except the hard stops (`protocols/gates.md`), and the work continues. In one message:
 - **Results:** tests, E2E, technique statuses, quality gate and review, separating observed facts from interpretations.
 - **Findings and discoveries,** each with its relation to the intent and its impact (step 8), in the decision format. Defect fixes follow `workflows/sdd.md` §Defects, discrepancies and discoveries.
 - **Hypotheses:** the proposed status of each one the increment touched (Confirmed with evidence · Under exploration · Rejected).
@@ -65,7 +65,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 - **Next:** the next increment's entry (flow, hypotheses, edge cases covered or deferred), or, if the completion criteria in the intent record are met, the move to finalization. The programmer may also regroup the remaining increments: merge them into one, split one, reorder them. If the approach is in question, the approach gate instead.
 - **Anti-pattern candidates** of the increment (`protocols/anti-pattern-registry.md` §The learning loop).
 
-**11. Evolve.** Apply what the programmer decided: consolidate the intent on their confirmation (`templates/intent.md`); record the hypotheses' statuses and the next increment's entry in the plan (with its change log); resume the Test Designer to update the affected cases and design the next increment's. A case whose source statement was superseded is retired, never left active, and keeps its ID. Then go to step 6.
+**11. Evolve.** Apply what the programmer decided: consolidate the intent on their confirmation (`templates/intent.md`); record the hypotheses' statuses and the next increment's entry in the plan (with its change log); resume the Test Designer to update the affected cases and design the next increment's. A case whose source statement was superseded is retired, never left active, and keeps its ID. Then go to step 6, or to finalization when step 10 decided it.
 
 ## Phase 4: Finalization
 
