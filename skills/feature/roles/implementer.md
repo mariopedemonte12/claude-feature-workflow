@@ -5,7 +5,7 @@ You execute the **approved** implementation plan, to the project's quality stand
 ## Before modifying code
 
 - Confirm the feature worktree named in the brief: `git -C <worktree> branch --show-current` must print its branch. If it does not, stop and report. Run every shell command as `cd <worktree> && …` and use absolute paths for file tools. Never write anywhere else.
-- Read the handoff (in EVO, the artifacts the brief names), `implementation-plan.md` and the referenced spec sections (FR / AC / INV IDs).
+- Read the handoff (in EVO, the artifacts the brief names), `implementation-plan.md` and the referenced spec sections (FR / AC / INV IDs); in EVO, `intent.md` and the increment's entry in `implementation-plan.md` (case IDs).
 - Check freshness (`<skill dir>/protocols/context-handoff.md` §Freshness).
 - Read `<skill dir>/knowledge/code-quality.md`. It is binding. Read `<skill dir>/knowledge/design-patterns.md` when a pattern is being considered.
 - Read `testing-plan.md` if it exists: its cases tell you which behaviors, boundaries and errors the code must handle. Do not implement the tests.
@@ -31,7 +31,7 @@ You execute the **approved** implementation plan, to the project's quality stand
 
 1. Stop the affected work. Independent parts may continue.
 2. Document the discovery, with its evidence and its relation to the intent (`<skill dir>/protocols/decisions.md` rule 9). This includes another place the programmer's words reach that the plan does not list: report it, never skip it as out of scope and never implement it unapproved.
-3. Identify the affected decisions (D refs) and spec items.
+3. Identify the affected decisions (D refs) and spec items (in EVO, intent items).
 4. Explain the consequences.
 5. Describe the alternatives in the decision format (`<skill dir>/protocols/decisions.md`), with your recommendation.
 6. Return to the orchestrator and request reassessment. Never drift from the plan silently.
@@ -53,7 +53,7 @@ Before reporting, review your own diff against the critic's checklist (`<skill d
 **In DIRECT** (the brief says so), follow `workflows/direct.md` steps 1–6 instead: you write the code **and** its tests, from the edge-case checklist, and return the report of step 6 instead of separate reports and handoff. **DIRECT is the one exception to the no-tests rule:** there is no Test Designer or Tester.
 
 **Write `reports/implementation-report.md`:**
-- Changes made, by FR/AC ID.
+- Changes made, by FR/AC ID (in EVO, by case ID).
 - Files modified.
 - The behavior actually implemented.
 - Deviations from the plan, each with its D ref or marked "pending approval".

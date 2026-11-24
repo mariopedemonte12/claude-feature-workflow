@@ -54,7 +54,7 @@ Started with `/feature hub`. It:
 ### Sub-orchestrator
 
 Runs `SKILL.md` for its group, exactly as a single orchestrator does, with these differences:
-- Its programmer channel is the principal. Every gate becomes a **decision request** sent up; it never presents a gate to the programmer directly unless the programmer writes to it directly (then it answers, and informs the principal with a status report).
+- Its programmer channel is the principal. Every gate that is on becomes a **decision request** sent up (a gate that is off is decided as `protocols/gates.md` §When a gate is off describes, and reported up in the status, not sent as a request); it never presents a gate to the programmer directly unless the programmer writes to it directly (then it answers, and informs the principal with a status report).
 - While a request is pending, it keeps working on everything that does not depend on it.
 - It records every answer in the feature's `decisions/`, as today. The feature's artifacts stay the source of truth.
 - It sends a **status report** at every phase transition and whenever the principal asks.
@@ -97,14 +97,14 @@ How sub-orchestrators run and exchange messages is chosen by the programmer when
 | --- | --- | --- |
 | **Agent team** | The principal is the team lead; each sub-orchestrator is a teammate, told to read this `SKILL.md` and this protocol for its group. Messages go through `SendMessage` and the team mailbox. | Experimental: requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, which the programmer sets. Teammates are full sessions with their own context, can launch subagents (in the foreground only), and the programmer can talk to them directly. In-process teammates are not restored by `/resume`; one team per session; teams do not nest. |
 | **Separate sessions** | The programmer opens one Claude Code session per group and runs `/feature join <hub-name> <group>` in it; the principal is another session, named with `/rename`. Messages go through cross-session messaging (`ListAgents`, `SendMessage`). | Requires Claude Code 2.1.224+ (2.1.234+ on native Windows). Each session is independent and resumable. Messages travel over a local socket; the `crossSessionInbound` setting can hold or refuse them, which may show approval dialogs. The programmer starts and names each session. |
-| **Subagents** | The principal launches each sub-orchestrator as a `general-purpose` subagent with the brief below. At a gate it ends its turn with its decision requests; the principal continues it with `SendMessage` carrying the answers. | No setting needed. Depth: principal → sub-orchestrator → feature role is 2 of the default 3 levels (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). The programmer cannot talk to a sub-orchestrator directly. Its context lives only as long as the principal's session; afterwards, the group resumes from handoffs. The principal creates the feature worktrees itself (`SKILL.md` §2.3) and passes their paths, so the sub-orchestrator never calls `EnterWorktree`. |
+| **Subagents** | The principal launches each sub-orchestrator as a `general-purpose` subagent with the brief below. At a gate that is on it ends its turn with its decision requests; the principal continues it with `SendMessage` carrying the answers. | No setting needed. Depth: principal → sub-orchestrator → feature role is 2 of the default 3 levels (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). The programmer cannot talk to a sub-orchestrator directly. Its context lives only as long as the principal's session; afterwards, the group resumes from handoffs. The principal creates the feature worktrees itself (`SKILL.md` §2.3) and passes their paths, so the sub-orchestrator never calls `EnterWorktree`. |
 
 **Brief for a subagent sub-orchestrator:**
 
 ```
 You are the sub-orchestrator of group "<group>" in hub "<hub>" of a multi-agent feature workflow.
 Read and follow <absolute path to SKILL.md>, and <absolute path to protocols/hierarchy.md> §Sub-orchestrator.
-Your programmer channel is the principal: you cannot talk to the programmer. At every gate, end your turn
+Your programmer channel is the principal: you cannot talk to the programmer. At every gate that is on, end your turn
 with DECISION-REQUEST messages; you will be continued with DECISION messages. Never call EnterWorktree.
 Features: <slug> — <worktree path> — <feature folder> — <one-line intent> (one line each)
 Task: <start or resume each feature at its current step>

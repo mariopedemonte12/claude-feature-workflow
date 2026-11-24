@@ -58,7 +58,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 
 **10. ⛔ Increment gate** `[gate: increment, defects, discoveries, candidates]`. The only gate of the increment. With it off, the same message goes to the programmer as a report, the agent decides what it would have asked, except the hard stops (`protocols/gates.md`), and the work continues. In one message:
 - **Results:** tests, E2E, technique statuses, quality gate and review, separating observed facts from interpretations.
-- **Findings and discoveries,** each with its relation to the intent and its impact (step 8), in the decision format. Defect fixes follow `workflows/sdd.md` §Defects, discrepancies and discoveries.
+- **Findings and discoveries,** each with its relation to the intent and its impact (step 8), in the decision format. Defect fixes follow `workflows/sdd.md` §Defects, discrepancies and discoveries (as executor, `protocols/executor.md` step 4 differs at R1).
 - **Hypotheses:** the proposed status of each one the increment touched (Confirmed with evidence · Under exploration · Rejected).
 - **Deferred edge cases** still open, by increment.
 - **Consolidated intent:** a proposed new version, when there are statements since the last gate.

@@ -21,7 +21,7 @@ The principles of `SKILL.md` §1 apply, except 9: the executor changes project c
 
 ## Worktree
 
-- **Create and stay:** call `EnterWorktree` with `name: "<slug>"` (load it with ToolSearch if deferred) and **stay in it**. Record its path, branch and base commit (`git rev-parse --short HEAD`).
+- **Create and stay** (DIRECT: `workflows/direct.md` works in the current checkout unless the programmer asks for a worktree; the claim then records the current checkout): call `EnterWorktree` with `name: "<slug>"` (load it with ToolSearch if deferred) and **stay in it**. Record its path, branch and base commit (`git rev-parse --short HEAD`).
 - **On failure:** if it cannot be created, stop and present the situation to the programmer. Never work in the shared checkout on your own.
 - **Claim:** write the feature's claim (`protocols/hierarchy.md` §Claims) with `orchestrator` set to this session and `mode: "executor"`, so orchestrators and other sessions see it.
 
@@ -29,7 +29,7 @@ The principles of `SKILL.md` §1 apply, except 9: the executor changes project c
 
 | Workflow | Artifacts |
 | --- | --- |
-| SDD | The folder of `SKILL.md` §6: `intent.md`, `specification.md`, `implementation-plan.md`, `testing-plan.md` (written by the Test Designer's session), `decisions/`, `reports/review/`. No `delegations.md`; `handoff.md` only when the session stops or pauses |
+| SDD | The folder of `SKILL.md` §6 (specialist runs are logged in `reports/implementation-report.md`): `intent.md`, `specification.md`, `implementation-plan.md`, `testing-plan.md` (written by the Test Designer's session), `decisions/`, `reports/review/`. No `delegations.md`; `handoff.md` at every stop (a gate, a pending question, the end of the turn, a pause) |
 | EVO | **One card**, `feature.md` (`templates/feature-card.md`), plus `decisions/` and appendices when it overflows. Its Intent section is the intent record, its Cases section replaces `testing-plan.md`, and its Increments section replaces the plan; in EVO the card's *State* plays the role of `handoff.md`, written at every stop |
 
 The card has a target of 500 lines, never a cut: keep the card as the summary, move the overflow to `decisions/D-NNN-<topic>.md` or `feature-appendix.md`, linked by section, and report the total size at the next gate.

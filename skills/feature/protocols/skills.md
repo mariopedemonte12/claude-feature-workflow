@@ -33,7 +33,7 @@ mandatory-when: never                # or: critical (runs on every Critical feat
 | Phase | DIRECT | SDD | EVO |
 | --- | --- | --- | --- |
 | `intent` | — | Intent and request understanding (step 1) | Intent pass (steps 1–2) |
-| `spec` | — | Specification (step 2) | — |
+| `spec` | — | Specification (step 2) | Intent pass (step 2) |
 | `plan` | — | Planning (steps 4–5) | Approach (step 4) and each increment's entry |
 | `test-design` | — | Test design (step 5) | Cases of each increment |
 | `implement` | the session's work | Implementation (step 7) | Implementation of each increment |

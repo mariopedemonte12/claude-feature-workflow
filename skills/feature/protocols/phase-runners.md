@@ -4,15 +4,15 @@
 
 The orchestrator's cost grows with the square of its work: each call re-reads a context that every agent return, brief and verification makes longer. In **phased** mode, the orchestrator keeps only what needs the programmer and hands each **phase** of a feature to a **phase runner**: a subagent that orchestrates that phase's agents and ends at the phase's first ⛔ gate. Its context dies with the phase, so the orchestrator's own context grows several times more slowly.
 
-**Direct** mode (the orchestrator runs every phase itself, as in `SKILL.md`) remains the default. Phased mode is chosen by the programmer, per feature or per group, with `--phased` or in their request ("run billing phased"), and can change at any gate. Features in the same portfolio may use different modes.
+**Standard** mode (the orchestrator runs every phase itself, as in `SKILL.md`) remains the default. Phased mode is chosen by the programmer, per feature or per group, with `--phased` or in their request ("run billing phased"), and can change at any gate. Features in the same portfolio may use different modes.
 
 ## What changes for the programmer
 
 Facts to present when the programmer asks which mode to use:
 
-| Aspect | Direct | Phased |
+| Aspect | Standard | Phased |
 | --- | --- | --- |
-| Decisions | Every ⛔ gate is the programmer's | Same gates. A runner cannot talk to the programmer, so it cannot pass a gate: it must stop and return it |
+| Decisions | Every ⛔ gate is the programmer's | Same gates. A runner cannot talk to the programmer, so it cannot pass a gate that is on: it must stop and return it. A gate that is off it decides, records and reports as `protocols/gates.md` §When a gate is off describes, and continues |
 | What the programmer sees during a phase | Each agent's result, as it arrives | The phase's result at its gate; the runner's log in `delegations.md` on request |
 | Stopping or redirecting mid-phase | Direct, agent by agent | Stop the whole runner (`TaskStop`), then relaunch the phase from its handoff |
 | Agent questions | Agent → orchestrator → programmer | Agent → runner → orchestrator → programmer, and back |
@@ -72,7 +72,7 @@ You orchestrate one phase of one feature.
 2. **Delegate** each step to its role exactly as `SKILL.md` §4 describes: model choice per delegation, logged in `delegations.md`; briefs in its format; parallel launches where independent. Roles never delegate further.
 3. **Verify** what each agent returns against the artifacts and the diff before using it, keeping each agent's recommendation attributed to it.
 4. **Agent questions.** Answer from evidence what you can. For the rest, stop: record them as `protocols/agent-questions.md` §For the orchestrator, steps 1–2, describes (including the agent's ID in `handoff.md`) and return with `QUESTIONS`. When resumed with the answers, record them and resume that agent with `SendMessage`; if it cannot be resumed, relaunch it with its work so far.
-5. **Stop at the first ⛔** in your range, before doing anything that depends on its decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `handoff.md`.
+5. **Stop at the first ⛔ whose gate is on** in your range (a gate that is off is decided and recorded: `protocols/gates.md` §When a gate is off), before doing anything that depends on its decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `handoff.md`.
 6. **Return**, and nothing else:
 
 ```
