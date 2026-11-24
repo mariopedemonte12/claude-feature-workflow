@@ -14,7 +14,7 @@ Code review is done by **clean agents**: a fresh subagent that never saw how the
 
 ### Recommending the level
 
-The recommendation goes in the plan gate (SDD step 6, EVO step 5), labeled *Recommendation*, with the evidence behind it:
+The recommendation goes in the plan gate (SDD step 6, EVO step 5; with the `depth` gate off, the default is applied and reported, `protocols/gates.md`), labeled *Recommendation*, with the evidence behind it:
 
 - **Size:** files and components the plan touches; estimated changed lines.
 - **Complexity:** new branching logic, state machines, parsers, concurrency, money, security, data writes or migrations, public interfaces, changes across several features or layers.
@@ -22,7 +22,7 @@ The recommendation goes in the plan gate (SDD step 6, EVO step 5), labeled *Reco
 
 **Start from the default:** R1 for SDD and EVO; Critical always R2. DIRECT runs no review agent unless the programmer asks for a critic. Recommend a different level only with evidence: lower to R0 only for a mechanical change with no new branching logic, none of the risk areas above and a small diff (on the order of 50 changed lines); raise to R2 for several risk areas or a large diff. The recommendation always states the default and why it deviates, if it does. A standing acceptance of recommendations covers only the default; a deviation is asked every time (`protocols/decisions.md` rule 11). The programmer validates or changes the level; record it in `decisions/` and in the plan's verification depth.
 
-**Re-check after implementation.** Before review starts, compare the real diff (`git diff --shortstat <base>`, the files touched, the risk areas reached) with the estimate. If it crosses into another level, state the facts and recommend again; the programmer validates.
+**Re-check after implementation.** Before review starts, compare the real diff (`git diff --shortstat <base>`, the files touched, the risk areas reached) with the estimate. If it crosses into another level, state the facts and recommend again; the programmer validates, or, with the `depth` gate off, the level of the default for the new size applies and is reported.
 
 ## Specialist audits
 

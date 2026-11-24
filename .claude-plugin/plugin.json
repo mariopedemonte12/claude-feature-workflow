@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "feature-workflow",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "On-demand feature skills for Claude Code: /feature recommends a workflow (DIRECT, SDD or EVO) and runs it as orchestrator of several features or executor of one, with classified skills you can extend per user, repository or module; /feature-kit loads the same skills for hand-driven work.",
   "author": {
     "name": "mariopedemonte12"

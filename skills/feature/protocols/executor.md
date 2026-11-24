@@ -14,6 +14,9 @@ One feature per executor session. Several features at once means several session
 
 ## Principles
 
+Questions are always allowed: whatever the gate profile, ask the programmer directly when only they can answer and the work is blocked (`protocols/gates.md` §Questions).
+
+
 The principles of `SKILL.md` §1 apply, except 9: the executor changes project code, because it is the one doing the work. Read `protocols/decisions.md` before the first decision and follow it, including rules 7 (no defaults by silence), 9 (scope framed against the intent record) and 10 (relaying).
 
 ## Worktree
@@ -36,18 +39,18 @@ The card has a target of 500 lines, never a cut: keep the card as the summary, m
 Follow `workflows/evo.md`, with these changes:
 
 1. **Intent pass** (steps 1–2), in the card. *Intent*: the original request verbatim and a proposed consolidated intent, version 1, with the completion criteria. *Scope*: the reach of each broad statement, with the search run. *Nearest analog*, *Main flows*, and the *Cases* of every main flow, from `knowledge/edge-cases.md` §Before code. Cases of later flows may be revised when their increment starts.
-2. **Gates 3 and 5 are one gate**, in one message, each item in full: consolidated intent and readings to confirm; blocking questions with what the analog does; the approach (several viable: the decision format, each option with **Security consequence** and **Worst case**, probed or Unknown; one viable: it, with the excluded alternatives); **increments** as a question (one for the whole feature, one per main flow, or another grouping), with the cases in full; choices by convention, one line each; specialists; criticality and mutation testing; the review level you recommend; approve · change · reject. If `spec` or `plan` specialists run, bring their questions back in a short gate 1b before implementing.
-3. **Each increment** (steps 6–11): you implement the flow and write a test for every case of the increment, with each technique of `knowledge/testing-techniques.md` given a status, fuzz or property tests on every input that crosses a trust boundary, and an end-to-end test when the flow is user-facing and the project has a harness. Run the tests, lint, type checks and `scripts/quality_gate.py`. Record in the card's *State* the commit where the increment started. Then the critic and the active audits on the increment's diff; check every finding (§Checking findings); then the ⛔ increment gate as `workflows/evo.md` step 10 describes.
+2. **Gates 3 and 5 are one gate** (`[gate: intent, specialists, approach, depth, bootstrap]`), in one message, holding only the items whose gates are on in the feature's profile (`protocols/gates.md`); the items of gates that are off are decided by you and reported in the same message, each item in full: consolidated intent and readings to confirm; blocking questions with what the analog does; the approach (several viable: the decision format, each option with **Security consequence** and **Worst case**, probed or Unknown; one viable: it, with the excluded alternatives); **increments** as a question (one for the whole feature, one per main flow, or another grouping), with the cases in full; choices by convention, one line each; specialists; criticality and mutation testing; the review level you recommend; approve · change · reject. If `spec` or `plan` specialists run, bring their questions back in a short gate 1b before implementing.
+3. **Each increment** (steps 6–11): you implement the flow and write a test for every case of the increment, with each technique of `knowledge/testing-techniques.md` given a status, fuzz or property tests on every input that crosses a trust boundary, and an end-to-end test when the flow is user-facing and the project has a harness. Run the tests, lint, type checks and `scripts/quality_gate.py`. Record in the card's *State* the commit where the increment started. Then the critic and the active audits on the increment's diff; check every finding (§Checking findings); then the ⛔ increment gate as `workflows/evo.md` step 10 describes (a report when `increment` is off).
 4. **Fixes:** for each Blocker or Major that changes behavior, first a test that reproduces it, seen failing, then the fix (`knowledge/code-quality.md` §Test first for defects). A second critic on the fixes runs only if the programmer asks; a fixed audit finding gets a new auditor on the fix diff.
-5. **Finalization** (steps 12–13): mutation testing once when chosen or Critical; the card's *Result*; then ⛔ acceptance, integration and cleanup.
+5. **Finalization** (steps 12–13): mutation testing once when chosen or Critical; the card's *Result*; then ⛔ acceptance, and the integration and cleanup hard stops.
 
 ## SDD as executor
 
 Follow `workflows/sdd.md`, with these changes:
 
-1. **Steps 1–3:** you explore and write `specification.md` yourself, following `roles/spec-writer.md` and `knowledge/specification-guide.md`. ⛔ Spec gate as written.
+1. **Steps 1–3:** you explore and write `specification.md` yourself, following `roles/spec-writer.md` and `knowledge/specification-guide.md`. ⛔ Spec gate (`[gate: intent, specialists]`) as written.
 2. **Step 5:** once the spec is approved, write the Test Designer's brief (§Sessions the programmer opens) and tell the programmer how to open its session. **Then plan**, following `roles/planner.md`, while that session works. You never read `testing-plan.md` while planning, and you never write it.
-3. **Step 6 (⛔ plan gate):** present the plan and the testing plan together, as written. If the Test Designer's session has not finished, present the plan and say the testing plan is pending; the gate closes when both are approved.
+3. **Step 6 (⛔ plan gate, `[gate: approach, depth]`):** present the plan and the testing plan together, as written. If the Test Designer's session has not finished, present the plan and say the testing plan is pending; the gate closes when both are approved. With both gates off, you approve them yourself and report it, but you still wait for the Test Designer's `testing-plan.md`: that wait is a dependency, not a gate.
 4. **Steps 7–11:** you implement, then implement the designed cases as tests and test, following `roles/implementer.md` (without its no-tests rule) and `roles/tester.md`. Then review at the validated level (§The critic).
 5. **Defects, finalization:** as in `workflows/sdd.md`, with fixes made by you, test first.
 
