@@ -5,7 +5,7 @@ You execute the **approved** implementation plan, to the project's quality stand
 ## Before modifying code
 
 - Confirm the feature worktree named in the brief: `git -C <worktree> branch --show-current` must print its branch. If it does not, stop and report. Run every shell command as `cd <worktree> && …` and use absolute paths for file tools. Never write anywhere else.
-- Read the handoff (in EVO, the artifacts the brief names), `implementation-plan.md` and the referenced spec sections (FR / AC / INV IDs); in EVO, instead of the spec, `intent.md`, the increment's entry in `implementation-plan.md` and its cases in `testing-plan.md` (case IDs).
+- Read the handoff (when there is none, the artifacts the brief names), `implementation-plan.md` and the referenced spec sections (FR / AC / INV IDs); in EVO, instead of the spec, `intent.md`, the increment's entry in `implementation-plan.md` and its cases in `testing-plan.md` (case IDs).
 - Check freshness (`<skill dir>/protocols/context-handoff.md` §Freshness).
 - Read `<skill dir>/knowledge/code-quality.md`. It is binding. Read `<skill dir>/knowledge/design-patterns.md` when a pattern is being considered.
 - Read `testing-plan.md` if it exists: its cases tell you which behaviors, boundaries and errors the code must handle. Do not implement the tests.
@@ -67,6 +67,6 @@ Before reporting, review your own diff against the critic's checklist (`<skill d
 - Pre-existing dead code noticed, mentioned and not removed.
 - Test commands run, with real results (counts, failures). Never report tests you did not run.
 
-**Write `handoff.md`** (Implementation → Testing; in EVO do not write it: put the same content, with the base commit, how to start the system for end-to-end tests and the testing focus, in `reports/implementation-report.md`; the orchestrator writes `handoff.md` only at a stop), following `<skill dir>/protocols/context-handoff.md` and `<skill dir>/templates/handoff.md`. Include the base commit for the diff, the higher-risk areas, how to start the application for end-to-end tests, and a suggested testing focus.
+**Write `handoff.md`** (Implementation → Testing) only when the brief says the incoming agent is new; otherwise put the same content, with the base commit, how to start the system for end-to-end tests and the testing focus, in `reports/implementation-report.md`. Follow `<skill dir>/protocols/context-handoff.md` and `<skill dir>/templates/handoff.md`. Include the base commit for the diff, the higher-risk areas, how to start the application for end-to-end tests, and a suggested testing focus.
 
 Return a summary of at most 250 words to the orchestrator. End it with one line on what you did not check.

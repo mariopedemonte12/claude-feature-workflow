@@ -12,7 +12,7 @@ Every feature in progress has:
 - a **status**: Active · Paused · Done;
 - a current phase/step, running agents and pending decisions.
 
-Each feature's `handoff.md` (§Workflow state; in EVO, written at every stop) is its persistent source of truth. The portfolio board is **derived** from those handoffs plus the agents currently running, so there is no separate registry file to keep in sync.
+Each feature's `state.md` (§Workflow state, written at every stop) is its persistent source of truth. The portfolio board is **derived** from those files plus the agents currently running, so there is no separate registry file to keep in sync.
 
 On `/feature status`, when the programmer asks, or when the state of several features changed in one turn, show the board:
 
@@ -39,7 +39,7 @@ Rows are alphabetical by slug. Above the board, the catch-up of `SKILL.md` §5 *
 - **When an agent finishes:**
   1. identify its feature;
   2. verify the output;
-  3. update that feature's artifacts and `delegations.md`, and its `handoff.md` (in EVO, at a stop);
+  3. update that feature's artifacts and `delegations.md`, and, at a stop, its `state.md`;
   4. report to the programmer, tagged.
 - **You do not prioritize features.** When features compete (same files, a shared test environment, your own context capacity), the order, serialization or pausing is the programmer's decision. Present it with the decision protocol, with your recommendation.
 
@@ -50,7 +50,7 @@ Rows are alphabetical by slug. Above the board, the catch-up of `SKILL.md` §5 *
   - compare specs for conflicting requirements, constraints or invariants;
   - look for shared resources (database schemas, public APIs, configuration, test infrastructure).
 - **Report overlaps and conflicts as facts,** e.g. `[a] and [b] both modify src/billing/invoice.ts`, or `[a] FR-2 contradicts [b] INV-1`. Resolving them is the programmer's decision.
-- **Record the relation** in both features' handoffs (§Related features).
+- **Record the relation** in both features' `state.md` (§Workflow state, *Related features*).
 - **Never carry a decision** from one feature into another unless the programmer says so.
 
 ## Worktrees: what stays shared
@@ -77,7 +77,7 @@ A feature run by an executor session (`protocols/executor.md`) is not in this or
 
 Many features in one session consume your context.
 - Keep detail in artifacts, not in the conversation.
-- When switching to a feature, re-read its `handoff.md` instead of relying on memory.
+- When switching to a feature, re-read its `state.md` instead of relying on memory.
 - Keep subagent returns short.
 
 If context pressure starts to threaten correctness, tell the programmer and present the options (`protocols/decisions.md`), for example: pause some features, continue some in another session with `/feature resume <slug>`, or move to the hierarchical mode, where each group of features keeps its own context (`protocols/hierarchy.md`).

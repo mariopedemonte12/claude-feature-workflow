@@ -4,9 +4,11 @@
 
 ## Who writes it
 
-The outgoing agent writes it. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation (in EVO, a brief naming the artifacts replaces the handoff between stops).
+`handoff.md` is a message between agents of different phases, in orchestrator mode only. It is written at a phase transition only when the incoming agent is new, in every workflow; a resumed agent gets a brief with the new task and the artifact sections it needs instead. Executor mode never writes one.
 
-`handoff.md` lives in the feature folder and is overwritten at each transition (in EVO, at each stop). History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
+The outgoing agent writes it, when its brief says the incoming agent is new. The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation.
+
+`handoff.md` lives in the feature folder and is overwritten each time it is written. It holds no resume state: that is `state.md` (§Resume state). History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
 
 ## Rules
 
@@ -21,10 +23,10 @@ Structure: `templates/handoff.md`.
 
 ## What each transition must carry
 
+In every workflow, these checklists define what a new agent's handoff carries, and what a resumed agent's brief points to.
+
 **Request → Specification**
 `intent.md` path, its consolidated intent version and last S-ID · repository references (analyst report): existing behavior in the area, constraints it imposes · workflow · criticality if already known · the role of the session (orchestrator or executor).
-
-In EVO, `handoff.md` is written at every stop (a gate, a pending question, the end of the turn, a pause), not at internal transitions between agents; the roles return their report instead, and the checklists below still define what each new agent's brief must point to.
 
 **Intent → Planning** (EVO)
 `intent.md` (consolidated intent version, statements since) · decisions that settle behavior (D refs) · completion criteria · main flows · open questions (blocking ones flagged) · repository references (analyst report, including the nearest analog) · areas of technical uncertainty.
@@ -52,7 +54,7 @@ Validation results · status of each acceptance criterion · end-to-end status a
 
 ## Incoming agent
 
-1. Read the handoff (in EVO, the artifacts the brief names) and identify your own responsibility.
+1. Read the handoff (when there is none, the artifacts the brief names) and identify your own responsibility.
 2. Open only the referenced artifacts and sections.
 3. Check freshness (below).
 4. Retrieve additional context only as needed.
@@ -61,14 +63,18 @@ Validation results · status of each acceptance criterion · end-to-end status a
 
 ## Freshness
 
-**When writing:** run these inside the feature worktree. Record `git rev-parse --short HEAD`, the branch, whether the working tree is dirty (`git status --porcelain` is non-empty), and the artifact versions (spec vN, plan status). If the project is not a git repository, record the date and time and the list of files touched.
+**When writing** a handoff or `state.md`: run these inside the feature worktree. Record `git rev-parse --short HEAD`, the branch, whether the working tree is dirty (`git status --porcelain` is non-empty), and the artifact versions (spec vN, plan status). If the project is not a git repository, record the date and time and the list of files touched.
 
-**When receiving or resuming:** compare against the current state (`git log --oneline <recorded>..HEAD`, `git diff --stat <recorded>`). Re-read only the changed files that matter to your task. Re-verify a decision only if the changes touch what it depends on. A change does not automatically invalidate the handoff.
+**When receiving or resuming:** compare against the current state (`git log --oneline <recorded>..HEAD`, `git diff --stat <recorded>`). Re-read only the changed files that matter to your task. Re-verify a decision only if the changes touch what it depends on. A change does not automatically invalidate the handoff or `state.md`.
+
+## Resume state
+
+`state.md` (`templates/state.md`) in the feature folder holds what a fresh session needs to resume: the workflow state, with each resumable agent's ID, and, in EVO, the open questions. Whoever drives the session writes it at every stop (a gate, a pending question, the end of the turn, a pause): the orchestrator, or the SDD executor. In EVO as executor, the card's *State* plays this role. DIRECT keeps neither, unless the programmer asks for a card. Resuming, building the portfolio board and recovering from a compaction read `state.md`, never the handoff.
 
 ## A transition is complete when
 
 - the phase deliverable exists;
 - important decisions are recorded;
 - unresolved issues are documented;
-- the handoff is written and checked by the orchestrator (in EVO, only at a stop; otherwise the brief names the artifacts);
+- when the incoming agent is new, the handoff is written and checked by the orchestrator (otherwise the brief names the artifacts);
 - the next agent can start without reconstructing the previous phase.

@@ -16,7 +16,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 
 ## Phase 2: Implementation
 
-**4. Analyze.** Brief the Repository Analyst: architecture evidence, folder organization, affected components, integration points, conventions, existing tests, E2E tooling, quality tooling, build/test commands. Skip this if the orchestrator already holds enough evidence. If the project has no `.quality/` registry, run the bootstrap in `protocols/anti-pattern-registry.md` (⛔ `[gate: bootstrap]`; it may share the step 6 gate). Write the Specification → Planning handoff.
+**4. Analyze.** Brief the Repository Analyst: architecture evidence, folder organization, affected components, integration points, conventions, existing tests, E2E tooling, quality tooling, build/test commands. Skip this if the orchestrator already holds enough evidence. If the project has no `.quality/` registry, run the bootstrap in `protocols/anti-pattern-registry.md` (⛔ `[gate: bootstrap]`; it may share the step 6 gate). Write the Specification → Planning handoff when the Planner is new.
 
 **5. Plan and design the tests, in parallel.** Launch both in one message:
 - the **Test Designer** (`roles/test-designer.md`), with the Specification → Test design handoff: it writes `testing-plan.md` from the approved spec alone, and never sees the plan;
@@ -38,9 +38,9 @@ The Planner returns implementation options, or a single option with the excluded
 - In the same gate, settle the **end-to-end harness** when the project has none for this surface: present what installing it involves (packages, browser downloads, containers) and the alternatives (a simulation harness, Blocked with its residual risk) as options. End-to-end testing itself is not optional for user-facing features; only how it runs is decided here.
 - Record the decision in `decisions/` (`templates/decision-record.md`).
 - Write `implementation-plan.md` (`templates/implementation-plan.md`) for the approved approach only, with a one-line mention of each alternative not chosen and the decision reference.
-- Write the Planning → Implementation handoff.
+- Write the Planning → Implementation handoff when the Implementer is new.
 
-**7. Implement.** Brief the Implementer (`roles/implementer.md`). It writes production code only, follows the code quality standard, and reviews its own diff against the critic's checklist before the quality gate. It writes no tests (exceptions: `SKILL.md` §4 *Who writes tests*). If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ `[gate: approach]` present it (`protocols/decisions.md`), update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and the Implementation → Testing handoff.
+**7. Implement.** Brief the Implementer (`roles/implementer.md`). It writes production code only, follows the code quality standard, and reviews its own diff against the critic's checklist before the quality gate. It writes no tests (exceptions: `SKILL.md` §4 *Who writes tests*). If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ `[gate: approach]` present it (`protocols/decisions.md`), update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and, when the Tester is new, the Implementation → Testing handoff.
 
 ## Phase 3: Testing and validation
 
@@ -49,7 +49,7 @@ The Planner returns implementation options, or a single option with the excluded
 - end-to-end testing through the real entry point (`knowledge/e2e-testing.md`), with status Applied / Not applicable + justification / Blocked + explanation;
 - evaluation of each black-box technique (Boundary Value Analysis, Fuzz, Symbolic/Concolic, Decision Table, Finite State Machine), with status Applied / Not applicable + justification / Blocked + explanation;
 - mutation testing, if mandatory or decided at step 6;
-- validation against the approved spec, in `reports/validation-report.md`, plus the Testing → Finalization handoff.
+- validation against the approved spec, in `reports/validation-report.md`, plus, when the incoming agent is new, the Testing → Finalization handoff.
 
 **Specialist audits.** Every specialist active in its `audit` phase runs as a clean agent, launched in parallel with the Tester and the first critic, and writes `reports/review/<name>.md` (`protocols/skills.md`). The built-in `security` specialist is mandatory for Critical features whose signals match. Audit findings go to the defects gate, merged and deduplicated with the critic's and the Tester's, and none is fixed automatically. After a finding is fixed, a **new** auditor of that specialist reviews only the fix diff.
 
@@ -87,6 +87,6 @@ Execute only what the programmer chooses. Committing the feature's work on its b
 - [ ] Mandatory or decided mutation testing performed; review run at the validated level, with its round log.
 - [ ] Regressions evaluated.
 - [ ] Decisions documented; limitations and risks reported; no blocking issue concealed.
-- [ ] Final report and handoff complete.
+- [ ] Final report complete; `state.md` updated.
 
 Code being written, or tests passing, does not by itself make a feature done.
