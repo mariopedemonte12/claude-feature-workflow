@@ -21,7 +21,7 @@ The principles of `SKILL.md` §1 apply, except 9: the executor changes project c
 
 ## Worktree
 
-- **Create and stay** (DIRECT: `workflows/direct.md` §Where the work happens; this section and §Resume then do not apply): call `EnterWorktree` with `name: "<slug>"` (load it with ToolSearch if deferred) and **stay in it**. Record its path, branch and base commit (`git rev-parse --short HEAD`).
+- **Create and stay** (DIRECT: `workflows/direct.md` §Where the work happens decides whether a worktree is created; with none, the claim records the current checkout): call `EnterWorktree` with `name: "<slug>"` (load it with ToolSearch if deferred) and **stay in it**. Record its path, branch and base commit (`git rev-parse --short HEAD`).
 - **On failure:** if it cannot be created, stop and present the situation to the programmer. Never work in the shared checkout on your own.
 - **Claim:** write the feature's claim (`protocols/hierarchy.md` §Claims) with `orchestrator` set to this session and `mode: "executor"`, so orchestrators and other sessions see it.
 

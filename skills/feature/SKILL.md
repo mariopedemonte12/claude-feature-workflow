@@ -175,7 +175,7 @@ Launch a new agent only when:
 The new agent's brief then includes the earlier agent's last report. Critics, verifiers and specialist auditors are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
 
 **Launching subagents into the feature worktree.**
-- **Every role** (except that early analyst) is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
+- **Every role** (except the early analyst, below) is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
 - Write-capable roles (Specification Writer, Test Designer, Implementer, Tester, Critic, Verifier, specialists) write only inside their feature worktree, plus temporary files outside the repository when their role allows it.
 
 **Briefing a subagent.** Set the Agent `description` to `[<slug>] <Role>: <task>`. Before §2 step 3 creates the worktree, the Repository Analyst may be briefed read-only on the original checkout: "Feature worktree" becomes the checkout path and line 2 is omitted. The prompt contains this, and only this:

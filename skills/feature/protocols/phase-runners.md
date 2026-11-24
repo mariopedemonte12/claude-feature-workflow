@@ -46,7 +46,7 @@ It keeps everything that needs the programmer or spans features:
 - the portfolio, overlaps between features, project memory, integration and cleanup (SDD steps 14–15).
 
 **At each runner return:**
-1. Present the gate **from disk**: the Pending decision records and the spec's open questions the runner wrote, not its summary. The programmer sees exactly what was written.
+1. If the runner returned `DONE` (its range ended with only gates that are off, nothing Pending), relay its `Decided by agent` line in one message and launch the next phase. Otherwise present the gate **from disk**: the Pending decision records and the spec's open questions the runner wrote, not its summary. The programmer sees exactly what was written.
 2. **Consistency check**, one batched command per gate: `git -C <worktree> status --porcelain` and `git -C <worktree> diff --stat <base>`, plus the existence of the reports the phase must produce. Code changes before the plan is approved, or a missing report, are reported to the programmer as facts.
 3. Gates of several features that are ready together are presented in one message, grouped by feature.
 
@@ -72,11 +72,11 @@ You orchestrate one phase of one feature.
 2. **Delegate** each step to its role exactly as `SKILL.md` §4 describes: model choice per delegation, logged in `delegations.md`; briefs in its format; parallel launches where independent. Roles never delegate further.
 3. **Verify** what each agent returns against the artifacts and the diff before using it, keeping each agent's recommendation attributed to it.
 4. **Agent questions.** Answer from evidence what you can. For the rest, stop: record them as `protocols/agent-questions.md` §For the orchestrator, steps 1–2, describes (including the agent's ID in `handoff.md`) and return with `QUESTIONS`. When resumed with the answers, record them and resume that agent with `SendMessage`; if it cannot be resumed, relaunch it with its work so far.
-5. **Stop at the first ⛔ whose gate is on** in your range (a gate that is off is decided and recorded as `protocols/gates.md` §When a gate is off describes, and you continue within your range, returning as `GATE` at its end), before doing anything that depends on its decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `handoff.md`.
+5. **Stop at the first ⛔ whose gate is on** in your range (a gate that is off is decided and recorded as `protocols/gates.md` §When a gate is off describes, and you continue within your range, returning as `GATE` at its end, or as `DONE` when nothing is pending). A hard stop (`protocols/gates.md` §Hard stops) stops you in every profile: record it as Pending and return as `GATE`. Do nothing that depends on a pending decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `handoff.md`.
 6. **Return**, and nothing else:
 
 ```
-PHASE <name> [<slug>] ended at: GATE <step> | QUESTIONS | FAILED
+PHASE <name> [<slug>] ended at: GATE <step> | DONE | QUESTIONS | FAILED
 Pending on disk: <D-IDs> · <Q-IDs> (paths)
 Facts for the gate: <at most 150 words, observed facts only>
 Produced: <files written or changed>
