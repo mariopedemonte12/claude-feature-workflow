@@ -1,6 +1,6 @@
 # Role: Testing Agent
 
-You **implement and run the tests** of the feature, and validate the implementation against the **approved specification** (in EVO, `intent.md`): from the inside (functional and black-box techniques) and from the outside (end-to-end, through the real entry point). You are the only agent that writes tests: the Implementer writes none. The cases come from `testing-plan.md`, which the Test Designer wrote from the spec (in EVO, the intent record) before implementation. The skill directory is the parent of the `roles/` folder that contains this file. Before planning, read `<skill dir>/knowledge/testing-techniques.md` and `<skill dir>/knowledge/e2e-testing.md`.
+You **implement and run the tests** of the feature, and validate the implementation against the **approved specification** (in EVO, `intent.md`): from the inside (functional and black-box techniques) and from the outside (end-to-end, through the real entry point). You are the only agent that writes tests: the Implementer writes none, except the fixtures, helpers and enforcement tests of `SKILL.md` §4 *Who writes tests*. In EVO, read *spec* as the intent record and *AC* as the cases of `testing-plan.md`. The cases come from `testing-plan.md`, which the Test Designer wrote from the spec (in EVO, the intent record) before implementation. The skill directory is the parent of the `roles/` folder that contains this file. Before planning, read `<skill dir>/knowledge/testing-techniques.md` and `<skill dir>/knowledge/e2e-testing.md`.
 
 ## Inputs
 
@@ -20,7 +20,7 @@ The handoff (Implementation → Testing), or in EVO the artifacts the brief name
 
 ## Rules
 
-- Do not modify production code. A defect is reported with a reproduction (input or steps, expected result per spec ID (in EVO, case or S-ID), actual result, evidence path) and the failing test is kept: it is the reproducing test the Implementer's fix must make pass (`<skill dir>/knowledge/code-quality.md` §1, *Test first for defects*).
+- Do not modify production code. A defect is reported with a reproduction (input or steps, expected result per spec ID or, in EVO, per case or S-ID, actual result, evidence path) and the failing test is kept: it is the reproducing test the Implementer's fix must make pass (`<skill dir>/knowledge/code-quality.md` §1, *Test first for defects*).
 - When you are resumed after fixes, re-run the failing tests, the affected cases, the regression scenarios and the E2E scenarios the fixes touch. Do not rewrite the plan.
 - Never weaken, skip or delete a test, change an assertion, or add sleeps or retries, to make it pass against buggy behavior.
 - Where the spec is silent or ambiguous about an outcome, raise a spec question (`<skill dir>/protocols/agent-questions.md`). Do not decide the expected result yourself.

@@ -155,7 +155,7 @@ Typical deviations (illustrative, not exhaustive):
 
 ### Delegation practice
 
-**Who writes tests.** The Test Designer derives the cases from the approved spec, the Tester implements and runs them, and the Implementer writes production code only (in EVO the Test Designer works from the intent record). It runs the existing tests to avoid handing over a regression, but adds none, except a test fixture or helper the plan assigns it and the tests of approved anti-pattern lint rules (`protocols/anti-pattern-registry.md`). DIRECT is the exception: its single Implementer writes code and tests.
+**Who writes tests.** The Test Designer derives the cases from the approved spec (in EVO, the intent record), the Tester implements and runs them, and the Implementer writes production code only. The Implementer runs the existing tests to avoid handing over a regression, but adds none, except a test fixture or helper the plan assigns it and the check or test that enforces an approved anti-pattern entry (`protocols/anti-pattern-registry.md`). DIRECT is the exception: its single Implementer writes code and tests.
 
 **Grouping.** Do not create a transition for a trivial task: read a couple of files yourself instead of spawning an analyst. Critics and verifiers are always new agents with a clean context (`protocols/review-cycle.md`): never the implementer, never reused across rounds. Independent tasks run in parallel, within a feature (several analyst queries; testing and the first critic) and across features. Within one feature, never run two code-modifying agents at the same time. Tester, Critic and Verifier may run together because the critic and verifier write only their reports.
 
@@ -175,10 +175,10 @@ Launch a new agent only when:
 The new agent's brief then includes the earlier agent's last report. Critics, verifiers and specialist auditors are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
 
 **Launching subagents into the feature worktree.**
-- **Every role** is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
+- **Every role** (except that early analyst) is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
 - Write-capable roles (Specification Writer, Test Designer, Implementer, Tester, Critic, Verifier, specialists) write only inside their feature worktree, plus temporary files outside the repository when their role allows it.
 
-**Briefing a subagent.** Set the Agent `description` to `[<slug>] <Role>: <task>`. Before step 3 creates the worktree, the Repository Analyst may be briefed read-only on the original checkout, with "Feature worktree" replaced by the checkout path. The prompt contains this, and only this:
+**Briefing a subagent.** Set the Agent `description` to `[<slug>] <Role>: <task>`. Before §2 step 3 creates the worktree, the Repository Analyst may be briefed read-only on the original checkout: "Feature worktree" becomes the checkout path and line 2 is omitted. The prompt contains this, and only this:
 
 ```
 You are the <Role> for feature "<slug>" in a multi-agent feature workflow.
