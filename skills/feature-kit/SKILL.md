@@ -32,6 +32,7 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 | --- | --- | --- |
 | `edge-cases` | before writing code for a request: reach of broad statements, nearest analog, cases per input | `knowledge/edge-cases.md` |
 | `explore` | mapping unfamiliar code, finding conventions, build and test commands | `roles/repository-analyst.md` |
+| `refine` | the programmer is not sure what they need, the request names a solution without its problem, or context is missing | `protocols/refinement.md` §Steps (no feature, no files; the confirmed intent stays in the conversation unless the programmer asks for a record) |
 | `spec` | the requirement is vague, contradictory or missing acceptance criteria | `knowledge/specification-guide.md`; the method of `roles/spec-writer.md` (every item traced to a source; gaps become questions to the programmer) |
 | `plan` | choosing how to implement something with more than one viable approach | `roles/planner.md`, then `protocols/decisions.md` before presenting options |
 | `decide` | any choice that belongs to the programmer | `protocols/decisions.md`: the options with their facts, what you left out, and your labeled recommendation |

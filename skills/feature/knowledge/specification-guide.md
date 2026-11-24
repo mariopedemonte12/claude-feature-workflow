@@ -31,7 +31,7 @@ The programmer's decision updates the specification through its change log, like
 
 ## Deepen the request
 
-Before writing the requirements (SDD step 2, EVO intent pass), make the reading of the request **deeper, not bigger**. Answer four questions, adapted from the `sharpen` skill of pstack (github.com/cursor/plugins, MIT):
+Refinement (`protocols/refinement.md`), when it ran, already settled the problem, the context gaps and the reading; build on its version 1 instead of asking again. Before writing the requirements (SDD step 2, EVO intent pass), make the reading of the request **deeper, not bigger**. Answer four questions, adapted from the `sharpen` skill of pstack (github.com/cursor/plugins, MIT):
 
 1. **What would a top professional in this field do here that the request does not ask for?** Each answer is a reading or a question for the programmer, related to the intent as rule 9 of `protocols/decisions.md` describes. Nothing enters the scope without their word.
 2. **What is the rawest material to start from,** instead of what has already been digested: real inputs, logs, data, the library's source rather than its docs, the standard or RFC rather than a summary of it, the existing behavior observed in a run.

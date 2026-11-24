@@ -25,7 +25,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 
 ## Phase 1: Intent (orchestrator)
 
-**1. Understand and explore.** Start the intent record with the request verbatim, as `workflows/sdd.md` step 1 describes. Delegate broad inspection to the Repository Analyst: existing behavior of the area, the nearest analog of the feature in the project, constraints, test framework and E2E tooling. Separate known from unknown, product from technical uncertainties, and classify each uncertainty as *blocking now* or *investigable later*.
+**1. Understand and explore.** Start the intent record with the request verbatim, and the refinement's output if it ran, as `workflows/sdd.md` step 1 describes. Delegate broad inspection to the Repository Analyst: existing behavior of the area, the nearest analog of the feature in the project, constraints, test framework and E2E tooling. Separate known from unknown, product from technical uncertainties, and classify each uncertainty as *blocking now* or *investigable later*.
 
 **2. Intent pass.** Without writing a specification, prepare the first gate from the request and the analyst's evidence:
 - the reach of each broad statement, with the search run and the places found so far (`knowledge/specification-guide.md` §Process, step 2);
@@ -34,7 +34,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 - the specialists whose signals match, from the skill index (`protocols/skills.md`);
 - the cases of each main flow from `knowledge/edge-cases.md` §Before code, for the Test Designer to start from.
 
-**3. ⛔ Intent gate** `[gate: intent, specialists]`. In one message: the proposed consolidated intent, version 1; the blocking questions only, each with what the analog does as a fact; the main flows; the specialists; the feature's **criticality** (Critical / Standard); and the **completion criteria**: what "done" means, in the programmer's words, so the loop has an agreed exit. On the answers, consolidate the intent (`templates/intent.md`) and record choices in `decisions/`. Later questions are asked when an increment needs them, not now.
+**3. ⛔ Intent gate** `[gate: intent, specialists]`. In one message: the proposed consolidated intent, version 1 (after refinement, the confirmed version 1 and only what changed since); the blocking questions only, each with what the analog does as a fact; the main flows; the specialists; the feature's **criticality** (Critical / Standard); and the **completion criteria**: what "done" means, in the programmer's words, so the loop has an agreed exit. On the answers, consolidate the intent (`templates/intent.md`) and record choices in `decisions/`. Later questions are asked when an increment needs them, not now.
 
 ## Phase 2: Approach
 

@@ -65,6 +65,7 @@ Measured before this version, under the earlier names: `/feature-lean` is today'
 
 - **The spec is a reading of your intent, not a closed contract.** Your request evolves as you talk: every statement of yours that changes the intent goes, verbatim, to an intent record that is consolidated with your confirmation at each gate. The spec (SDD) or the cases (EVO) cite it as their source and map where the broad statements in your words reach. Anything a later step finds that it did not foresee comes back to you as a discovery, framed against your own words, never dismissed as "not in the spec".
 - **Decision gates with an open recommendation.** No presentation of options is neutral, since the agent picks the options and the words. So each decision shows every viable option with verifiable facts instead of adjectives, the options it left out and those excluded by a constraint, and a labeled recommendation with its reasons and the fact that would change it. You decide; nothing proceeds by silence.
+- **Refinement before the workflow.** When your request names a solution without the problem, has no observable outcome, admits several readings or needs context only you hold, the agent first works out with you what you need: the problem, the context it lacks (looking up what the repository answers, asking only the rest), and two or three readings plus the smallest version that would already solve it. The workflow is recommended from that, not from the first wording. `/feature refine` does it without starting anything.
 - **Gate profiles.** How often the workflow stops for you is chosen per feature: `full` stops at every gate, `key` (the default) only at the intent, at approaches that differ in what they change, at discoveries outside your words and at acceptance, and `auto` only at what is hard to undo. A gate that is off is decided by the agent with its recommendation, recorded, and listed in the final report. Integration, cleanup, new dependencies, data migrations and breaking public interfaces always stop. Set it with `--gates full|key|auto`, plus `+gate` or `-gate` for single gates.
 - **A clean critic.** Review is done by a new agent that never saw the code being written, with your own words as its only statement of intent. Its findings come to you; nothing is fixed silently. Review levels: R0 gate only · R1 one critic · R2 critic, verifier and fix cycle (at most 3 rounds).
 - **Code quality standard.** The smallest complete change, no comments except `shortcut:` markers, short functions and files as signals of mixed responsibilities, design patterns only for problems present now. A dependency-free quality gate (`scripts/quality_gate.py`) checks the change.
@@ -87,7 +88,7 @@ One feature per session, in its own worktree (DIRECT works in the current checko
 
 ## `/feature-kit`
 
-When you work by hand, `/feature-kit` makes the skills available as a catalog of modules (edge-cases, explore, spec, plan, decide, quality/ponytail, patterns, anti-patterns, test, e2e, gate, review, writing, measure, correct, verify-skill, formal-skill, card, specialists) plus your own skills from the same folders, loaded only when the task needs one or you name it. No phases, gates, artifacts, worktrees or subagents, except a clean critic when you ask for a review.
+When you work by hand, `/feature-kit` makes the skills available as a catalog of modules (edge-cases, explore, refine, spec, plan, decide, quality/ponytail, patterns, anti-patterns, test, e2e, gate, review, writing, measure, correct, verify-skill, formal-skill, card, specialists) plus your own skills from the same folders, loaded only when the task needs one or you name it. No phases, gates, artifacts, worktrees or subagents, except a clean critic when you ask for a review.
 
 ## Install
 
@@ -117,6 +118,8 @@ Then start a new Claude Code session.
 
 ```
 /feature add CSV export to the reports page       # recommends a workflow, asks orchestrator or executor
+/feature refine we need reports to be faster      # work out what is needed first; starts nothing
+/feature refined faster-reports --evo             # start the feature from that refined request
 /feature fix the date parser for ISO weeks --direct --execute    # both chosen up front
 /feature migrate auth to OAuth --evo --execute    # EVO in this session, one card
 /feature add audit log --sdd --orchestrate --with security,database
@@ -132,12 +135,13 @@ Then start a new Claude Code session.
 
 A typical SDD run as orchestrator:
 
-1. **Recommendation.** The session assesses clarity, uncertainty, risk and reach with evidence, recommends a workflow, and asks the role. You validate.
-2. **Specification.** The Specification Writer turns your request (kept in `intent.md`: your original request, a consolidated intent you confirm at each gate, and your statements since) into requirements, constraints, invariants and acceptance criteria, each traced to its source. You approve it and set the criticality.
-3. **Planning and test design.** In parallel, the Planner maps the viable approaches and the Test Designer derives the cases from the spec. You choose an approach, approve the testing plan, decide mutation testing, and validate the recommended review level.
-4. **Implementation.** The Implementer writes production code for the approved plan, without tests. Any deviation comes back to you.
-5. **Testing and review.** The Tester implements and runs the designed cases while a clean critic reviews. Defects come back to you as decisions.
-6. **Final report, acceptance, integration and cleanup,** each decided by you.
+1. **Refinement, when the request is not ready.** If it names a solution without its problem, has no observable outcome, admits several readings or needs context only you have, the session restates it as a problem, looks up what the repository answers, asks you the rest, and offers two or three readings plus the smallest version. You confirm what you need.
+2. **Recommendation.** The session assesses clarity, uncertainty, risk and reach with evidence, recommends a workflow, and asks the role. You validate.
+3. **Specification.** The Specification Writer turns your request (kept in `intent.md`: your original request, a consolidated intent you confirm at each gate, and your statements since) into requirements, constraints, invariants and acceptance criteria, each traced to its source. You approve it and set the criticality.
+4. **Planning and test design.** In parallel, the Planner maps the viable approaches and the Test Designer derives the cases from the spec. You choose an approach, approve the testing plan, decide mutation testing, and validate the recommended review level.
+5. **Implementation.** The Implementer writes production code for the approved plan, without tests. Any deviation comes back to you.
+6. **Testing and review.** The Tester implements and runs the designed cases while a clean critic reviews. Defects come back to you as decisions.
+7. **Final report, acceptance, integration and cleanup,** each decided by you.
 
 ## How it stays out of your context
 

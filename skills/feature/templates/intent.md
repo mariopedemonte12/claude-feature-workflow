@@ -11,6 +11,15 @@ Version <n> · confirmed by the programmer at <gate>, <date> · absorbs S-1 … 
 
 What the programmer wants, in their terms: the behavior, the reach of each broad statement, and the boundaries they drew. A few lines to a short list. Written by the agent as a proposal and binding only once the programmer confirmed or corrected it; their correction is the text.
 
+## Refinement
+
+Only when refinement ran (`protocols/refinement.md`). Confirmed by the programmer with version 1.
+
+- **Problem:** who has it, what happens today, the signal that it is solved, why now.
+- **Readings:** the one chosen, and the ones rejected with the reason in the programmer's words.
+- **Context gaps still open:** each with who answers it (the programmer, or a named third party).
+- **Readiness verdict:** ready (the evidence for the workflow and the gate profile) or blocked (on whom, what to ask).
+
 ## Statements since the last consolidation
 
 Verbatim, in the programmer's words. Only statements that change the intent: they add, remove or narrow scope, behavior or a boundary, asked or unprompted. Approvals ("approve", "B") stay in the gate records, and implementation choices in `decisions/`.
