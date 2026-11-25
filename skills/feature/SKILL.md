@@ -38,6 +38,7 @@ How features are grouped is the programmer's choice too: several features under 
 ## 2. Startup (runs on every invocation)
 
 0. **Project memory first.** Read and follow `protocols/orchestrator-memory.md` §Session lifecycle: read `$(git rev-parse --git-common-dir)/feature-workflow/memory.md` if it exists, and before every stop rewrite it within its limit.
+   - **Session model.** As orchestrator, if this session's model is not `sonnet`, say in one line that `sonnet` is recommended for it (`/model sonnet`, or `--model sonnet` at launch). It is a recommendation, never a stop: the skill cannot switch the session's model.
 1. **Parse the request.**
    - `continue <message>`: a fresh session continuing earlier work. Follow `protocols/orchestrator-memory.md` §Continuing in a fresh session.
    - `status`: show the portfolio board (`protocols/multi-feature.md` §Portfolio), plus the features other orchestrators claim in this repository (`protocols/hierarchy.md` §Claims).
@@ -103,7 +104,7 @@ How features are grouped is the programmer's choice too: several features under 
 
 As orchestrator, role files (`roles/*.md`) and the guides of the phases you delegate are for subagents: point them to the files (`protocols/skills.md` §Loading, step 3); you do not need to read them yourself. `scripts/quality_gate.py` is run by the Implementer and the Critic. As executor, you read them yourself when the step needs them. Do not preload everything at startup.
 
-If the conversation was compacted and you lost details of this workflow, re-read this `SKILL.md`, the project memory, the workflow file(s) in use, `protocols/multi-feature.md` if several features are in progress, and the `state.md` of the features you are acting on.
+Claude Code compacts the orchestrator session at the threshold the programmer sets (`autoCompactWindow` in `settings.json`, or the env var `CLAUDE_CODE_AUTO_COMPACT_WINDOW`; one value for the whole session). **Recommend 150k:** after a compaction the base context was about 57k, so 100k leaves about 40k of work and compacts every 10 to 15 calls, and each compaction reads the whole context and loses detail. 100k remains an option for whoever wants it, at that risk: the only measurement with a 100k window aborted the session (`docs/cost-estimates.md`). `state.md` holds what is needed to resume. If the conversation was compacted and you lost details of this workflow, re-read this `SKILL.md`, the project memory, the workflow file(s) in use, `protocols/multi-feature.md` if several features are in progress, and the `state.md` of the features you are acting on.
 
 ## 4. Roles, agent types and models
 
@@ -151,7 +152,7 @@ Typical deviations (illustrative, not exhaustive):
 - You may use any model alias the Agent tool accepts in this session.
 - Programmer overrides (per role, per feature or per delegation) take precedence over your choice. If a pinned model proves insufficient, moving away from it is the programmer's decision: report the evidence.
 - When launching with a non-standard model, state it in one line, e.g. `[slug] Implementer → opus (standard: sonnet): migrates live data`.
-- Log every delegation in the feature's `delegations.md`, one row each: date · step · role · model · reason if non-standard · agent ID · new or resumed · outcome (done · escalated · failed).
+- Log every delegation in the feature's `delegations.md`, one row each: date · step · role · model · reason if non-standard · agent ID · last `subagent_tokens` · new or resumed · outcome (done · escalated · failed).
 - Different features may use different models for the same role.
 
 ### Delegation practice
@@ -162,18 +163,22 @@ Typical deviations (illustrative, not exhaustive):
 
 **Headless launches.** Every subagent runs in the background (`run_in_background: true` where the Agent tool offers it), so its tool calls and output never fill the programmer's screen. You are notified when it finishes. Do not paste, stream or summarize an agent's work as it happens: show the programmer one line when an agent starts or finishes (`[slug] Tester: done, 42/45 cases pass`), and the full content only at gates. Never wait with `sleep`.
 
-**Reusing agents.** Record each agent's ID in the feature's `state.md` (§Workflow state, *Agents*) at every stop. When work returns to a role that already ran for this feature, **resume that same agent** with `SendMessage`, carrying only the new task and its IDs. The agent keeps its context, so it does not re-read the plan, the code or its own earlier work. This covers:
-- testing or review sending fixes back to the Implementer;
+**Reusing agents.** This paragraph is the one source of when an agent is resumed and when a new one takes over. Record each agent's ID and its last reported `subagent_tokens` in the feature's `state.md` (§Workflow state, *Agents*) at every stop. When work returns to a role that already ran for this feature, **resume that same agent** with `SendMessage`, carrying only the new task and its IDs: it keeps its context, so it does not re-read the plan, the code or its own earlier work. This covers:
+- a short fix follow-up from testing or review to the Implementer: a pointed defect or one finding, not a round (below);
 - the Tester re-running after fixes;
 - a spec change going back to the Specification Writer or the Test Designer;
-- an intent change going back to the Test Designer, and the next increment, in EVO.
+- an intent change going back to the Test Designer, and the next increment, in EVO;
+- an agent's answer to its question (`protocols/agent-questions.md`).
 
-Launch a new agent only when:
+**Token caps.** An agent is resumed only while its last reported `subagent_tokens` is at or below its model's cap: **200k** for `sonnet` and `opus`, **400k** for `haiku`. Above the cap, a **new** agent of the same role takes over (Claude Code's auto-compact setting is one per session, so per-model caps are this rule, not a setting).
+
+Launch a new agent when:
+- the last reported `subagent_tokens` is above the cap of its model;
+- the fix round is larger than a point fix (several findings or several files): a new Implementer with a handoff, so it starts clean;
 - the old one cannot be resumed (a new session, the agent no longer exists, an error);
-- its context is close to the window limit;
 - a different model was decided for the task.
 
-The new agent's brief then includes the earlier agent's last report. Critics, verifiers and specialist auditors are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
+The new agent starts with a handoff (`protocols/context-handoff.md`; you write it when the outgoing agent did not) and its brief includes the earlier agent's last report. Critics, verifiers and specialist auditors are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
 
 **Launching subagents into the feature worktree.**
 - **Every role** (except the early analyst, below) is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.

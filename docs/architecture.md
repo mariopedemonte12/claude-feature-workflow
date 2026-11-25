@@ -183,7 +183,7 @@ flowchart TB
         TE["8–11 · Test<br/>Tester: implements the designed cases, functional, E2E,<br/>exploration, mutation if decided, validation report"]
         RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature<br/>+ specialist audits chosen"]
         TE & RV --> G3{"⛔ Defects and anti-pattern candidates gate<br/>fix now · accept as limitation · change spec"}
-        G3 -->|"fix"| FX["same Implementer resumed: makes the Tester's failing test pass<br/>→ same Tester re-runs → new clean critic at R1/R2"]
+        G3 -->|"fix"| FX["Implementer (resumed or replaced, per cap): makes the Tester's failing test pass<br/>→ same Tester re-runs → new clean critic at R1/R2"]
         FX --> G3
     end
     subgraph F4["Phase 4 · Finalization"]
@@ -432,7 +432,8 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 - **Location:** run without `isolation`. Confirm the feature branch first, and work through absolute paths (`cd <worktree> && …`). Never call `EnterWorktree`.
 - **No delegation:** feature roles never spawn further agents.
 - **Headless:** every subagent runs in the background. The programmer sees one line when an agent starts or finishes, and the full content only at gates.
-- **Reuse:** when work returns to a role that already ran for the feature (fixes, re-tests, spec changes, the next increment), the same agent is resumed with `SendMessage`, and its ID is recorded in `state.md`. Critics and verifiers are never resumed.
+- **Reuse:** when work returns to a role that already ran for the feature (short fixes, re-tests, spec changes, the next increment), the same agent is resumed with `SendMessage` while its context is under its model's cap; above it, or for a larger fix round, a new agent takes over with a handoff. Its ID and last token count are recorded in `state.md`. Critics and verifiers are never resumed. The rule is in `SKILL.md` §4, *Reusing agents*.
+- **Orchestrator cost:** the orchestrator session compacts at the threshold the programmer sets and is recommended to run on sonnet (README §Cost settings).
 - **Questions:** questions only the programmer can answer follow the agent-questions protocol. A blocking one stops the agent; it never guesses.
 - **Return:** a `STATUS` line, a summary within the word limit, the questions, and any decision in the decision format.
 

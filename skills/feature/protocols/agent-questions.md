@@ -1,6 +1,6 @@
 # Agent Questions Protocol
 
-Subagents cannot talk to the programmer. When one needs an answer only the programmer can give, it stops and returns its questions to the orchestrator, which relays them, records the answers and resumes **the same agent** with its context intact. This matters most in specification and planning, where a guessed answer becomes a requirement or an architecture.
+Subagents cannot talk to the programmer. When one needs an answer only the programmer can give, it stops and returns its questions to the orchestrator, which relays them, records the answers and resumes **the same agent** with its context intact (while `SKILL.md` §4, *Reusing agents*, allows it). This matters most in specification and planning, where a guessed answer becomes a requirement or an architecture.
 
 It applies in every workflow, to the Repository Analyst, Specification Writer, Test Designer, Planner, Implementer and Tester. Critics and verifiers never ask: ambiguity is a finding (`roles/verifier.md`, verdict AMBIGUOUS).
 
@@ -40,7 +40,7 @@ Q-<n> [blocking | non-blocking] <the question, answerable without reading anythi
 3. **Present.** Blocking questions are a ⛔ gate for **that feature only**; non-blocking ones go to the feature's next gate, unless the programmer asked to see them immediately. Batch the questions of one feature in one message, tagged `[slug] Q-n (Planner)`. Keep their meaning; rewrite only to make them self-contained, never to steer.
 4. **Record the answer** in the same place: the programmer's words, the date, and *Answered*. If the answer changes the intent (it adds, removes or narrows scope, behavior or a boundary), append it also to the intent record (`intent.md` §Statements since the last consolidation) as a new S-ID, citing the Q-ID or D-ID, with what it changes. A *don't know* or *later* is recorded as *Deferred*; then ask how the agent proceeds: with the item outside the intent (recorded as drawn by the programmer), or under the stated assumption as a Hypothesis.
 5. **Resume the same agent** with `SendMessage` to its ID: only the answers, by Q-ID, plus evidence for the questions you answered yourself, and "Continue from where you stopped." Do not repeat the brief.
-   - If it cannot be resumed (a new session, the agent no longer exists, an error), launch a new agent with the same brief plus `Previous attempt: <its Work so far>` and the answers. Log it in `delegations.md` with outcome *resumed in a new agent*.
+   - If it cannot be resumed (`SKILL.md` §4, *Reusing agents*: over its cap, a new session, the agent no longer exists, an error), launch a new agent with the same brief plus `Previous attempt: <its Work so far>` and the answers. Log it in `delegations.md` with outcome *resumed in a new agent*.
 6. **Answers that change approved work.** An answer that changes an approved requirement is a spec change: bump the version and add a change-log row citing the Q-ID. An answer that changes an approved plan is a decision record. Approved work is never changed silently.
 
 In a hierarchy (`protocols/hierarchy.md`), a sub-orchestrator relays a question with options as `DECISION-REQUEST` and an open one as `QUESTION`, keeping the feature tag and Q-ID.
