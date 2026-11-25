@@ -6,9 +6,9 @@
 
 `handoff.md` is a message between agents of different phases, in orchestrator mode only. It is written at a phase transition only when the incoming agent is new, in every workflow; a resumed agent gets a brief with the new task and the artifact sections it needs instead. Executor mode never writes one.
 
-The outgoing agent writes it, when its brief's Task line says the incoming agent is new (`SKILL.md` §4 *Briefing a subagent*). The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the Request → Specification handoff. The orchestrator checks every handoff before the next delegation.
+The outgoing agent writes it, when its brief's Task line says the incoming agent is new (`SKILL.md` §4 *Briefing a subagent*). The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the handoffs whose outgoing role writes none: Request → Specification, Specification → Planning and Specification → Test design (in EVO, Intent → Planning and Intent → Test design). The orchestrator checks every handoff before the next delegation.
 
-`handoff.md` lives in the feature folder and is overwritten each time it is written. When two new agents start in parallel (SDD step 5: Test Designer and Planner), each gets its own `handoff-<role>.md`. It holds no resume state: that is `state.md` (§Resume state). History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
+`handoff.md` lives in the feature folder and is overwritten each time it is written. When two new agents start in parallel (SDD step 5, EVO step 4: Test Designer and Planner), each gets its own `handoff-<role>.md`. It holds no resume state: that is `state.md` (§Resume state). History lives in the artifacts (specification change log, decisions, reports), not in old handoffs.
 
 ## Rules
 

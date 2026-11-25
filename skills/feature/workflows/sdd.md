@@ -16,9 +16,9 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 
 ## Phase 2: Implementation
 
-**4. Analyze.** Brief the Repository Analyst: architecture evidence, folder organization, affected components, integration points, conventions, existing tests, E2E tooling, quality tooling, build/test commands. Skip this if the orchestrator already holds enough evidence. If the project has no `.quality/` registry, run the bootstrap in `protocols/anti-pattern-registry.md` (⛔ `[gate: bootstrap]`; it may share the step 6 gate). Write the Specification → Planning handoff when the Planner is new (`handoff-planner.md`, step 5).
+**4. Analyze.** Brief the Repository Analyst: architecture evidence, folder organization, affected components, integration points, conventions, existing tests, E2E tooling, quality tooling, build/test commands. Skip this if the orchestrator already holds enough evidence. If the project has no `.quality/` registry, run the bootstrap in `protocols/anti-pattern-registry.md` (⛔ `[gate: bootstrap]`; it may share the step 6 gate). Write the Specification → Planning handoff (`handoff-planner.md`, step 5).
 
-**5. Plan and design the tests, in parallel.** Both are new, so each gets its own handoff, `handoff-test-designer.md` and `handoff-planner.md` (`protocols/context-handoff.md`); the plan stays out of the Test Designer's. Launch both in one message:
+**5. Plan and design the tests, in parallel.** Both are new, so you write each its own handoff, `handoff-test-designer.md` (Specification → Test design) and `handoff-planner.md` (step 4) (`protocols/context-handoff.md`); the plan stays out of the Test Designer's. Launch both in one message:
 - the **Test Designer** (`roles/test-designer.md`), with the Specification → Test design handoff: it writes `testing-plan.md` from the approved spec alone, and never sees the plan;
 - the **Planner** (`roles/planner.md`);
 - every specialist active in the `test-design` phase, beside the Test Designer, adding its cases to `testing-plan.md`;

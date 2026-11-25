@@ -152,8 +152,8 @@ flowchart TB
 | `bootstrap` (registry) | stops | stops | agent: local registry only |
 | `approach` | stops | stops when options differ in API, data, dependencies or shared structure | agent |
 | `depth` (testing plan, mutation, review level, E2E harness) | stops | agent: defaults; a higher review level applies, a lower one is asked | same |
-| `increment` (EVO) | stops | report and continue | report and continue |
-| `defects` | stops | Implementer fixes the Blocker and Major the programmer's words cover, test first; the rest to acceptance | same |
+| `increment` (EVO) | stops | report and continue, unless a gate still on or a hard stop applies | same |
+| `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings and the rest to acceptance | same |
 | `discoveries` | stops | stops when outside or contradicting the intent | agent: covered ones fixed, outside ones not built, listed; contradicting: hard stop |
 | `candidates` | stops | at acceptance | listed only |
 | `acceptance` | stops | stops | stops |
@@ -266,7 +266,7 @@ sequenceDiagram
     participant A as Agent (e.g. Specification Writer)
     participant D as Disk, intent.md · spec §Open questions · decisions/ · state.md
 
-    O->>A: Brief (role file, handoff, task)
+    O->>A: Brief (role file, handoff if new, task)
     A->>A: Check repo and artifacts first
     A-->>O: STATUS: QUESTIONS + work so far + Q-1..Q-n
     O->>O: Answer from evidence what it can, strip any steering
@@ -414,7 +414,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 
 | Agent | Executor · standard model | Responsible for | Reads | Writes | Never |
 | --- | --- | --- | --- | --- | --- |
-| **Orchestrator** | main session | Talking to the programmer, worktrees, workflow recommendation and role, the intent record `intent.md` (original request, consolidated intent confirmed at each gate, statements since), briefs, verifying returns, relaying questions, gates, decision records, handoffs between phases, delegation log, final report, integration and cleanup on approval | Only the skill files the current step needs; artifacts; reports | `intent.md`, `decisions/`, handoffs for read-only roles, `state.md`, `delegations.md`, `reports/review/rounds.md`, `final-report.md`, `memory.md`, claims | Hide a recommendation in the order or wording of options, write production code, approve on the programmer's behalf at a gate that is on, integrate or delete without confirmation |
+| **Orchestrator** | main session | Talking to the programmer, worktrees, workflow recommendation and role, the intent record `intent.md` (original request, consolidated intent confirmed at each gate, statements since), briefs, verifying returns, relaying questions, gates, decision records, handoffs between phases, delegation log, final report, integration and cleanup on approval | Only the skill files the current step needs; artifacts; reports | `intent.md`, `decisions/`, handoffs whose outgoing role writes none (read-only roles, Request → Specification, Specification or Intent → Planning and Test design), `state.md`, `delegations.md`, `reports/review/rounds.md`, `final-report.md`, `memory.md`, claims | Hide a recommendation in the order or wording of options, write production code, approve on the programmer's behalf at a gate that is on, integrate or delete without confirmation |
 | **Repository Analyst** | `Explore` · haiku (sonnet for large or unfamiliar code) | Evidence for one task: components, dependencies, conventions, existing behavior, tests and commands, architecture style, quality and E2E tooling; observed vs inferred | The feature worktree, only what the brief needs | Nothing: returns a context report of about 600 words | Recommend approaches, assume a stack without evidence, modify files |
 | **Specification Writer** | `general-purpose` · opus (sonnet for short, clear requests; never haiku) | Turning the request into the current reading of its intent (not a closed contract): the source version of the intent record, the reach of its broad statements, FR/NFR, constraints, invariants, Given/When/Then criteria, what is outside the intent (and who drew each boundary) and open questions, each item traced to a source; Hybrid statuses; applying approved spec changes. Not used in EVO | `intent.md`, handoff, the specification guide and template, the repository (read-only) | `specification.md` (Draft) | Invent requirements, resolve ambiguity, include implementation details, write vague criteria to avoid a question |
 | **Planner** | `Plan` · opus (sonnet for one mechanical approach; never haiku) | The solution space: viable approaches in the decision format, per-option outlines that follow the quality standard, the E2E harness, other decisions needed, excluded options with the constraint they violate | Handoff, spec sections, code, registry | Nothing: returns the decision block | Choose, rank, change requirements, add speculative abstractions |

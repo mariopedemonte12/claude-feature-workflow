@@ -1,6 +1,6 @@
 # Feature: <name> · <EVO executor · DIRECT> · <status> · base `abc1234` · worktree <path or "checkout">
 
-<!-- The single-file record of a feature: EVO in executor mode (every section), or DIRECT when the programmer asks for a record (Intent, Scope, Cases and Result only). Target 500 lines, never a cut: overflow goes to decisions/ or feature-appendix.md, linked by section. Omit the sections a feature does not use. -->
+<!-- The single-file record of a feature: EVO in executor mode (every section), or DIRECT when the programmer asks for a record (Intent, Scope, Cases, Result and State only). Target 500 lines, never a cut: overflow goes to decisions/ or feature-appendix.md, linked by section. Omit the sections a feature does not use. -->
 
 ## Intent
 The intent record, as `templates/intent.md` describes. The programmer's words are the source; everything else in this card is the current reading of them, not a closed contract.

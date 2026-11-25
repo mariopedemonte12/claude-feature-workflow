@@ -78,7 +78,7 @@ The session writes the increment's code to the quality standard and a test for e
 
 ### 6. The review, per increment, and the specialist audits you chose
 
-At the level you validated: R0 no critic; R1 one critic; R2 critic, verifier, fixes and a new critic, up to 3 rounds (Critical is always R2). The critic is a new opus subagent, in the background, reviews the increment's diff from the commit where it started. It sees only that diff, the code it touches, the project's conventions, the quality standard and your own words (original request, confirmed consolidated intent, statements since). It never sees the card or how the code was written. The specialist auditors you chose run alongside it under the same rules. None is ever resumed.
+At the level you validated: R0 no critic; R1 one critic; R2 critic, verifier, fixes and a new critic, up to 3 rounds (Critical is always R2). The critic, a new opus subagent in the background, reviews the increment's diff from the commit where it started. It sees only that diff, the code it touches, the project's conventions, the quality standard and your own words (original request, confirmed consolidated intent, statements since). It never sees the card or how the code was written. The specialist auditors you chose run alongside it under the same rules. None is ever resumed.
 
 ### 7. Checking the findings
 
@@ -86,7 +86,7 @@ The session checks every finding against the code and re-runs each specialist's 
 
 ### 8. Increment gate
 
-The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments. With the `increment` gate off, it is a report and the work continues.
+The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments. With the `increment` gate off, it is a report and the work continues, unless a gate that is still on (e.g. `discoveries` in `key`) or a hard stop stops it.
 
 ### 9. Fix and evolve
 
@@ -107,8 +107,8 @@ The session reads the area, runs the edge-case checklist (reach of every broad s
 ## Several features, resuming, and what persists
 
 - **Parallel features:** one executor session per feature. Each runs in its own worktree, so sessions do not interfere. Each writes a claim, so an orchestrator's `/feature status` shows it, but there is no overlap detection between executor sessions: if two features touch the same files, you find out at integration.
-- **Resume:** `/feature resume <slug>` in a new session finds `.claude/worktrees/<slug>`, enters it, reads the card and continues from its *State* (SDD: from `state.md`).
-- **What lives on disk:** the code on the feature branch, `feature.md` and one `review-<increment>.md` per increment. Everything you decided is in the card.
+- **Resume:** `/feature resume <slug>` in a new session finds `.claude/worktrees/<slug>` and enters it (DIRECT kept in the checkout: the folder its claim records), reads the card and continues from its *State* (SDD: from `state.md`).
+- **What lives on disk:** the code on the feature branch, `feature.md` and the review reports, one per increment and round (`review/<increment>-round-<n>-critic.md`, plus `-verification.md` at R2). Everything you decided is in the card.
 
 ## Cost and evidence
 

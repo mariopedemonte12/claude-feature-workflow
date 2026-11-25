@@ -63,15 +63,15 @@ You are the Clean Code Critic for a code change.
 Feature worktree: <path> (branch <branch>). Start every shell command with `cd <worktree> &&`. First confirm `git -C <worktree> branch --show-current` prints <branch>; if not, stop and report. Never call EnterWorktree.
 1. Read and follow your role file: <skill dir>/roles/reviewer.md
 Skills for this phase: <absolute paths of the review guides that apply, protocols/skills.md>
-Task: review `git diff <base, or the commit where this increment started>` (round <n>). Do not open <feature folder>.
+Task: review `git diff <base, or the commit where this increment started; from round 2, the commit of the previous round>` (round <n>). Do not open <feature folder>.
 Original request (verbatim): <from the intent record>
 Consolidated intent (confirmed, version n): <from the intent record>
 Statements since (verbatim; a statement wins over the consolidated intent): <each S-n; never an unconfirmed proposal>
-Output: <feature folder>/reports/review/round-<n>-critic.md   (card: <feature folder>/review-<increment>.md)
+Output: <feature folder>/reports/review/round-<n>-critic.md   (card: <feature folder>/review/<increment>-round-<n>-critic.md)
 Return: a summary of at most 150 words.
 ```
 
-At R2 (`protocols/review-cycle.md`), the verifier is a second clean subagent (`sonnet`, `roles/verifier.md`) with the critic's report.
+At R2 (`protocols/review-cycle.md`), the verifier is a second clean subagent (`sonnet`, `roles/verifier.md`) with the critic's report; with a card, its output is `<feature folder>/review/<increment>-round-<n>-verification.md`.
 
 ## Checking findings
 
@@ -91,4 +91,4 @@ The programmer may also choose to open a role session for any other role, instea
 
 ## Resume
 
-`/feature resume <slug>` in executor mode: locate `.claude/worktrees/<slug>` (`git worktree list`), enter it with `EnterWorktree` (`path`), read the card's *State* (EVO) or `state.md` (SDD), and continue.
+`/feature resume <slug>` in executor mode: locate `.claude/worktrees/<slug>` (`git worktree list`) and enter it with `EnterWorktree` (`path`), or, for DIRECT kept in the checkout, the feature folder its claim records; read the card's *State* (EVO, DIRECT) or `state.md` (SDD), and continue.
