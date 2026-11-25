@@ -268,7 +268,7 @@ class Description(unittest.TestCase):
 
 
 class PointersResolve(unittest.TestCase):
-    PATHED = re.compile(r"`([\w./-]+\.md)`(?: step \d+)? §([^`,;)\n]+?)(?=[,;)`]|\.\s|\.$|$)")
+    PATHED = re.compile(r"`([\w./-]+\.md)`(?: step \d+)? §([^`,;()\n]+?)(?=[,;)`]|\s\(|\.\s|\.$|$)")
 
     def added_lines(self):
         code, output = git("diff", "-U0", BASE_COMMIT, "HEAD", "--", "skills")
@@ -296,6 +296,16 @@ class PointersResolve(unittest.TestCase):
         if path is not None and re.fullmatch(r"\d+(\.\d+)*", wanted):
             return True
         return path is not None and any(wanted.startswith(label) or label.startswith(wanted) for label in self.labels(path))
+
+    def test_a_parenthetical_after_the_section_is_not_part_of_it(self):
+        cases = {"`SKILL.md` §4 (roles, models)": ("4", True),
+                 "`protocols/gates.md` §Hard stops (integration)": ("Hard stops", True),
+                 "`protocols/gates.md` §No such section (x)": ("No such section", False)}
+        for text, (section, resolves) in cases.items():
+            with self.subTest(text=text):
+                match = self.PATHED.search(text)
+                self.assertEqual(match.group(2), section)
+                self.assertEqual(self.resolves(match), resolves)
 
     def test_t_88_every_path_and_section_pointer_added_by_the_diff_resolves(self):
         pointers = [match for line in self.added_lines() for match in self.PATHED.finditer(line)]
