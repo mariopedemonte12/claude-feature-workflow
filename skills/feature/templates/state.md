@@ -17,7 +17,7 @@
 | Pending decisions | D-NNN … |
 | Git | commit `abc1234` · branch · dirty yes/no (or "not a git repo", with date/time) |
 | Artifact versions | spec vN · plan <status> |
-| Agents | role → agent ID, resumable (e.g. Implementer → a1b2…, Tester → c3d4…); critics and verifiers are never listed |
+| Agents | role → agent ID and its last reported `subagent_tokens`, resumable while under its model's cap (`SKILL.md` §4 *Reusing agents*) (e.g. Implementer → a1b2… (183k), Tester → c3d4… (60k)); critics and verifiers are never listed |
 
 ## Open questions
 

@@ -88,7 +88,7 @@ Agents waiting on answers: <agent ID> (<role>), or none
 
 ## Limits
 
-- **Reusing agents across phases.** `SKILL.md` §4 resumes the same Implementer or Tester when work returns to them. In phased mode, those agents were launched by an earlier runner that no longer exists. Whether a later runner can resume them with `SendMessage` is **untested**; if it cannot, it launches a new agent with the earlier agent's last report.
+- **Reusing agents across phases.** `SKILL.md` §4, *Reusing agents*, decides when the same Implementer or Tester is resumed. In phased mode, those agents were launched by an earlier runner that no longer exists. Whether a later runner can resume them with `SendMessage` is **untested**; if it cannot, it launches a new agent with the earlier agent's last report.
 
 - **Nesting.** Orchestrator → runner → role uses 2 of the 3 subagent levels Claude Code allows by default (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). In the hierarchical mode with the *Subagents* transport (`protocols/hierarchy.md`), sub-orchestrator → runner → role reaches 3 of 3: it works only at the default limit or above. With the *Agent team* or *Separate sessions* transports, a sub-orchestrator is a full session and uses phased mode like any orchestrator.
 - **Session end.** A runner lives only as long as the orchestrator's session. A phase interrupted by the end of the session is relaunched from `state.md`; work already written to disk is not redone.

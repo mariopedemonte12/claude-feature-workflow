@@ -76,6 +76,7 @@ Measured before this version, under the earlier names: `/feature-lean` is today'
 
 - **Specialized subagents,** each driven by its own role file, with a standard model per role and a per-delegation choice of the cheapest sufficient model, with floors so architecture and review are never downgraded. Every delegation is logged.
 - **Agents ask you, through the orchestrator.** An agent that needs an answer only you can give stops instead of guessing; the orchestrator puts the question to you and resumes the same agent with your answer.
+- **Cost limits.** An agent is resumed only while its context stays under a per-model cap (200k for sonnet and opus, 400k for haiku); a larger fix round goes to a new Implementer with a handoff. The orchestrator session compacts at a threshold you set and is best run on sonnet (see Cost settings).
 - **One git worktree per feature,** created with Claude Code's built-in worktree support. How it is integrated and whether the worktree is removed are your decisions.
 - **Several features in parallel,** each with its own workflow, gates, artifacts and agents. A gate in one feature does not block the others. Overlaps between features are reported early, including those with features other sessions execute.
 - **Several orchestrators, if you want them:** independent sessions that see each other's features through shared claims, or a hierarchy (`/feature hub`) whose principal is your only channel and queues every decision request by how much work it blocks.
@@ -113,6 +114,20 @@ cd claude-feature-workflow
 **Option C: manual.** Copy `skills/feature/` and `skills/feature-kit/` side by side into `~/.claude/skills/` (or `<project>/.claude/skills/`). The kit reads from `../feature`.
 
 Then start a new Claude Code session.
+
+### Cost settings
+
+These are your settings; the workflow never edits them.
+
+- **Orchestrator compaction.** In `settings.json`:
+
+  ```json
+  { "autoCompactWindow": 150000 }
+  ```
+
+  or `CLAUDE_CODE_AUTO_COMPACT_WINDOW=150000` in the environment. It applies to the whole session. 150k is recommended: after a compaction the base context was about 57k, so 100k leaves about 40k of work and compacts every 10 to 15 calls, and each compaction reads the whole context and loses detail. 100k is possible if cost matters more; the only measurement with that window aborted the session (`docs/cost-estimates.md`). Compacting is safe because each feature's `state.md` holds what is needed to resume.
+- **Orchestrator model.** Run the orchestrator session on sonnet: `/model sonnet`, or `--model sonnet` at launch. The skill says so at startup if it is not, and cannot switch it. Roles that need opus keep it (`skills/feature/SKILL.md` §4).
+- **Subagent caps.** The setting above is per session, not per model, so the workflow enforces the caps itself: `SKILL.md` §4, *Reusing agents*.
 
 ## Usage
 
