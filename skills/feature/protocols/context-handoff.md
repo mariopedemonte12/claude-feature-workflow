@@ -97,7 +97,7 @@ A relay replaces an agent by a new agent of the **same role**, when `SKILL.md` ย
 
 ## Resume state
 
-`state.md` (`templates/state.md`) in the feature folder holds what a fresh session needs to resume: the workflow state, with each resumable agent's ID, and, in EVO, the open questions. Whoever drives the session writes it at every stop (a gate, a pending question, the end of the turn, a pause): the orchestrator, a phase runner (`protocols/phase-runners.md`), or the SDD executor. In EVO as executor, the card's *State* plays this role. DIRECT keeps neither, unless the programmer asks for a card: then its *State* plays this role. Resuming, building the portfolio board and recovering from a compaction read `state.md`, never the handoff.
+`state.md` (`templates/state.md`) in the feature folder holds what a fresh session needs to resume: the workflow state, with each resumable agent's ID, model and last reported `subagent_tokens`, after a pause or a stop everything (`SKILL.md` ยง7, *Pause and stop everything*), the agents that finished, were interrupted or must be relaunched, and, in EVO, the open questions. Whoever drives the session writes it at every stop (a gate, a pending question, the end of the turn, a pause): the orchestrator, a phase runner (`protocols/phase-runners.md`), or the SDD executor. In EVO as executor, the card's *State* plays this role. DIRECT keeps neither, unless the programmer asks for a card: then its *State* plays this role. Resuming, building the portfolio board and recovering from a compaction read `state.md`, never the handoff.
 
 ## A transition is complete when
 

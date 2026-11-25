@@ -9,7 +9,7 @@ Every feature in progress has:
 - a **feature folder**;
 - a **worktree** (`.claude/worktrees/<slug>`) and its branch;
 - a **workflow**;
-- a **status**: Active · Paused · Done;
+- a **status**: Active · Paused · Done (pausing or stopping a feature with running agents: `SKILL.md` §7, *Pause and stop everything*);
 - a current phase/step, running agents and pending decisions.
 
 Each feature's `state.md` (§Workflow state, written at every stop) is its persistent source of truth. The portfolio board is **derived** from those files plus the agents currently running, so there is no separate registry file to keep in sync.

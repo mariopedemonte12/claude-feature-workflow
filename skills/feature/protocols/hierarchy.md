@@ -112,4 +112,4 @@ Task: <start or resume each feature at its current step>
 
 ## Leaving the hierarchy
 
-The programmer may end the hierarchy at any time. Each sub-orchestrator updates its features' `state.md` and claims (DIRECT without a card has no resume state: report it as not resumable and offer a card), sends a final `STATUS`, and stops. Any other feature can then be resumed in any mode with `/feature resume <slug>`.
+The programmer may end the hierarchy at any time. Each sub-orchestrator handles its running agents as `SKILL.md` §7, *Pause and stop everything*, says, updates its features' `state.md` and claims (DIRECT without a card has no resume state: report it as not resumable and offer a card), sends a final `STATUS`, and stops. Any other feature can then be resumed in any mode with `/feature resume <slug>`.
