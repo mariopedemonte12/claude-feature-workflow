@@ -125,7 +125,7 @@ These are your settings; the workflow never edits them.
   { "autoCompactWindow": 150000 }
   ```
 
-  or `CLAUDE_CODE_AUTO_COMPACT_WINDOW=150000` in the environment. It applies to the whole session. 150k is recommended: after a compaction the base context was about 57k, so 100k leaves about 40k of work and compacts every 10 to 15 calls, and each compaction reads the whole context and loses detail. 100k is possible if cost matters more; the only measurement with that window aborted the session (`docs/cost-estimates.md`). Compacting is safe because each feature's `state.md` holds what is needed to resume.
+  or `CLAUDE_CODE_AUTO_COMPACT_WINDOW=150000` in the environment. It applies to the whole session. 150k is recommended and 100k is possible at a risk; the reasons are in `skills/feature/SKILL.md` §3, which is their one source. Compacting is safe because each feature's `state.md` holds what is needed to resume.
 - **Orchestrator model.** Run the orchestrator session on sonnet: `/model sonnet`, or `--model sonnet` at launch. The skill says so at startup if it is not, and cannot switch it. Roles that need opus keep it (`skills/feature/SKILL.md` §4).
 - **Subagent caps.** The setting above is per session, not per model, so the workflow enforces the caps itself: `SKILL.md` §4, *Reusing agents*.
 

@@ -38,7 +38,7 @@ How features are grouped is the programmer's choice too: several features under 
 ## 2. Startup (runs on every invocation)
 
 0. **Project memory first.** Read and follow `protocols/orchestrator-memory.md` §Session lifecycle: read `$(git rev-parse --git-common-dir)/feature-workflow/memory.md` if it exists, and before every stop rewrite it within its limit.
-   - **Session model.** As orchestrator, if this session's model is not `sonnet`, say in one line that `sonnet` is recommended for it (`/model sonnet`, or `--model sonnet` at launch). It is a recommendation, never a stop: the skill cannot switch the session's model. Compaction threshold: `README.md` §Cost settings.
+   - **Session model.** As orchestrator, if this session's model is not `sonnet`, say in one line that `sonnet` is recommended for it (`/model sonnet`, or `--model sonnet` at launch). It is a recommendation, never a stop: the skill cannot switch the session's model.
 1. **Parse the request.**
    - `continue <message>`: a fresh session continuing earlier work. Follow `protocols/orchestrator-memory.md` §Continuing in a fresh session.
    - `status`: show the portfolio board (`protocols/multi-feature.md` §Portfolio), plus the features other orchestrators claim in this repository (`protocols/hierarchy.md` §Claims).
@@ -104,7 +104,7 @@ How features are grouped is the programmer's choice too: several features under 
 
 As orchestrator, role files (`roles/*.md`) and the guides of the phases you delegate are for subagents: point them to the files (`protocols/skills.md` §Loading, step 3); you do not need to read them yourself. `scripts/quality_gate.py` is run by the Implementer and the Critic. As executor, you read them yourself when the step needs them. Do not preload everything at startup.
 
-Claude Code compacts the orchestrator session at the threshold the programmer sets (`autoCompactWindow`, recommended 150k: `README.md` §Cost settings); `state.md` holds what is needed to resume. If the conversation was compacted and you lost details of this workflow, re-read this `SKILL.md`, the project memory, the workflow file(s) in use, `protocols/multi-feature.md` if several features are in progress, and the `state.md` of the features you are acting on.
+Claude Code compacts the orchestrator session at the threshold the programmer sets (`autoCompactWindow` in `settings.json`, or the env var `CLAUDE_CODE_AUTO_COMPACT_WINDOW`; one value for the whole session). **Recommend 150k:** after a compaction the base context was about 57k, so 100k leaves about 40k of work and compacts every 10 to 15 calls, and each compaction reads the whole context and loses detail. 100k remains an option for whoever wants it, at that risk: the only measurement with a 100k window aborted the session (`docs/cost-estimates.md`). `state.md` holds what is needed to resume. If the conversation was compacted and you lost details of this workflow, re-read this `SKILL.md`, the project memory, the workflow file(s) in use, `protocols/multi-feature.md` if several features are in progress, and the `state.md` of the features you are acting on.
 
 ## 4. Roles, agent types and models
 
