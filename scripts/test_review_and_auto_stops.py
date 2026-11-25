@@ -162,13 +162,19 @@ class RestatementsReported(SkillsCopy):
         "RC-2": ["A finding is open unless the verifier refuted it.",
                  "Count every Major from any round when the cap ends the loop.",
                  "When the cap is reached with a Major still open, ask the programmer.",
-                 "A finding fixed after the last round is still open."],
+                 "A finding fixed after the last round is still open.",
+                 "A finding is open unless the programmer accepted it.",
+                 "A later round reviewed its fix."],
         "RC-3": ["List the last round's commits, the fixes of that round included.",
                  "A commit is never presented as reviewed.",
-                 "Mark those commits unreviewed."],
+                 "Mark those commits unreviewed.",
+                 "List the commits after the last round with their hashes before acceptance.",
+                 "Those commits were not reviewed."],
         "AU-1": ["The existing behavior of code is not a rule.",
                  "A choice between rules the author wrote stops the feature.",
-                 "In auto, two authored rules in conflict go to the programmer."],
+                 "In auto, two authored rules in conflict go to the programmer.",
+                 "A written rule is the project's docs, the intent record, or an earlier decision.",
+                 "In auto, when two written rules contradict each other, stop and ask the programmer."],
     }
 
     def test_negative_each_restatement_in_another_file_is_reported(self):
@@ -188,6 +194,9 @@ class RestatementsReported(SkillsCopy):
         for text in accepted:
             with self.subTest(text=text):
                 self.assertFalse(self.reported(text))
+
+    def test_not_reviewed_about_something_other_than_commits_is_not_a_copy(self):
+        self.assertFalse(self.reported("The spec was not reviewed by the planner."))
 
     def test_named_far_from_its_pointer_is_a_copy(self):
         text = f"Commits are marked unreviewed{' and so on' * 10} ({CAP_POINTER})."

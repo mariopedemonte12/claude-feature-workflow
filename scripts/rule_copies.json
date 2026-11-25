@@ -175,7 +175,9 @@
         "\\bfixed and (?:a later (?:critic )?round )?(?:re-?)?reviewed\\b",
         "\\bwhichever round raised it\\b",
         "\\bfixed after the last (?:critic )?round (?:is|stays|remains) (?:still )?open\\b",
-        "\\b(?:blocker|major)s?[^.;]{0,30} (?:of|from) (?:any|every) round\\b"
+        "\\b(?:blocker|major)s?[^.;]{0,30} (?:of|from) (?:any|every) round\\b",
+        "\\b(?:unless|or) the programmer accepted it\\b",
+        "\\breviewed (?:its|the) fix\\b"
       ],
       "names": [
         "\\bcap (?:is )?(?:reached|exhausted|runs? out)[^.;]{0,40}\\b(?:blocker|major)s?\\b",
@@ -196,11 +198,12 @@
       },
       "fingerprints": [
         "\\bnever (?:be )?presented as reviewed\\b",
-        "\\bthe fixes of (?:that|the last|the final) round included\\b"
+        "\\bthe fixes of (?:that|the last|the final) round included\\b",
+        "\\bwith (?:its|their) hash(?:es)?\\b[^.;]{0,40}\\bacceptance\\b"
       ],
       "names": [
         "\\bunreviewed\\b",
-        "\\bnot (?:been )?reviewed\\b"
+        "\\bcommits?\\b[^.;]{0,40}\\bnot (?:been )?reviewed\\b"
       ],
       "pointer": "protocols/review-cycle\\.md|§ ?r2 . the cycle",
       "searches": [
@@ -217,7 +220,9 @@
       "fingerprints": [
         "\\bexisting behavior of (?:the )?code is not\\b",
         "\\bbehavior of (?:the )?code (?:does not|doesn't|never) counts?\\b",
-        "\\bno decided by agent record\\b"
+        "\\bno decided by agent record\\b",
+        "\\bintent record,? or an earlier decision\\b",
+        "\\bwritten rules?\\b[^.;]{0,60}\\bcontradict"
       ],
       "names": [
         "\\brules? (?:that )?(?:the author|you|the programmer) wrote\\b",
