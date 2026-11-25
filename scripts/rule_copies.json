@@ -54,7 +54,7 @@
     },
     {
       "id": "RL-2",
-      "summary": "What each review level runs (R0 no critic, R1 one critic, R2 the cycle) and which levels have a critic. A mention next to a pointer to the source (within 60 characters) is not a copy.",
+      "summary": "What each review level runs (R0 no critic, R1 one critic, R2 the cycle) and which levels have a critic. Naming the levels (names) next to a pointer to the source, in the same paragraph, cell or list item and within 60 characters, is not a copy; what a level runs is always a copy outside the source.",
       "source": {
         "file": "skills/feature/protocols/review-cycle.md",
         "section": "Review levels"
@@ -62,7 +62,9 @@
       "fingerprints": [
         "\\br0[:,]? no (?:clean )?(?:critic|review agent)\\b",
         "\\br1[:,]? one (?:clean )?critic\\b",
-        "\\br2[:,]? (?:the first )?critic\\b",
+        "\\br2[:,]? (?:the first )?critic\\b"
+      ],
+      "names": [
         "\\br1 (?:and|or) r2\\b",
         "\\br1/r2\\b"
       ],
@@ -147,15 +149,16 @@
     },
     {
       "id": "HS-2",
-      "summary": "Which events are hard stops: a mention outside the source names one only with a pointer to the source (protocols/gates.md, or §Hard stops) within 60 characters before or after it.",
+      "summary": "Which events are hard stops: a mention outside the source names one only with a pointer to protocols/gates.md §Hard stops (or the bare protocols/gates.md, or §Hard stops) in the same paragraph, cell or list item and within 60 characters before or after it.",
       "source": {
         "file": "skills/feature/protocols/gates.md",
         "section": "Hard stops"
       },
-      "fingerprints": [
+      "fingerprints": [],
+      "names": [
         "(?<!§)(?<!§ )\\bhard[- ]stops?\\b"
       ],
-      "pointer": "protocols/gates\\.md|§ ?hard stops",
+      "pointer": "protocols/gates\\.md ?§ ?hard stops|protocols/gates\\.md(?! ?§)|§ ?hard stops",
       "searches": [
         "grep -rniE 'hard stop|stops? (the feature )?(always|regardless|whatever)' <paths>: read each hit that names an event as a hard stop"
       ]

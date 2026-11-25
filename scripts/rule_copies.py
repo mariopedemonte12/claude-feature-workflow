@@ -19,6 +19,8 @@ POINTER_WINDOW = 60
 POINTER_MAX_LENGTH = 200
 MARKUP = re.compile(r"[*`]|(?<!\w)_+|_+(?!\w)|</?(?:b|i|em|strong|code|u|s|mark)>", re.IGNORECASE)
 BLOCKQUOTE = re.compile(r"^\s*(?:>\s?)+")
+LIST_ITEM = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s")
+TABLE_CELL = re.compile(r"\|")
 WHITESPACE = re.compile(r"\s+")
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)(?:\s+#+)?\s*$")
 FENCE = re.compile(r"^\s*(```|~~~)")
@@ -40,6 +42,7 @@ class Rule:
     source_path: str
     source_section: str
     fingerprints: tuple
+    names: tuple
     pointer: re.Pattern | None
 
 
@@ -47,9 +50,17 @@ class Rule:
 class FlatText:
     text: str
     line_starts: tuple
+    barriers: tuple
 
     def line_at(self, offset):
         return bisect.bisect_right(self.line_starts, offset)
+
+    def region_around(self, start, end):
+        before = bisect.bisect_right(self.barriers, start)
+        after = bisect.bisect_left(self.barriers, end)
+        low = self.barriers[before - 1] if before else 0
+        high = self.barriers[after] if after < len(self.barriers) else len(self.text)
+        return low, high
 
 
 @dataclass(frozen=True)
@@ -100,10 +111,14 @@ def compile_pattern(pattern, identifier):
 def parse_rule(raw):
     try:
         identifier, source = raw["id"], raw["source"]
-        patterns = string_list(raw["fingerprints"], f"rule {identifier}: fingerprints", allow_empty=False)
+        patterns = string_list(raw["fingerprints"], f"rule {identifier}: fingerprints")
+        names = string_list(raw.get("names", []), f"rule {identifier}: names")
+        if not patterns and not names:
+            raise ConfigError(f"rule {identifier}: fingerprints and names must not be empty together")
         pointer = compile_pattern(raw["pointer"], identifier) if "pointer" in raw else None
         rule = Rule(identifier, source["file"], source["section"],
-                    tuple(compile_pattern(pattern, identifier) for pattern in patterns), pointer)
+                    tuple(compile_pattern(pattern, identifier) for pattern in patterns),
+                    tuple(compile_pattern(pattern, identifier) for pattern in names), pointer)
     except (KeyError, TypeError) as error:
         raise ConfigError(f"malformed rule entry {raw!r}: missing {error}") from error
     if not all(isinstance(field, str) and field for field in (rule.identifier, rule.source_path, rule.source_section)):
@@ -152,14 +167,24 @@ def markdown_lines(path):
     return read_markdown(path).replace("\r\n", "\n").replace("\r", "\n").split("\n")
 
 
+def line_barriers(line, piece, offset):
+    content = BLOCKQUOTE.sub("", line)
+    if LIST_ITEM.match(content):
+        yield offset
+    elif not content.strip() or HEADING.match(content):
+        yield from (offset, offset + len(piece))
+    yield from (offset + cell.start() for cell in TABLE_CELL.finditer(piece))
+
+
 def flatten(lines):
-    pieces, line_starts, offset = [], [], 0
+    pieces, line_starts, barriers, offset = [], [], [], 0
     for line in lines:
         piece = WHITESPACE.sub(" ", MARKUP.sub("", BLOCKQUOTE.sub("", line))).strip() + " "
         line_starts.append(offset)
+        barriers.extend(line_barriers(line, piece, offset))
         pieces.append(piece)
         offset += len(piece)
-    return FlatText("".join(pieces), tuple(line_starts))
+    return FlatText("".join(pieces), tuple(line_starts), tuple(sorted(set(barriers))))
 
 
 def heading_of(line):
@@ -192,7 +217,7 @@ def normalized_value(match):
 
 
 def fingerprint_matches(flat, rule):
-    matches = sorted((match for fingerprint in rule.fingerprints for match in fingerprint.finditer(flat.text)),
+    matches = sorted((match for fingerprint in rule.fingerprints + rule.names for match in fingerprint.finditer(flat.text)),
                      key=lambda match: (match.start(), -match.end()))
     covered_until = -1
     for match in matches:
@@ -239,11 +264,12 @@ def markdown_files(repo, paths, exclude):
     return [relative for relative in relatives if not is_excluded(relative, exclude)], unreadable
 
 
-def has_pointer_nearby(flat, rule, match):
-    if rule.pointer is None:
+def is_named_next_to_pointer(flat, rule, match):
+    if rule.pointer is None or match.re not in rule.names:
         return False
+    low, high = flat.region_around(match.start(), match.end())
     window_start, window_end = match.start() - POINTER_WINDOW, match.end() + POINTER_WINDOW
-    search_start, search_end = max(0, window_start - POINTER_MAX_LENGTH), window_end + POINTER_MAX_LENGTH
+    search_start, search_end = max(low, window_start - POINTER_MAX_LENGTH), min(high, window_end + POINTER_MAX_LENGTH)
     return any(pointer.end() >= window_start and pointer.start() <= window_end
                for pointer in rule.pointer.finditer(flat.text, search_start, search_end))
 
@@ -255,7 +281,7 @@ def copies_in_file(relative, lines, rules, sources):
         own_source = relative == rule.source_path
         for match in fingerprint_matches(flat, rule):
             line = flat.line_at(match.start())
-            if not (own_source and start <= line <= end) and not has_pointer_nearby(flat, rule, match):
+            if not (own_source and start <= line <= end) and not is_named_next_to_pointer(flat, rule, match):
                 yield Copy(relative, line, rule.identifier, match.group(0).strip(), normalized_value(match), values)
 
 

@@ -247,8 +247,9 @@ POINTER_RULES = {
     "rules": [{
         "id": "STOP",
         "source": {"file": "protocols/gates.md", "section": "Hard stops"},
-        "fingerprints": [r"(?<!§)(?<!§ )\bhard[- ]stops?\b"],
-        "pointer": r"protocols/gates\.md|§ ?hard stops",
+        "fingerprints": [],
+        "names": [r"(?<!§)(?<!§ )\bhard[- ]stops?\b"],
+        "pointer": r"protocols/gates\.md ?§ ?hard stops|protocols/gates\.md(?! ?§)|§ ?hard stops",
     }],
 }
 
@@ -333,6 +334,63 @@ class RepositoryRules(unittest.TestCase):
         code, output, _ = run_check(self.repo, "skills")
         self.assertEqual(code, 1)
         self.assertIn(f"skills/feature/protocols/multi-feature.md:{line}: HS-1", output)
+
+
+
+class PointerScopeReproductions(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.repo = Path(tempfile.mkdtemp(prefix="rule-copies-scope-"))
+        shutil.copytree(REPOSITORY / "skills", cls.repo / "skills")
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.repo, ignore_errors=True)
+
+    def copies(self, text):
+        (self.repo / "skills" / "probe.md").write_text(text + "\n", encoding="utf-8")
+        _, output, _ = run_check(self.repo, "skills")
+        return [line for line in output.splitlines() if line.startswith("skills/probe.md:")]
+
+    def test_level_contents_next_to_the_section_pointer_are_copies(self):
+        found = self.copies("R0: no critic. R1: one critic. R2: the full cycle (`protocols/review-cycle.md` §Review levels).")
+        self.assertEqual(len([line for line in found if "RL-2" in line]), 2, found)
+
+    def test_level_contents_next_to_another_review_cycle_pointer_are_copies(self):
+        found = self.copies("R1: one critic (`protocols/review-cycle.md` §R2 · The cycle).")
+        self.assertTrue(any("RL-2" in line for line in found), found)
+
+    def test_level_names_next_to_the_pointer_are_not_copies(self):
+        self.assertEqual(self.copies("Run the critic (R1 or R2) as `protocols/review-cycle.md` §Review levels says."), [])
+
+    def test_hard_stop_pointing_to_another_section_of_gates_is_a_copy(self):
+        found = self.copies("Merging a branch is a hard stop (`protocols/gates.md` §Profiles).")
+        self.assertTrue(any("HS-2" in line for line in found), found)
+
+    def test_hard_stop_with_the_hard_stops_pointer_is_not_a_copy(self):
+        self.assertEqual(self.copies("Merging is a hard stop (`protocols/gates.md` §Hard stops)."), [])
+
+    def test_bare_path_in_the_previous_section_does_not_count(self):
+        found = self.copies("See `protocols/gates.md`.\n\n## Integration\n\nEvery push is a hard stop.")
+        self.assertTrue(any("probe.md:5: HS-2" in line for line in found), found)
+
+    def test_pointer_in_the_previous_paragraph_does_not_count(self):
+        found = self.copies("See `protocols/gates.md` §Hard stops.\n\nEvery push is a hard stop.")
+        self.assertTrue(any("probe.md:3: HS-2" in line for line in found), found)
+
+    def test_pointer_in_a_neighbouring_table_cell_does_not_count(self):
+        found = self.copies("| Event | Source |\n| --- | --- |\n| a push is a hard stop | `protocols/gates.md` §Hard stops |")
+        self.assertTrue(any("probe.md:3: HS-2" in line for line in found), found)
+
+    def test_pointer_in_the_same_table_cell_counts(self):
+        self.assertEqual(self.copies("| Event | Note |\n| --- | --- |\n| a hard stop (`protocols/gates.md` §Hard stops) | x |"), [])
+
+    def test_pointer_in_a_neighbouring_list_item_does_not_count(self):
+        found = self.copies("- See `protocols/gates.md` §Hard stops.\n- Every push is a hard stop.")
+        self.assertTrue(any("probe.md:2: HS-2" in line for line in found), found)
+
+    def test_pointer_in_the_same_wrapped_list_item_counts(self):
+        self.assertEqual(self.copies("- Every push is a hard stop\n  (`protocols/gates.md` §Hard stops)."), [])
 
 
 if __name__ == "__main__":
