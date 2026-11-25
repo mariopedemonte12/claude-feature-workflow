@@ -292,7 +292,7 @@ Source: `protocols/review-cycle.md`. The orchestrator **recommends** the level w
 | --- | --- | --- |
 | R0 | Quality gate and project lint only | Mechanical change, about 50 changed lines, no risk areas |
 | R1 | One clean critic, in parallel with the Tester | Standard feature with new logic |
-| R2 | Critic → verifier → automatic fixes → new critic on the fixes only, 3 critic rounds per feature at most | Critical, or large or complex |
+| R2 | Critic → verifier → automatic fixes → new critic on the fixes only, 3 critic rounds per feature at most (EVO: per increment) | Critical, or large or complex |
 
 ```mermaid
 flowchart LR
@@ -306,7 +306,7 @@ flowchart LR
 ```
 
 - **Review level:** the recommendation starts from the default (R1 for SDD and EVO, R2 for Critical; DIRECT runs no critic unless asked). A standing "accept your recommendation" covers only that default; a deviation is asked every time. With the `depth` gate off, a raise by size and risk applies and is reported; a lowering is asked.
-- **Automatic fixes** happen only at R2. Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
+- **Automatic fixes** happen only at R2, except that with the `defects` gate off the resumed Implementer fixes the critic's and the Tester's covered Blocker and Major at any level (`protocols/gates.md`). Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
 - **Convergence:** round 1 reviews the whole diff. Later rounds review only the fixes, and report only Blocker and Major findings.
 - **Clean context:** the critic and the verifier never read the spec, plan, decisions, handoffs, implementation report or earlier rounds. Each round launches a **new** critic.
 - **Round log** in `reports/review/rounds.md`. Findings that recur become anti-pattern candidates. The INVALID rate shows how noisy the critic is.
@@ -395,10 +395,10 @@ Source: `protocols/phase-runners.md`. Unphased mode is the default.
 ```mermaid
 flowchart LR
     P(["Programmer"]) <--> O["Orchestrator<br/>startup, intent.md, gates from disk,<br/>question relay, portfolio, integration"]
-    O -->|"brief: phase, steps, decisions in force"| PR["Phase runner<br/>one per feature and phase,<br/>dies at the first gate"]
+    O -->|"brief: phase, steps, decisions in force"| PR["Phase runner<br/>one per feature and phase,<br/>stops at the first gate that is on,<br/>or at the end of its range"]
     PR -->|"briefs, verifies, relays questions"| RO["Role agents of that phase"]
     PR -->|"Pending decisions, state.md"| DK[("feature folder")]
-    PR -->|"PHASE … ended at GATE · QUESTIONS · FAILED"| O
+    PR -->|"PHASE … ended at GATE · DONE · QUESTIONS · FAILED"| O
     O -->|"reads the gate from disk + consistency check"| DK
 ```
 
@@ -421,9 +421,9 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 | **Test Designer** | `general-purpose` · sonnet (opus if Critical; never haiku) | Test cases derived from the approved spec alone, in parallel with the Planner: each technique applied or justified, error, security, worst-case and E2E cases, traceability from every AC to its cases | Spec, analyst report, testing techniques, E2E guide (never the plan or code) | `testing-plan.md` | Invent expected results, design around an implementation, write test code |
 | **Implementer** | `general-purpose` · sonnet (haiku if mechanical, opus if risky) | Production code for the approved plan only, to the quality standard. Self-review against the critic's checklist before the quality gate, so review finds little to rework. Runs the existing tests; **writes no tests** (exceptions: DIRECT, a fixture or helper the plan assigns, an anti-pattern entry's check or test). Makes the Tester's reproducing tests pass when resumed for fixes. | Handoff, plan, testing plan, quality standard, design patterns, registry | Production code, `implementation-report.md`, handoff to testing (new Tester only), DIRECT report | Write tests (outside those exceptions), drift from the plan silently, add comments, leave quality violations unreported, expand scope |
 | **Tester** | `general-purpose` · sonnet (haiku for re-runs, opus for hard state) | The author of the tests (except the Implementer's exceptions): implements every designed case, runs functional, regression and E2E testing, explores beyond the plan, mutation testing if decided, validation against the spec. Keeps failing tests as reproductions for fixes. Resumed to re-run after fixes. | Handoff, testing plan, spec, testing techniques, E2E guide | Tests, case statuses in `testing-plan.md`, `reports/e2e/`, `validation-report.md`, handoff (new agent only) | Change a designed expected result, decide one the spec leaves open, weaken or skip failing tests, report a test it did not run as passed |
-| **Clean Code Critic** | `general-purpose` · opus (never haiku) | Maximally critical review from scratch: names, responsibilities, function design, structure, patterns misused, registry violations, places the request's words reach that the diff leaves untouched; each finding with a concrete case | The original request and the programmer's statements, verbatim; code, `git diff <base>`, project conventions, quality standard, registry | `reports/review/round-<n>-critic.md` | Read the spec, plan, handoffs or earlier rounds; be reused across rounds |
+| **Clean Code Critic** | `general-purpose` · opus (never haiku) | Maximally critical review from scratch: names, responsibilities, function design, structure, patterns misused, registry violations, places the request's words reach that the diff leaves untouched; each finding with a concrete case | The original request and the programmer's statements, verbatim; code, `git diff <base>`, project conventions, quality standard, registry | `reports/review/round-<n>-critic.md` (EVO: `inc<k>-round-<n>-critic.md`) | Read the spec, plan, handoffs or earlier rounds; be reused across rounds |
 | **Phase runner** (phased mode) | `general-purpose` · sonnet (opus if Critical; never haiku) | Orchestrating one phase of one feature: delegating its steps, choosing models, verifying returns, relaying agent questions, writing the gate's Pending decisions | Its brief, `SKILL.md` §4, the workflow steps in range, skills and agent-questions protocols | `delegations.md`, `decisions/` (Pending), `state.md` | Talk to the programmer, pass a gate, run startup or integration, be reused for the next phase |
-| **Finding Verifier** | `general-purpose` · sonnet (never haiku) | Trying to refute each finding against the code: VALID, INVALID or AMBIGUOUS; fix class; recurring findings marked as candidates | The critic's report, the code | `reports/review/round-<n>-verification.md` | Read the spec or plan, fix code, accept a finding without checking it |
+| **Finding Verifier** | `general-purpose` · sonnet (never haiku) | Trying to refute each finding against the code: VALID, INVALID or AMBIGUOUS; fix class; recurring findings marked as candidates | The critic's report, the code | `reports/review/round-<n>-verification.md` (EVO: `inc<k>-round-<n>-verification.md`) | Read the spec or plan, fix code, accept a finding without checking it |
 | **Specialists** | `general-purpose` · sonnet in `spec`/`plan`/`test-design`, opus in `audit` (never haiku there) | Domain expertise in the phases you activate: questions on the spec draft, facts per plan option (a recommendation only for its own domain, labeled), test cases, and a clean audit with executed evidence (exploit, query plan, timing, screenshot) | Advisory phases: request, spec, options. Audit: the diff and the code it reaches only | Questions, facts, cases in `testing-plan.md`, `reports/review/<name>.md` | Add requirements, recommend options outside its domain, report unproven findings as confirmed, install tools, be resumed in `audit` |
 
 **Floors:** no haiku for specification, planning, test design, the critic, the verifier, a specialist's audit or a phase runner. Critical features use opus for specification, planning, test design, the critic, specialist audits and phase runners.
@@ -452,12 +452,12 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
     │   ├── validation-report.md       Tester
     │   ├── anti-pattern-candidates.md orchestrator (from agents)
     │   ├── e2e/                       Tester: traces, screenshots, logs
-    │   ├── review/rounds.md · round-<n>-critic.md · round-<n>-verification.md
+    │   ├── review/rounds.md · round-<n>-critic.md · round-<n>-verification.md (EVO: inc<k>-round-<n>-…)
     │   └── final-report.md            orchestrator
     ├── delegations.md           orchestrator        role · model · reason · outcome
     ├── handoff.md               outgoing agent      message to a new agent at a phase transition
     └── state.md                 orchestrator        resume state, written at every stop
-    (EVO as executor: feature.md card, whose State replaces state.md, + decisions/; SDD as executor: no handoff.md or delegations.md; DIRECT: none unless asked)
+    (EVO as executor: feature.md card, whose State replaces state.md, + review/ + decisions/; SDD as executor: no handoff.md or delegations.md; DIRECT: none unless asked)
 
 <repo>/.quality/ or <git-common-dir>/quality/   project-wide registry, after the programmer's approval
 <git-common-dir>/feature-workflow/memory.md      project memory, ≤ 80 lines, never committed

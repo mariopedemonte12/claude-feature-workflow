@@ -57,4 +57,4 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - unbounded payloads or pagination;
   - errors that leak internal details.
 - **Evidence rule:** each finding cites the request, the response and the stub setup. A finding without one is a *Possible risk*.
-- **Output:** `reports/review/network.md` (with a card: `network.md` beside it). Return at most 150 words.
+- **Output:** `reports/review/network.md` (in EVO `inc<k>-network.md`; with a card, under its `review/`). Return at most 150 words.

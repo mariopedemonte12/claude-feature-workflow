@@ -50,4 +50,4 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - lost correlation across asynchronous boundaries;
   - telemetry calls that can throw or block the main path.
 - **Evidence rule:** each finding cites the captured log output or metric. A finding without one is a *Possible risk*.
-- **Output:** `reports/review/observability.md` (with a card: `observability.md` beside it). Return at most 150 words.
+- **Output:** `reports/review/observability.md` (in EVO `inc<k>-observability.md`; with a card, under its `review/`). Return at most 150 words.

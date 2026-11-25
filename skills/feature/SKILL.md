@@ -48,7 +48,7 @@ How features are grouped is the programmer's choice too: several features under 
    - `refined <slug> [flags]`: start a new feature from a refined record (`protocols/refinement.md` §Standalone), with the flags below.
    - `correct`: a correction sweep of the mistakes agents repeat in this repository. Read `protocols/anti-pattern-registry.md` §Correction sweep and follow it; it is not a feature.
    - `verify-skill app [<surface>]` or `verify-skill formal [<area or bug>]`: generate a project verification skill. Read `protocols/verification-skills.md` and follow it; it is not a feature.
-   - `resume <slug> [<slug>…]`: for each slug, locate its worktree (`.claude/worktrees/<slug>`, shown by `git worktree list`) and the feature folder inside it (for DIRECT kept in the checkout, the folder its claim records), read its `state.md` (or the card's *State*, for a feature with a card), confirm the role of this session for it (the one recorded, unless the programmer changes it), check freshness (`protocols/context-handoff.md` §Freshness), and report the current state and next step, tagged `[slug]`. Then continue.
+   - `resume <slug> [<slug>…]`: for each slug, locate its worktree (`.claude/worktrees/<slug>`, shown by `git worktree list`) and the feature folder inside it (for DIRECT with a card kept in the checkout, the folder its claim records; DIRECT without a card runs in one session and is not resumable: say so), read its `state.md` (or the card's *State*, for a feature with a card), confirm the role of this session for it (the one recorded, unless the programmer changes it), check freshness (`protocols/context-handoff.md` §Freshness), and report the current state and next step, tagged `[slug]`. Then continue.
    - `<description> [flags]`: a **new feature**. Give it a short kebab-case slug, unique among the features in progress, and state it. A workflow flag (`--direct`, `--sdd`, `--evo`; `--esdd` is an old name of `--evo`) means the programmer has already chosen its workflow; a role flag (`--orchestrate`, `--execute`) means they have chosen this session's role; `--gates` sets the feature's gate profile, with optional per-gate changes (`protocols/gates.md`); `--no-skills` turns the skills off for it (`protocols/skills.md`); `--no-refine` skips the readiness check (`protocols/refinement.md`). `--phased` runs an orchestrated feature in phased mode, which is **experimental and has never been run** (`protocols/phase-runners.md`): say so when it is chosen. `--lite`, `--medium` and `--high` are old flags: intensities no longer exist; say so in one line and continue. The description may contain several features: give each its slug.
    - Empty: if features are in progress, show the board and ask what to do; otherwise ask what the programmer wants built.
    - As soon as more than one feature is in progress, read `protocols/multi-feature.md` and follow it from then on.
@@ -235,14 +235,14 @@ The same shape serves `/feature status` and any catch-up the programmer asks for
 └── <features-root>/<slug>/             # e.g. docs/features/<slug>/
 ├── intent.md                         # intent record: original request + consolidated intent + statements since (S-n)
 ├── intent-history.md                 # absorbed statements, verbatim, by consolidation version; not read by default
-├── feature.md         (the card: EVO in executor mode; DIRECT on request)
+├── feature.md         (the card: EVO in executor mode; DIRECT on request), with review/ beside it
 ├── specification.md   (SDD, Hybrid; none in EVO)
 ├── implementation-plan.md
 ├── testing-plan.md
 ├── decisions/D-001-<topic>.md …      # numbering is per feature
 ├── reports/  implementation-report.md · validation-report.md · final-report.md
 │             anti-pattern-candidates.md · e2e/ (traces, screenshots, logs)
-│             review/ rounds.md · round-<n>-critic.md · round-<n>-verification.md
+│             review/ rounds.md · round-<n>-critic.md · round-<n>-verification.md (EVO: inc<k>-round-<n>-…)
 ├── delegations.md                    # one row per delegation (role, model, reason, outcome)
 ├── handoff.md                        # message to a new agent at a phase transition (orchestrator mode); overwritten each time; handoff-<role>.md for parallel new agents
 ├── state.md                          # resume state: workflow state, agent IDs, EVO open questions; written at every stop

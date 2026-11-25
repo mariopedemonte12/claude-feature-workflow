@@ -8,7 +8,7 @@ In executor mode the session **does the feature's work itself** instead of orche
 | Specialist audits | Same reason | Subagents, launched with the critic (`protocols/skills.md` §Specialists) |
 | The Test Designer, in SDD | It designs from the approved specification and must never see the plan | **A separate session the programmer opens** (§Sessions the programmer opens) |
 
-Everything else the workflow file assigns to a role (Repository Analyst, Specification Writer, Planner, Implementer, Tester, and in EVO the Test Designer) is the session's own work. It reads the role file for its method and checklists, and skips what belongs to delegation: briefs, return formats, `delegations.md`.
+Everything else the workflow file assigns to a role (Repository Analyst, Specification Writer, Planner, Implementer, Tester, and in EVO the Test Designer) is the session's own work. It reads the role file for its method and checklists, and skips what belongs to delegation: briefs, return formats, handoffs, `delegations.md`.
 
 One feature per executor session. Several features at once means several sessions, each in its own worktree, or an orchestrator.
 
@@ -29,7 +29,7 @@ The principles of `SKILL.md` §1 apply, except 9: the executor changes project c
 
 | Workflow | Artifacts |
 | --- | --- |
-| SDD | The folder of `SKILL.md` §6 (specialist runs: `protocols/skills.md` §Logging): `intent.md`, `specification.md`, `implementation-plan.md`, `testing-plan.md` (written by the Test Designer's session), `decisions/`, `reports/review/`. No `delegations.md` and no `handoff.md`; `state.md` at every stop (a gate, a pending question, the end of the turn, a pause) |
+| SDD | The folder of `SKILL.md` §6 (specialist runs: `protocols/skills.md` §Logging): `intent.md`, `specification.md`, `implementation-plan.md`, `testing-plan.md` (written by the Test Designer's session), `decisions/`, `reports/review/`. No `delegations.md` and no handoff file (`handoff.md` or `handoff-<role>.md`); `state.md` at every stop (a gate, a pending question, the end of the turn, a pause) |
 | EVO | **One card**, `feature.md` (`templates/feature-card.md`), plus `decisions/` and appendices when it overflows. Its Intent section is the intent record, its Cases section replaces `testing-plan.md`, and its Increments section replaces the plan; in EVO the card's *State* plays the role of `state.md`, written at every stop |
 
 The card has a target of 500 lines, never a cut: keep the card as the summary, move the overflow to `decisions/D-NNN-<topic>.md` or `feature-appendix.md`, linked by section, and report the total size at the next gate.
@@ -67,11 +67,11 @@ Task: review `git diff <base, or the commit where this increment started; from r
 Original request (verbatim): <from the intent record>
 Consolidated intent (confirmed, version n): <from the intent record>
 Statements since (verbatim; a statement wins over the consolidated intent): <each S-n; never an unconfirmed proposal>
-Output: <feature folder>/reports/review/round-<n>-critic.md   (card: <feature folder>/review/<increment>-round-<n>-critic.md)
+Output: <feature folder>/reports/review/round-<n>-critic.md   (EVO: inc<k>-round-<n>-critic.md, and with a card <feature folder>/review/inc<k>-round-<n>-critic.md; `protocols/review-cycle.md` §Rounds in EVO)
 Return: a summary of at most 150 words.
 ```
 
-At R2 (`protocols/review-cycle.md`), the verifier is a second clean subagent (`sonnet`, `roles/verifier.md`) with the critic's report; with a card, its output is `<feature folder>/review/<increment>-round-<n>-verification.md`.
+At R2 (`protocols/review-cycle.md`), the verifier is a second clean subagent (`sonnet`, `roles/verifier.md`) with the critic's report; with a card, its output is `<feature folder>/review/inc<k>-round-<n>-verification.md`.
 
 ## Checking findings
 
@@ -91,4 +91,4 @@ The programmer may also choose to open a role session for any other role, instea
 
 ## Resume
 
-`/feature resume <slug>` in executor mode: locate `.claude/worktrees/<slug>` (`git worktree list`) and enter it with `EnterWorktree` (`path`), or, for DIRECT kept in the checkout, the feature folder its claim records; read the card's *State* (EVO, DIRECT) or `state.md` (SDD), and continue.
+`/feature resume <slug>` in executor mode: locate `.claude/worktrees/<slug>` (`git worktree list`) and enter it with `EnterWorktree` (`path`), or, for DIRECT with a card kept in the checkout, the feature folder its claim records (DIRECT without a card is not resumable: say so); read the card's *State* (EVO, DIRECT) or `state.md` (SDD), and continue.

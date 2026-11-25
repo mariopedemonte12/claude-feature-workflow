@@ -54,4 +54,4 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - an accessibility scan (axe-core, Lighthouse, pa11y, the browser's accessibility tree), if one is installed.
 - **Findings:** missing states, unreachable controls, focus traps, unlabeled inputs, contrast failures, layout breakage, error messages that do not say how to recover, and behavior inconsistent with the project's existing screens.
 - **Evidence rule:** each finding cites its screenshot, scan output or reproduction steps. A finding without one is a *Possible risk*.
-- **Output:** `reports/review/ux-ui.md` (with a card: `ux-ui.md` beside it). It is a table with ID · severity · confirmed or possible · screen and state · evidence · what fails. Return at most 150 words.
+- **Output:** `reports/review/ux-ui.md` (in EVO `inc<k>-ux-ui.md`; with a card, under its `review/`). It is a table with ID · severity · confirmed or possible · screen and state · evidence · what fails. Return at most 150 words.

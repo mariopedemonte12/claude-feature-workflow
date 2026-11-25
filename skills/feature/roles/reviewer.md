@@ -54,7 +54,7 @@ First confirm the feature worktree named in the brief: `git -C <worktree> branch
 
 ## Output
 
-Write the path given in the brief (e.g. `reports/review/round-<n>-critic.md`):
+Write the path given in the brief (e.g. `reports/review/round-<n>-critic.md`; in EVO `inc<k>-round-<n>-critic.md`, `protocols/review-cycle.md` §Rounds in EVO):
 
 1. Scope: commit range, files in the diff, connected code read, what was not read.
 2. Quality gate output.
