@@ -126,6 +126,20 @@ These are your settings; the workflow never edits them.
   ```
 
   or `CLAUDE_CODE_AUTO_COMPACT_WINDOW=150000` in the environment. It applies to the whole session. 150k is recommended and 100k is possible at a risk; the reasons are in `skills/feature/SKILL.md` §3, which is their one source. Compacting is safe because each feature's `state.md` holds what is needed to resume.
+- **Compact Instructions.** Paste the block of `skills/feature/protocols/compaction.md` §Compact Instructions into your `CLAUDE.md`. Claude Code gives it to the summary, so a compaction keeps each feature's state, decisions, agent IDs and pending stops, and drops tool outputs and reports already saved. The skill cannot edit your `CLAUDE.md`.
+- **State after a compaction.** A hook re-reads the project memory's portfolio and the `state.md` of each active feature right after a compaction (`skills/feature/protocols/compaction.md` §State after a compaction). With the plugin it is already on (`hooks/hooks.json`). With `install.sh` or a manual copy, add this to `settings.json` (use the path of your install, here the user-level one):
+
+  ```json
+  {
+    "hooks": {
+      "SessionStart": [
+        { "matcher": "compact",
+          "hooks": [{ "type": "command",
+                      "command": "python3 \"$HOME/.claude/skills/feature/scripts/post_compact_state.py\"" }] }
+      ]
+    }
+  }
+  ```
 - **Orchestrator model.** Run the orchestrator session on sonnet: `/model sonnet`, or `--model sonnet` at launch. The skill says so at startup if it is not, and cannot switch it. Roles that need opus keep it (`skills/feature/SKILL.md` §4).
 - **Subagent caps.** The setting above is per session, not per model, so the workflow enforces the caps itself: `SKILL.md` §4, *Reusing agents*.
 
