@@ -183,7 +183,7 @@ flowchart TB
         TE["8–11 · Test<br/>Tester: implements the designed cases, functional, E2E,<br/>exploration, mutation if decided, validation report"]
         RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature<br/>cap reached with Blocker or Major open: stop<br/>(protocols/review-cycle.md)<br/>+ specialist audits chosen"]
         TE & RV --> G3{"⛔ Defects and anti-pattern candidates gate<br/>fix now · accept as limitation · change spec"}
-        G3 -->|"fix"| FX["Implementer (resumed or relayed, SKILL.md §4): makes the Tester's failing test pass<br/>→ same Tester re-runs → new clean critic at R1/R2"]
+        G3 -->|"fix"| FX["Implementer (resumed or relayed, SKILL.md §4): makes the Tester's failing test pass<br/>→ Tester re-runs (resumed or relayed, SKILL.md §4) → new clean critic at R1/R2"]
         FX --> G3
     end
     subgraph F4["Phase 4 · Finalization"]
@@ -308,7 +308,7 @@ flowchart LR
 - **Cap reached with a Blocker or Major open** (`protocols/review-cycle.md` §R2 · The cycle): the feature stops and asks the programmer, in every profile. Commits made after the last round reach acceptance marked unreviewed (`protocols/review-cycle.md`).
 
 - **Review level:** the recommendation starts from the default (R1 for SDD and EVO, R2 for Critical; DIRECT runs no critic unless asked). A standing "accept your recommendation" covers only that default; a deviation is asked every time. With the `depth` gate off, a raise by size and risk applies and is reported; a lowering is asked.
-- **Automatic fixes** happen only at R2, except that with the `defects` gate off the resumed Implementer fixes the critic's and the Tester's covered Blocker and Major at any level (`protocols/gates.md`). Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
+- **Automatic fixes** happen only at R2, except that with the `defects` gate off the Implementer (resumed or relayed, `SKILL.md` §4, *Reusing agents*) fixes the critic's and the Tester's covered Blocker and Major at any level (`protocols/gates.md`). Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
 - **Convergence:** round 1 reviews the whole diff. Later rounds review only the fixes, and report only Blocker and Major findings.
 - **Clean context:** the critic and the verifier never read the spec, plan, decisions, handoffs, implementation report or earlier rounds. Each round launches a **new** critic.
 - **Round log** in `reports/review/rounds.md`. Findings that recur become anti-pattern candidates. The INVALID rate shows how noisy the critic is.
