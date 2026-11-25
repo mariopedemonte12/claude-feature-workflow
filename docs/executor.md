@@ -61,7 +61,7 @@ Written into the card before any code:
 
 ### 4. First gate: intent, approach and first increment
 
-One message, every item in full; the items of gates that are off in the feature's profile are decided by the session and reported in it:
+One message, every item in full; the items of gates that are off in the feature's profile are handled as `protocols/gates.md` §When a gate is off describes and reported in it:
 - the consolidated intent and completion criteria, and the readings to confirm;
 - blocking questions, each with what the analog does as a fact and the agent's recommendation; questions that only later increments need wait for them;
 - the approach: options in the decision format, each with its security consequence and its worst case (probed for parsers, regular expressions, escaping or safe-marking);
@@ -78,7 +78,7 @@ The session writes the increment's code to the quality standard and a test for e
 
 ### 6. The review, per increment, and the specialist audits you chose
 
-At the level you validated: R0 no critic; R1 one critic; R2 critic, verifier, fixes and a new critic, up to 3 rounds (Critical is always R2). The critic, a new opus subagent in the background, reviews the increment's diff from the commit where it started (from round 2, the diff since the previous round). It sees only that diff, the code it touches, the project's conventions, the quality standard and your own words (original request, confirmed consolidated intent, statements since). It never sees the card or how the code was written. The specialist auditors you chose run alongside it under the same rules. None is ever resumed.
+At the level you validated: R0 no critic; R1 one critic; R2 critic, verifier, fixes and a new critic, up to 3 rounds (Critical is always R2). The critic, a new opus subagent in the background, reviews the increment's diff from the commit where it started (from round 2, the diff since the previous round). It sees only that diff, the code it touches, the project's conventions, the quality standard and your own words (original request, confirmed consolidated intent, statements since). It never sees the card or how the code was written. The specialist auditors you chose run alongside it under the same rules. None is ever resumed. If the rounds run out with a Blocker or Major still open (`protocols/review-cycle.md` §R2 · The cycle), the session stops and asks you; commits made after the last round reach you marked as unreviewed (`protocols/review-cycle.md`).
 
 ### 7. Checking the findings
 
@@ -86,7 +86,7 @@ The session checks every finding against the code and re-runs each specialist's 
 
 ### 8. Increment gate
 
-The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments. With the `increment` gate off, it is a report and the work continues, unless a gate that is still on (e.g. `discoveries` in `key`) or a hard stop stops it.
+The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments. With the `increment` gate off, it is a report and the work continues, unless a gate that is still on (e.g. `discoveries` in `key`), a hard stop or a decision that `protocols/gates.md` §When a gate is off sends to the programmer stops it.
 
 ### 9. Fix and evolve
 

@@ -152,13 +152,13 @@ flowchart TB
 | `bootstrap` (registry) | stops | stops | agent: local registry only |
 | `approach` | stops | stops when options differ in API, data, dependencies or shared structure | agent |
 | `depth` (testing plan, mutation, review level, E2E harness) | stops | agent: defaults; a higher review level applies, a lower one is asked | same |
-| `increment` (EVO) | stops | report and continue, unless a gate still on or a hard stop applies | same |
+| `increment` (EVO) | stops | report and continue, unless a gate still on, a hard stop or a decision that `protocols/gates.md` §When a gate is off sends to the programmer applies | same |
 | `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings (a security Blocker is a hard stop) and the rest to acceptance | same |
 | `discoveries` | stops | stops when outside or contradicting the intent | agent: covered ones fixed, outside ones not built, listed; contradicting: hard stop |
 | `candidates` | stops | at acceptance | listed only |
 | `acceptance` | stops | stops | stops |
 
-A gate that is off is decided by the agent with its recommendation, recorded as *Decided by agent* and listed in the final report. **Hard stops** in every profile: integration, cleanup, installing anything new, migrating non-test data, breaking a public interface not asked for, a discovery that contradicts the programmer's words, a Blocker from a security audit, and a feature that turns out Critical outside `full`. Questions are always allowed.
+A gate that is off is decided by the agent with its recommendation, recorded as *Decided by agent* and listed in the final report; in `auto`, a choice between rules the author wrote goes to the programmer instead (`protocols/gates.md` §When a gate is off). **Hard stops** in every profile: integration, cleanup, installing anything new, migrating non-test data, breaking a public interface not asked for, a discovery that contradicts the programmer's words, a Blocker from a security audit, a review cap reached with a Blocker or Major open (`protocols/review-cycle.md`), and a feature that turns out Critical outside `full`. Questions are always allowed.
 
 - **Worktree failures** (not a git repository, a git error, already inside a worktree session) stop the feature and are presented to the programmer. The orchestrator never falls back to the shared checkout.
 
@@ -181,7 +181,7 @@ flowchart TB
     end
     subgraph F3["Phase 3 · Testing and validation"]
         TE["8–11 · Test<br/>Tester: implements the designed cases, functional, E2E,<br/>exploration, mutation if decided, validation report"]
-        RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature<br/>+ specialist audits chosen"]
+        RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature<br/>cap reached with Blocker or Major open: stop<br/>(protocols/review-cycle.md)<br/>+ specialist audits chosen"]
         TE & RV --> G3{"⛔ Defects and anti-pattern candidates gate<br/>fix now · accept as limitation · change spec"}
         G3 -->|"fix"| FX["Implementer (resumed or replaced, per cap): makes the Tester's failing test pass<br/>→ same Tester re-runs → new clean critic at R1/R2"]
         FX --> G3
@@ -304,6 +304,8 @@ flowchart LR
     STOP -->|"no"| C
     STOP -->|"yes"| RT["Tester re-runs affected<br/>regression and E2E"]
 ```
+
+- **Cap reached with a Blocker or Major open** (`protocols/review-cycle.md` §R2 · The cycle): the feature stops and asks the programmer, in every profile. Commits made after the last round reach acceptance marked unreviewed (`protocols/review-cycle.md`).
 
 - **Review level:** the recommendation starts from the default (R1 for SDD and EVO, R2 for Critical; DIRECT runs no critic unless asked). A standing "accept your recommendation" covers only that default; a deviation is asked every time. With the `depth` gate off, a raise by size and risk applies and is reported; a lowering is asked.
 - **Automatic fixes** happen only at R2, except that with the `defects` gate off the resumed Implementer fixes the critic's and the Tester's covered Blocker and Major at any level (`protocols/gates.md`). Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
@@ -477,7 +479,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 2. **Artifacts are the source of truth.** Any feature can be resumed in a new session from its folder (DIRECT only with a card).
 3. **Separation of concerns:** spec (what and why) ≠ plan (how) ≠ implementation ≠ validation, and each feature is separate from every other.
 4. **Explicit uncertainty and evidence:** claims carry a status. A test that was not run is never "passed".
-5. **No silent drift:** deviations, scope changes and behavior changes go back to the programmer, at a gate or, when its gate is off, as a decision recorded and reported.
+5. **No silent drift:** deviations, scope changes and behavior changes go back to the programmer, at a gate or, when its gate is off, as `protocols/gates.md` §When a gate is off describes.
 9. **Supervision is chosen per feature:** the gate profile sets how often the programmer is stopped; what is hard to undo always stops.
 6. **Ask, don't guess:** gaps become questions relayed by the orchestrator, never invented requirements.
 7. **Clean review:** whoever reviews code never saw it being written.

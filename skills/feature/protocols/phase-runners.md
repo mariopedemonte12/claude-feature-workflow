@@ -12,7 +12,7 @@ Facts to present when the programmer asks which mode to use:
 
 | Aspect | Unphased | Phased |
 | --- | --- | --- |
-| Decisions | Every ⛔ gate is the programmer's | Same gates. A runner cannot talk to the programmer, so it cannot pass a gate that is on: it must stop and return it. A gate that is off it decides, records and reports as `protocols/gates.md` §When a gate is off describes, and continues |
+| Decisions | Every ⛔ gate is the programmer's | Same gates. A runner cannot talk to the programmer, so it cannot pass a gate that is on: it must stop and return it. A gate that is off it handles as `protocols/gates.md` §When a gate is off describes: what that section sends to the programmer stops it like a gate that is on; the rest it decides, records and reports, and continues |
 | What the programmer sees during a phase | Each agent's result, as it arrives | The phase's result at its gate; the runner's log in `delegations.md` on request |
 | Stopping or redirecting mid-phase | One agent at a time | Stop the whole runner (`TaskStop`), then relaunch the phase from the feature's `state.md` |
 | Agent questions | Agent → orchestrator → programmer | Agent → runner → orchestrator → programmer, and back |
@@ -61,18 +61,18 @@ You are not the orchestrator and you cannot talk to the programmer. Read and fol
 Feature worktree: <path> (branch <branch>, base <commit>). Feature folder: <path>. Never call EnterWorktree.
 Workflow file: <absolute path>, steps <from> – <to>. Criticality: <level>. Gate profile: <profile and per-gate changes>.
 Decisions in force: <D-IDs, one line each>
-Task: run the steps above, deciding the gates that are off, until the first ⛔ gate that is on or the end of the range, then return.
+Task: run the steps above, handling the gates that are off as protocols/gates.md §When a gate is off describes, until the first ⛔ gate that is on or the end of the range, then return.
 ```
 
 ## The phase runner
 
 You orchestrate one phase of one feature.
 
-1. **Read**: `SKILL.md` §4 (roles, models, delegation practice, briefs, verification, escalation), the steps of the workflow file the brief names, `protocols/skills.md` §Loading, and `protocols/agent-questions.md`. Read the other protocols and templates only when a step in your range calls for them. You do not run startup, claims, memory or gates that are on; a gate that is off you decide (step 5).
+1. **Read**: `SKILL.md` §4 (roles, models, delegation practice, briefs, verification, escalation), the steps of the workflow file the brief names, `protocols/skills.md` §Loading, and `protocols/agent-questions.md`. Read the other protocols and templates only when a step in your range calls for them. You do not run startup, claims, memory or gates that are on; a gate that is off you handle as step 5 says.
 2. **Delegate** each step to its role exactly as `SKILL.md` §4 describes: model choice per delegation, logged in `delegations.md`; briefs in its format; parallel launches where independent. Roles never delegate further.
 3. **Verify** what each agent returns against the artifacts and the diff before using it, keeping each agent's recommendation attributed to it.
 4. **Agent questions.** Answer from evidence what you can. For the rest, stop: record them as `protocols/agent-questions.md` §For the orchestrator, steps 1–2, describes (including the agent's ID in `state.md`) and return with `QUESTIONS`. When resumed with the answers, record them and resume that agent with `SendMessage`; if it cannot be resumed, relaunch it with its work so far.
-5. **Stop at the first ⛔ whose gate is on** in your range (a gate that is off is decided and recorded as `protocols/gates.md` §When a gate is off describes, and you continue within your range, returning as `GATE` at its end, or as `DONE` when nothing is pending). A hard stop (`protocols/gates.md` §Hard stops) stops you, as a gate that is on does: record it as Pending and return as `GATE`. Do nothing that depends on a pending decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `state.md`.
+5. **Stop at the first ⛔ whose gate is on** in your range (a gate that is off is handled as `protocols/gates.md` §When a gate is off describes, and you continue within your range, returning as `GATE` at its end, or as `DONE` when nothing is pending). A hard stop (`protocols/gates.md` §Hard stops), or a decision that §When a gate is off sends to the programmer, stops you, as a gate that is on does: record it as Pending and return as `GATE`. Do nothing that depends on a pending decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `state.md`.
 6. **Return**, and nothing else:
 
 ```

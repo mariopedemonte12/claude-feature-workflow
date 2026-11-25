@@ -162,6 +162,77 @@
       "searches": [
         "grep -rniE 'hard stop|stops? (the feature )?(always|regardless|whatever)' <paths>: read each hit that names an event as a hard stop"
       ]
+    },
+    {
+      "id": "RC-2",
+      "summary": "When the critic-round cap is reached with a Blocker or Major finding of any round still open, the feature stops and asks the programmer. What counts as open is always a copy outside the source; naming the stop (names) next to a pointer to the source, in the same paragraph, cell or list item and within 60 characters, is not.",
+      "source": {
+        "file": "skills/feature/protocols/review-cycle.md",
+        "section": "R2 · The cycle"
+      },
+      "fingerprints": [
+        "\\bverifier refuted\\b|\\brefuted by the verifier\\b",
+        "\\bfixed and (?:a later (?:critic )?round )?(?:re-?)?reviewed\\b",
+        "\\bwhichever round raised it\\b",
+        "\\bfixed after the last (?:critic )?round (?:is|stays|remains) (?:still )?open\\b",
+        "\\b(?:blocker|major)s?[^.;]{0,30} (?:of|from) (?:any|every) round\\b",
+        "\\b(?:unless|or) the programmer accepted it\\b",
+        "\\breviewed (?:its|the) fix\\b"
+      ],
+      "names": [
+        "\\bcap (?:is )?(?:reached|exhausted|runs? out)[^.;]{0,40}\\b(?:blocker|major)s?\\b",
+        "\\brounds (?:run|ran) out[^.;]{0,40}\\b(?:blocker|major)s?\\b",
+        "\\b(?:blocker|major)s?[^.;]{0,30}\\bopen (?:at|when|after) the (?:round )?cap\\b"
+      ],
+      "pointer": "protocols/review-cycle\\.md|§ ?r2 . the cycle",
+      "searches": [
+        "grep -rniE 'cap|rounds? run out|(blocker|major)[^.]*open' <paths>: read each hit about what happens when the critic rounds end with findings open"
+      ]
+    },
+    {
+      "id": "RC-3",
+      "summary": "Commits made after the last critic round (its fixes included) are listed with their hashes as unreviewed before acceptance, never presented as reviewed. Naming them as unreviewed (names) next to a pointer to the source, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/protocols/review-cycle.md",
+        "section": "R2 · The cycle"
+      },
+      "fingerprints": [
+        "\\bnever (?:be )?presented as reviewed\\b",
+        "\\bthe fixes of (?:that|the last|the final) round included\\b",
+        "\\bwith (?:its|their) hash(?:es)?\\b[^.;]{0,40}\\bacceptance\\b"
+      ],
+      "names": [
+        "\\bunreviewed\\b",
+        "\\bcommits?\\b[^.;]{0,40}\\bnot (?:been )?reviewed\\b"
+      ],
+      "pointer": "protocols/review-cycle\\.md|§ ?r2 . the cycle",
+      "searches": [
+        "grep -rniE 'unreviewed|not (been )?reviewed|after the last (critic )?round' <paths>: read each hit about commits that no critic saw"
+      ]
+    },
+    {
+      "id": "AU-1",
+      "summary": "In auto, a decision that chooses which of two or more rules the author wrote prevails stops the feature and goes to the programmer; what counts as a rule the author wrote (not the behavior of code). Naming it (names) next to a pointer to protocols/gates.md §When a gate is off, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/protocols/gates.md",
+        "section": "When a gate is off"
+      },
+      "fingerprints": [
+        "\\bexisting behavior of (?:the )?code is not\\b",
+        "\\bbehavior of (?:the )?code (?:does not|doesn't|never) counts?\\b",
+        "\\bno decided by agent record\\b",
+        "\\bintent record,? or an earlier decision\\b",
+        "\\bwritten rules?\\b[^.;]{0,60}\\bcontradict"
+      ],
+      "names": [
+        "\\brules? (?:that )?(?:the author|you|the programmer) wrote\\b",
+        "\\brules? written by (?:the author|you|the programmer)\\b",
+        "\\bauthored rules?\\b"
+      ],
+      "pointer": "protocols/gates\\.md ?§ ?when a gate is off|§ ?when a gate is off",
+      "searches": [
+        "grep -rniE 'rules? (the author|you) wrote|written by the author|authored rule|contradict[^.]*rules?|decided by agent' <paths>: read each hit about who settles a choice between written rules in auto"
+      ]
     }
   ]
 }
