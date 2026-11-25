@@ -23,7 +23,7 @@ For EVO, the report is short: link `intent.md` (its evolution is in `intent-hist
 
 ## Decided by the agent
 
-Every decision taken at a gate that was off (`protocols/gates.md`), grouped by gate: D-NNN · what was decided · the evidence · what reopening it would change. Discoveries recorded but not built are listed here too. "None" when every gate was on.
+Every decision taken at a gate that was off (`protocols/gates.md`), grouped by gate: D-NNN · what was decided · the evidence · what reopening it would change. Discoveries recorded but not built are listed here too. In `auto`, a choice between rules the author wrote is never here: it went to the programmer (`protocols/gates.md` §When a gate is off) and is listed with the other decisions. "None" when every gate was on.
 
 ## Increments (EVO)
 

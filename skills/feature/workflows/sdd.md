@@ -1,6 +1,6 @@
 # Workflow: SDD (specification-driven)
 
-Use it when the intent is clear, the expected behavior is predictable, technical uncertainty is low and existing architecture gives a reasonable direction. ⛔ marks a human gate: stop this feature and wait for the programmer (other features keep moving). Each gate is named `[gate: <name>]`; whether it stops depends on the feature's gate profile (`protocols/gates.md`): a gate that is off is decided by the agent, recorded and reported. Integration and cleanup are hard stops (`protocols/gates.md` §Hard stops).
+Use it when the intent is clear, the expected behavior is predictable, technical uncertainty is low and existing architecture gives a reasonable direction. ⛔ marks a human gate: stop this feature and wait for the programmer (other features keep moving). Each gate is named `[gate: <name>]`; whether it stops depends on the feature's gate profile (`protocols/gates.md`): a gate that is off is handled as `protocols/gates.md` §When a gate is off describes. Integration and cleanup are hard stops (`protocols/gates.md` §Hard stops).
 
 This workflow runs **per feature**. The steps below name roles; as orchestrator you delegate each one, and as executor you do them yourself except where `protocols/executor.md` §SDD as executor says otherwise. Every phase reads the skills classified for it (`protocols/skills.md`). For each delegation, the executor and standard model come from `SKILL.md` §4; the orchestrator chooses the actual model per task and logs it in `delegations.md`.
 

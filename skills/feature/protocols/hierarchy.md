@@ -54,7 +54,7 @@ Started with `/feature hub`. It:
 ### Sub-orchestrator
 
 Runs `SKILL.md` for its group, exactly as a single orchestrator does, with these differences:
-- Its programmer channel is the principal. Every gate that is on becomes a **decision request** sent up (a gate that is off is decided as `protocols/gates.md` §When a gate is off describes, and reported up in the status, not sent as a request); it never presents a gate to the programmer directly unless the programmer writes to it directly (then it answers, and informs the principal with a status report).
+- Its programmer channel is the principal. Every gate that is on becomes a **decision request** sent up (a gate that is off is handled as `protocols/gates.md` §When a gate is off describes: what it decides is reported up in the status, not sent as a request; what that section sends to the programmer is a decision request); it never presents a gate to the programmer directly unless the programmer writes to it directly (then it answers, and informs the principal with a status report).
 - While a request is pending, it keeps working on everything that does not depend on it.
 - It records every answer in the feature's `decisions/`, as today. The feature's artifacts stay the source of truth.
 - It sends a **status report** at every phase transition and whenever the principal asks.

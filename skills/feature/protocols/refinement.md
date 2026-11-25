@@ -13,7 +13,7 @@ At startup (`SKILL.md` §2 step 5), check whether the request is **ready**, from
 
 Ready: say so in one line, with the evidence ("ready: the request names the problem, the outcome and the place"), and continue. `--no-refine` skips the check; record that it was skipped.
 
-**Gate profiles.** Refinement is a conversation, not a gate, so it runs in every profile when the request is not ready: a wrong reading here costs the whole feature. In `auto`, one round at most; what stays open is decided with the reading the evidence supports best and recorded as *Decided by agent* (`protocols/gates.md` §When a gate is off).
+**Gate profiles.** Refinement is a conversation, not a gate, so it runs in every profile when the request is not ready: a wrong reading here costs the whole feature. In `auto`, one round at most; what stays open is handled as `protocols/gates.md` §When a gate is off describes: decided with the reading the evidence supports best and recorded as *Decided by agent*, unless that section sends it to the programmer.
 
 **Who.** The session that talks to the programmer, orchestrator or executor; refinement is that conversation, so no subagent runs it. Context the repository can answer: look it up yourself when it takes a few files; otherwise brief the Repository Analyst with the exact questions.
 

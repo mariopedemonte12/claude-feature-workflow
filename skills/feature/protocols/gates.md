@@ -1,6 +1,6 @@
 # Gates Protocol
 
-Every human gate (⛔) of a workflow has a **name**. Whether a gate stops the feature depends on the feature's **gate profile**, chosen at startup with the workflow and the role. A gate that is off does not disappear: the agent decides what the gate would have asked, records it, and reports it. Some events are **hard stops** instead (§Hard stops).
+Every human gate (⛔) of a workflow has a **name**. Whether a gate stops the feature depends on the feature's **gate profile**, chosen at startup with the workflow and the role. A gate that is off does not disappear: the agent decides what the gate would have asked, records it, and reports it, except what §When a gate is off sends to the programmer. Some events are **hard stops** instead (§Hard stops).
 
 ## The gates
 
@@ -49,10 +49,11 @@ At startup, in the same message as the workflow recommendation (`SKILL.md` §2.5
 
 ## When a gate is off
 
-1. **Decide as the gate would have asked:** take the recommendation you would have presented (`protocols/decisions.md`), the default named in the table above, or, for a question, the reading the evidence supports best: the programmer's words first, then the nearest analog, then the project's conventions.
-2. **Record it** in `decisions/` (or the card's *Decisions*) with status **Decided by agent**, the gate it replaced, the options and the evidence, exactly as a gate would have shown them.
-3. **Tell the programmer in one line** in the next message (`[slug] decided by agent: <what> (gate <name> off), see D-NNN`), and continue. The programmer may reopen any such decision at any time; reopening it is a new decision, with its effects on the work already done.
-4. **At acceptance**, the final report lists every decision taken by the agent, grouped by gate, so the programmer can review them before integrating.
+1. **In `auto`, a choice between rules the author wrote goes to the programmer.** A rule the author wrote is a written rule of the project: its docs, specifications and conventions, the intent record, or an earlier decision. The existing behavior of code is not one: a conflict between code and a written rule stays a discovery (the `discoveries` row above). When the options of a decision amount to choosing which of two or more such rules prevails, because they contradict each other and cannot both be followed, do not decide it: stop the feature, record it as **Pending** and present it in the decision format (`protocols/decisions.md`), quoting each rule with its location. No *Decided by agent* record is written for it. Every other decision follows steps 2–5.
+2. **Decide as the gate would have asked:** take the recommendation you would have presented (`protocols/decisions.md`), the default named in the table above, or, for a question, the reading the evidence supports best: the programmer's words first, then the nearest analog, then the project's conventions.
+3. **Record it** in `decisions/` (or the card's *Decisions*) with status **Decided by agent**, the gate it replaced, the options and the evidence, exactly as a gate would have shown them.
+4. **Tell the programmer in one line** in the next message (`[slug] decided by agent: <what> (gate <name> off), see D-NNN`), and continue. The programmer may reopen any such decision at any time; reopening it is a new decision, with its effects on the work already done.
+5. **At acceptance**, the final report lists every decision taken by the agent, grouped by gate, so the programmer can review them before integrating.
 
 Choosing a profile is a standing approval with a defined scope (`protocols/decisions.md` rule 7): quote it when applying it, and list it in the final report.
 
@@ -66,9 +67,9 @@ These stop the feature in every profile, because they are hard to undo or leave 
 - **breaking a public interface** the programmer did not ask to change;
 - a discovery that **contradicts** the programmer's words;
 - a **Blocker** found by a security audit (the `security` specialist's `audit` phase);
-- the **criticality** check above.
 - the critic-round **cap reached with a Blocker or Major open** (`protocols/review-cycle.md` §R2 · The cycle);
+- the **criticality** check above.
 
 ## Questions
 
-In every profile, an agent asks the programmer when an answer only they can give blocks the work (`protocols/agent-questions.md`); an executor session asks directly. A gate being off changes what is presented at fixed points, not whether questions are allowed; DIRECT's blocking questions (`workflows/direct.md` step 3) are asked in every profile. Refinement of a request that is not ready (`protocols/refinement.md`) runs in every profile; in `auto`, one round at most. In `auto`, except for DIRECT's blocking questions, ask only when the evidence does not support one reading and a wrong reading would be expensive to undo; otherwise decide as §When a gate is off describes and record it.
+In every profile, an agent asks the programmer when an answer only they can give blocks the work (`protocols/agent-questions.md`); an executor session asks directly. A gate being off changes what is presented at fixed points, not whether questions are allowed; DIRECT's blocking questions (`workflows/direct.md` step 3) are asked in every profile. Refinement of a request that is not ready (`protocols/refinement.md`) runs in every profile; in `auto`, one round at most. In `auto`, except for DIRECT's blocking questions and a choice between rules the author wrote (§When a gate is off, step 1), ask only when the evidence does not support one reading and a wrong reading would be expensive to undo; otherwise decide as §When a gate is off describes and record it.

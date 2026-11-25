@@ -1,6 +1,6 @@
 # Workflow: EVO (evolutionary development)
 
-Use it when requirements are incomplete or evolving, feasibility is uncertain, several approaches are plausible, or important discoveries are expected. The feature advances in small increments, main flows first, and what it must do is settled as the work goes, by the programmer, increment by increment. ⛔ marks a human gate: it stops this feature only, and other features keep moving. Each gate is named `[gate: <name>]`; whether it stops depends on the feature's gate profile (`protocols/gates.md`): a gate that is off is decided by the agent, recorded and reported. Integration and cleanup are hard stops (`protocols/gates.md` §Hard stops).
+Use it when requirements are incomplete or evolving, feasibility is uncertain, several approaches are plausible, or important discoveries are expected. The feature advances in small increments, main flows first, and what it must do is settled as the work goes, by the programmer, increment by increment. ⛔ marks a human gate: it stops this feature only, and other features keep moving. Each gate is named `[gate: <name>]`; whether it stops depends on the feature's gate profile (`protocols/gates.md`): a gate that is off is handled as `protocols/gates.md` §When a gate is off describes. Integration and cleanup are hard stops (`protocols/gates.md` §Hard stops).
 
 **There is no specification document.** Three artifacts replace it, each with one owner:
 
