@@ -67,11 +67,11 @@ Task: review `git diff <base, or the commit where this increment started; from r
 Original request (verbatim): <from the intent record>
 Consolidated intent (confirmed, version n): <from the intent record>
 Statements since (verbatim; a statement wins over the consolidated intent): <each S-n; never an unconfirmed proposal>
-Output: <feature folder>/reports/review/round-<n>-critic.md   (EVO: inc<k>-round-<n>-critic.md, and with a card <feature folder>/review/inc<k>-round-<n>-critic.md; `protocols/review-cycle.md` §Rounds in EVO)
+Output: <feature folder>/reports/review/round-<n>-critic.md   (EVO: inc<k>-round-<n>-critic.md, and with a card <feature folder>/review/inc<k>-round-<n>-critic.md, DIRECT card review/round-<n>-critic.md; `protocols/review-cycle.md` §Rounds in EVO)
 Return: a summary of at most 150 words.
 ```
 
-At R2 (`protocols/review-cycle.md`), the verifier is a second clean subagent (`sonnet`, `roles/verifier.md`) with the critic's report; with a card, its output is `<feature folder>/review/inc<k>-round-<n>-verification.md`.
+At R2 (`protocols/review-cycle.md`), the verifier is a second clean subagent (`sonnet`, `roles/verifier.md`) with the critic's report; with a card, its output is `<feature folder>/review/inc<k>-round-<n>-verification.md` (DIRECT card: `review/round-<n>-verification.md`).
 
 ## Checking findings
 
@@ -91,4 +91,4 @@ The programmer may also choose to open a role session for any other role, instea
 
 ## Resume
 
-`/feature resume <slug>` in executor mode: locate `.claude/worktrees/<slug>` (`git worktree list`) and enter it with `EnterWorktree` (`path`), or, for DIRECT with a card kept in the checkout, the feature folder its claim records (DIRECT without a card is not resumable: say so); read the card's *State* (EVO, DIRECT) or `state.md` (SDD), and continue.
+`/feature resume <slug>` in executor mode: locate `.claude/worktrees/<slug>` (`git worktree list`) and enter it with `EnterWorktree` (`path`), or, for DIRECT with a card kept in the checkout, the feature folder its claim records (DIRECT without a card is not resumable: say so, and offer a card before the session ends); read the card's *State* (EVO, DIRECT) or `state.md` (SDD), and continue.

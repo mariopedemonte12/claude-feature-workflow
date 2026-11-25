@@ -45,14 +45,14 @@ round n:  Critic(n) ──► Verifier(n) ──► VALID behavior-preserving fi
 1. **Critic** (`roles/reviewer.md`) writes `reports/review/round-<n>-critic.md` (in EVO, `inc<k>-round-<n>-critic.md`: §Rounds in EVO).
 2. **Verifier** (`roles/verifier.md`), also clean, receives that report and tries to refute each finding against the code. Verdicts: VALID, INVALID, AMBIGUOUS. It classifies each VALID finding's fix as **behavior-preserving** (rename, extract, split by responsibility, remove duplication, remove code that this change itself left unused, simplify control flow, move to the right folder, without changing observable behavior or public interfaces; tests pass before and after) or **behavior-changing** (anything that changes outputs, errors, interfaces, the spec or the plan). It writes `reports/review/round-<n>-verification.md` (in EVO, `inc<k>-round-<n>-verification.md`).
 3. **Fixes.** VALID behavior-preserving findings of severity Blocker, Major or Minor go to the Implementer without a gate, once the Tester has finished: the **same** Implementer agent, resumed with `SendMessage` (`SKILL.md` §4, *Reusing agents*). It fixes them, runs the affected tests and the quality gate, and records what it changed per finding ID. Behavior-changing findings, AMBIGUOUS findings and every Blocker that touches correctness or security go to the ⛔ defects gate. Nits are collected for the final report, not fixed in the loop.
-4. **Next round** with a new critic on the **diff since the previous round** (the fixes), reporting only Blocker and Major findings. Round 1 is the only one that reviews the whole diff from the base.
+4. **Next round** with a new critic on the **diff since the previous round** (the fixes), reporting only Blocker and Major findings. Round 1 is the only one that reviews the whole diff from the base (in EVO, the increment's diff: §Rounds in EVO).
 
 **Stop when:**
 - a round produces no new Blocker or Major finding; or
 - the feature (in EVO, the increment) has had 3 critic rounds in total, counting every path (R1, R2 and the critics after defect fixes); or
 - the loop oscillates: a finding asks to undo an earlier fix, or the same location is flagged again for the same problem after being fixed. Present the oscillation at the ⛔ defects gate.
 
-**Rounds in EVO** count per increment: each increment's review starts at round 1 and has its own cap of 3 rounds, since every increment's diff is reviewed (`workflows/evo.md` step 9). Reports are `reports/review/inc<k>-round-<n>-critic.md` and `inc<k>-round-<n>-verification.md`, and specialist audits `reports/review/inc<k>-<name>.md`; with a card, the same names under the card's `review/`. `rounds.md` adds the increment to each row.
+**Rounds in EVO** count per increment: each increment's review starts at round 1 and has its own cap of 3 rounds, since every increment's diff is reviewed (`workflows/evo.md` step 9). Reports are `reports/review/inc<k>-round-<n>-critic.md` and `inc<k>-round-<n>-verification.md`, and specialist audits `reports/review/inc<k>-<name>.md`; with a card, the same names under the card's `review/`. A DIRECT card has no increments: `review/round-<n>-critic.md`. `rounds.md` adds the increment to each row (§Round log and feedback).
 
 After the loop, the Tester re-runs the regression suite and the E2E scenarios affected by the fixes.
 
@@ -66,7 +66,7 @@ At R2, every automatic fix is listed at the next gate: finding ID, files and hun
 
 ## Round log and feedback
 
-The orchestrator keeps `reports/review/rounds.md`, one row per round: round · critic model · findings raised (Blocker/Major/Minor/Nit) · VALID / INVALID / AMBIGUOUS · fixed automatically · sent to the gate.
+The orchestrator keeps `reports/review/rounds.md`, one row per round: (EVO: increment ·) round · critic model · findings raised (Blocker/Major/Minor/Nit) · VALID / INVALID / AMBIGUOUS · fixed automatically · sent to the gate.
 
 Feedback beyond the feature:
 - A VALID finding that is likely to recur, or that appeared in more than one round, becomes an anti-pattern candidate (`protocols/anti-pattern-registry.md`). The verifier marks them; the orchestrator writes them to `reports/anti-pattern-candidates.md`.

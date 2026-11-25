@@ -2,7 +2,7 @@
 
 > **Experimental: never run.** Nothing in this mode has been measured, including whether a resumed runner can resume its own agents. Tell the programmer this when they choose it.
 
-The orchestrator's cost grows with the square of its work: each call re-reads a context that every agent return, brief and verification makes longer. In **phased** mode, the orchestrator keeps only what needs the programmer and hands each **phase** of a feature to a **phase runner**: a subagent that orchestrates that phase's agents and ends at the phase's first ⛔ gate. Its context dies with the phase, so the orchestrator's own context grows several times more slowly.
+The orchestrator's cost grows with the square of its work: each call re-reads a context that every agent return, brief and verification makes longer. In **phased** mode, the orchestrator keeps only what needs the programmer and hands each **phase** of a feature to a **phase runner**: a subagent that orchestrates that phase's agents and ends at the phase's first ⛔ gate that is on, or at the end of its range. Its context dies with the phase, so the orchestrator's own context grows several times more slowly.
 
 **Unphased** mode (the orchestrator runs every phase itself, as in `SKILL.md`) remains the default. Phased mode is chosen by the programmer, per feature or per group, with `--phased` or in their request ("run billing phased"), and can change at any gate. Features in the same portfolio may use different modes.
 

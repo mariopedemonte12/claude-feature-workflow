@@ -80,4 +80,4 @@ Many features in one session consume your context.
 - When switching to a feature, re-read its `state.md` instead of relying on memory.
 - Keep subagent returns short.
 
-If context pressure starts to threaten correctness, tell the programmer and present the options (`protocols/decisions.md`), for example: pause some features, continue some in another session with `/feature resume <slug>`, or move to the hierarchical mode, where each group of features keeps its own context (`protocols/hierarchy.md`).
+If context pressure starts to threaten correctness, tell the programmer and present the options (`protocols/decisions.md`), for example: pause some features, continue some in another session with `/feature resume <slug>` (DIRECT without a card is not resumable: offer a card), or move to the hierarchical mode, where each group of features keeps its own context (`protocols/hierarchy.md`).

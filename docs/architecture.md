@@ -473,7 +473,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 ## 13. Design principles
 
 1. **The programmer decides, and the agent's view is in the open.** No presentation of options is neutral, since the agent picks the options and the words. So every decision shows each viable option with facts instead of adjectives, the options left out and those excluded by a constraint, and a labeled recommendation with its reasons and the fact that would change it. Nothing proceeds by silence.
-2. **Artifacts are the source of truth.** Any feature can be resumed in a new session from its folder.
+2. **Artifacts are the source of truth.** Any feature can be resumed in a new session from its folder (DIRECT only with a card).
 3. **Separation of concerns:** spec (what and why) ≠ plan (how) ≠ implementation ≠ validation, and each feature is separate from every other.
 4. **Explicit uncertainty and evidence:** claims carry a status. A test that was not run is never "passed".
 5. **No silent drift:** deviations, scope changes and behavior changes go back to the programmer, at a gate or, when its gate is off, as a decision recorded and reported.

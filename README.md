@@ -80,7 +80,7 @@ Measured before this version, under the earlier names: `/feature-lean` is today'
 - **Several features in parallel,** each with its own workflow, gates, artifacts and agents. A gate in one feature does not block the others. Overlaps between features are reported early, including those with features other sessions execute.
 - **Several orchestrators, if you want them:** independent sessions that see each other's features through shared claims, or a hierarchy (`/feature hub`) whose principal is your only channel and queues every decision request by how much work it blocks.
 - **Optional phased mode (experimental, never run):** with `--phased`, the orchestrator hands each phase to a short-lived runner and keeps only what needs you.
-- **Artifacts as source of truth:** intent record, specification, plan, testing plan, decision records, reports and a `state.md` per feature, from which any feature can be resumed in a new session. A handoff is written only when a new agent takes over a phase.
+- **Artifacts as source of truth:** intent record, specification, plan, testing plan, decision records, reports and a `state.md` per feature, from which any feature can be resumed in a new session (DIRECT only with a card). A handoff is written only when a new agent takes over a phase.
 
 ## Executor mode
 

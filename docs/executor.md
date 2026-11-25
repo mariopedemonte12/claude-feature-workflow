@@ -25,18 +25,18 @@ When you run `/feature` and choose **executor**, the session does the feature's 
 flowchart TB
     R(["/feature &lt;request&gt; --evo --execute"]) --> W["Worktree<br/>EnterWorktree name=slug, stay in it<br/>card docs/features/&lt;slug&gt;/feature.md"]
     W --> RD["1 · Read only what is needed<br/>CLAUDE.md, affected code, tests, commands,<br/>registry, code-quality, testing-techniques"]
-    RD --> SP["2 · Intent pass, in the card<br/>intent record · reach · nearest analog ·<br/>main flows · cases for every flow"]
-    SP --> G1{"⛔ 3 + 5 · First gate (EVO gates 3 and 5 merged)<br/>consolidated intent and completion criteria<br/>blocking questions with the analog's behavior<br/>approach · how many increments (your choice) · cases · approve / change / reject"}
-    G1 --> IM["6–7 · Implement the increment<br/>code to the quality standard, a test per case,<br/>technique statuses, lint, quality gate"]
+    RD --> SP["2 · Intent pass, in the card (with step 4's cases)<br/>intent record · reach · nearest analog ·<br/>main flows · cases for every flow"]
+    SP --> G1{"⛔ 3–5 · First gate (EVO gates 3 and 5 merged, step 4's approach in it)<br/>consolidated intent and completion criteria<br/>blocking questions with the analog's behavior<br/>approach · how many increments (your choice) · cases · approve / change / reject"}
+    G1 --> IM["6–8 · Implement the increment<br/>code to the quality standard, a test per case,<br/>technique statuses, lint, quality gate; discoveries to the card"]
     IM --> CR["9 · Review at the validated level on the increment's diff<br/>R0 none · R1 critic · R2 critic, verifier, fixes"]
-    CR --> CK["9 · Check each finding<br/>Reproduced · Not reproduced · Unclear"]
-    CK --> G2{"⛔ 10 · Increment gate<br/>results · findings and discoveries · deferred edge cases ·<br/>new consolidated intent · next increment"}
-    G2 --> FX["11 · Fix and evolve<br/>reproducing test first, then the fix;<br/>consolidate the intent, retire superseded cases"]
+    CR --> CK["Check each finding (protocols/executor.md)<br/>Reproduced · Not reproduced · Unclear"]
+    CK --> G2{"⛔ 10 · Increment gate<br/>results · findings and discoveries · deferred edge cases ·<br/>new consolidated intent · next increment<br/>fixes: reproducing test first, then the fix"}
+    G2 --> FX["11 · Evolve<br/>consolidate the intent, retire superseded cases"]
     FX -->|"next increment"| IM
     FX -->|"completion criteria met"| G3{"⛔ 12–13 · Mutation testing once, final report, acceptance,<br/>integration, cleanup"}
 ```
 
-The numbers in the flow are the steps of `workflows/evo.md`; the sections below have their own order. The session does all the work itself. The only subagents are the critics, the verifiers at R2 and the specialist audits you chose, per increment.
+The numbers in the flow are the steps of `workflows/evo.md` (checking findings comes from `protocols/executor.md`); the sections below have their own order. The session does all the work itself. The only subagents are the critics, the verifiers at R2 and the specialist audits you chose, per increment.
 
 **Increments, if you want them.** The executor follows `workflows/evo.md` without its separate agents, and merges its intent and approach gates (3 and 5) into one first gate. There is no specification: the card's intent record, its decisions and its cases say what the feature must do. At the first gate you choose how to deliver it: one increment for the whole feature (one critic and one increment gate, the one-pass flow `/feature-lean` had before), one per main flow (a critic and a gate per flow), or another grouping. At each increment gate you can regroup what remains.
 
@@ -107,7 +107,7 @@ The session reads the area, runs the edge-case checklist (reach of every broad s
 ## Several features, resuming, and what persists
 
 - **Parallel features:** one executor session per feature. Each runs in its own worktree, so sessions do not interfere. Each writes a claim, so an orchestrator's `/feature status` shows it, but there is no overlap detection between executor sessions: if two features touch the same files, you find out at integration.
-- **Resume:** `/feature resume <slug>` in a new session finds `.claude/worktrees/<slug>` and enters it (DIRECT with a card kept in the checkout: the folder its claim records; DIRECT without a card is not resumable), reads the card and continues from its *State* (SDD: from `state.md`).
+- **Resume:** `/feature resume <slug>` in a new session finds `.claude/worktrees/<slug>` and enters it (DIRECT with a card kept in the checkout: the folder its claim records; DIRECT without a card is not resumable; the session says so and offers a card before it ends), reads the card and continues from its *State* (SDD: from `state.md`).
 - **What lives on disk:** the code on the feature branch, `feature.md` and the review reports, one per increment and round (`review/inc<k>-round-<n>-critic.md`, plus `review/inc<k>-round-<n>-verification.md` at R2, and `review/inc<k>-<name>.md` per audit). Everything you decided is in the card.
 
 ## Cost and evidence
@@ -131,7 +131,7 @@ Measured before this version, when EVO as executor was `/feature-lean` and `/fea
 ## What EVO as executor does not do
 
 - **No separate roles:** there is no separate specification, planning, test-design or testing agent. The same session that writes the code writes its tests. That is the main trade-off against orchestrator mode, where the Tester writes the tests and the cases come from a Test Designer who never sees the plan.
-- **Review:** below R2 there is no verifier, no automatic fixes and no multi-round cycle. A specialist's finding is fixed only on your decision.
+- **Review:** below R2 there is no verifier and no multi-round cycle; automatic fixes happen only with the `defects` gate off (the default `key` profile), limited to the Blocker and Major findings your words cover (`protocols/gates.md`). A specialist's finding is fixed only on your decision.
 - **Testing depth:** mutation testing runs once at the end, only for Critical features or when you choose it. Prototypes are allowed outside production code, and discarded unless you promote them.
 - **Coordination:** there is no portfolio and no overlap detection across sessions; the claim lets orchestrators see the feature.
 - **Registry:** when the project has none, its bootstrap is part of the first gate; approved anti-pattern candidates extend it.
