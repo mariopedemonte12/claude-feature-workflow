@@ -153,12 +153,12 @@ flowchart TB
 | `approach` | stops | stops when options differ in API, data, dependencies or shared structure | agent |
 | `depth` (testing plan, mutation, review level, E2E harness) | stops | agent: defaults; a higher review level applies, a lower one is asked | same |
 | `increment` (EVO) | stops | report and continue, unless a gate still on or a hard stop applies | same |
-| `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings and the rest to acceptance | same |
+| `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings (a security Blocker is a hard stop) and the rest to acceptance | same |
 | `discoveries` | stops | stops when outside or contradicting the intent | agent: covered ones fixed, outside ones not built, listed; contradicting: hard stop |
 | `candidates` | stops | at acceptance | listed only |
 | `acceptance` | stops | stops | stops |
 
-A gate that is off is decided by the agent with its recommendation, recorded as *Decided by agent* and listed in the final report. **Hard stops** in every profile: integration, cleanup, installing anything new, migrating non-test data, breaking a public interface not asked for, a discovery that contradicts the programmer's words, and a feature that turns out Critical outside `full`. Questions are always allowed.
+A gate that is off is decided by the agent with its recommendation, recorded as *Decided by agent* and listed in the final report. **Hard stops** in every profile: integration, cleanup, installing anything new, migrating non-test data, breaking a public interface not asked for, a discovery that contradicts the programmer's words, a Blocker from a security audit, and a feature that turns out Critical outside `full`. Questions are always allowed.
 
 - **Worktree failures** (not a git repository, a git error, already inside a worktree session) stop the feature and are presented to the programmer. The orchestrator never falls back to the shared checkout.
 

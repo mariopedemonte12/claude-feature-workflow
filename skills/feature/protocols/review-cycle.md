@@ -26,7 +26,7 @@ The recommendation goes in the plan gate (SDD step 6, EVO step 5; with the `dept
 
 ## Specialist audits
 
-Specialists active in their `audit` phase (`protocols/skills.md`) are separate clean agents. They follow the critic's clean-context rules, run in parallel with it, and are never resumed. Their findings are never fixed automatically, at any level: they go to the defects gate, merged with the critic's; with that gate off, to acceptance.
+Specialists active in their `audit` phase (`protocols/skills.md`) are separate clean agents. They follow the critic's clean-context rules, run in parallel with it, and are never resumed. Their findings are never fixed automatically, at any level: they go to the defects gate, merged with the critic's; with that gate off, to acceptance, except a Blocker from a security audit, which is a hard stop (`protocols/gates.md`).
 
 ## Clean context
 
