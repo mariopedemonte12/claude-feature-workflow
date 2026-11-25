@@ -230,6 +230,8 @@ Gates are **per feature**: a pending gate blocks only its own feature. Stop that
 
 The same shape serves `/feature status` and any catch-up the programmer asks for ("what happened?"): what changed since their last message, then everything still waiting on them, including items raised earlier.
 
+**Catch-up in `auto`.** In a feature whose gate profile is `auto`, send the programmer a catch-up in this shape at each phase or increment transition, without being asked. A phase transition is one that `protocols/context-handoff.md` §What each transition must carry lists; the move into acceptance counts (its message already has this shape); the start of the feature does not, because the workflow recommendation is that message. With the `increment` gate off in `auto`, the increment's report is this catch-up. In `key` and `full` nothing changes.
+
 ## 6. Feature folder layout
 
 ```

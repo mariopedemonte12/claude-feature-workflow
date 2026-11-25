@@ -46,7 +46,7 @@ It keeps everything that needs the programmer or spans features:
 - the portfolio, overlaps between features, project memory, integration and cleanup (SDD steps 14–15).
 
 **At each runner return:**
-1. If the runner returned `DONE` (its range ended with only gates that are off, nothing Pending), relay its `Decided by agent` line in one message and launch the next phase. Otherwise present the gate **from disk**: the Pending decision records and the spec's open questions the runner wrote, not its summary. The programmer sees exactly what was written.
+1. If the runner returned `DONE` (its range ended with only gates that are off, nothing Pending), relay its `Decided by agent` line in one message (in `auto`, inside the catch-up of `SKILL.md` §5, *Catch-up in `auto`*) and launch the next phase. Otherwise present the gate **from disk**: the Pending decision records and the spec's open questions the runner wrote, not its summary. The programmer sees exactly what was written.
 2. **Consistency check**, one batched command per gate: `git -C <worktree> status --porcelain` and `git -C <worktree> diff --stat <base>`, plus the existence of the reports the phase must produce. Code changes before the plan is approved, or a missing report, are reported to the programmer as facts.
 3. Gates of several features that are ready together are presented in one message, grouped by feature.
 
