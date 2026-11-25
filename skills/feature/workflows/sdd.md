@@ -16,9 +16,9 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 
 ## Phase 2: Implementation
 
-**4. Analyze.** Brief the Repository Analyst: architecture evidence, folder organization, affected components, integration points, conventions, existing tests, E2E tooling, quality tooling, build/test commands. Skip this if the orchestrator already holds enough evidence. If the project has no `.quality/` registry, run the bootstrap in `protocols/anti-pattern-registry.md` (⛔ `[gate: bootstrap]`; it may share the step 6 gate). Write the Specification → Planning handoff.
+**4. Analyze.** Brief the Repository Analyst: architecture evidence, folder organization, affected components, integration points, conventions, existing tests, E2E tooling, quality tooling, build/test commands. Skip this if the orchestrator already holds enough evidence. If the project has no `.quality/` registry, run the bootstrap in `protocols/anti-pattern-registry.md` (⛔ `[gate: bootstrap]`; it may share the step 6 gate). As orchestrator, write the Specification → Planning handoff (`handoff-planner.md`, step 5).
 
-**5. Plan and design the tests, in parallel.** Launch both in one message:
+**5. Plan and design the tests, in parallel.** As orchestrator: both are new, so you write each its own handoff, `handoff-test-designer.md` (Specification → Test design) and `handoff-planner.md` (step 4) (`protocols/context-handoff.md`); the plan stays out of the Test Designer's. Launch both in one message:
 - the **Test Designer** (`roles/test-designer.md`), with the Specification → Test design handoff: it writes `testing-plan.md` from the approved spec alone, and never sees the plan;
 - the **Planner** (`roles/planner.md`);
 - every specialist active in the `test-design` phase, beside the Test Designer, adding its cases to `testing-plan.md`;
@@ -38,9 +38,9 @@ The Planner returns implementation options, or a single option with the excluded
 - In the same gate, settle the **end-to-end harness** when the project has none for this surface: present what installing it involves (packages, browser downloads, containers) and the alternatives (a simulation harness, Blocked with its residual risk) as options. End-to-end testing itself is not optional for user-facing features; only how it runs is decided here.
 - Record the decision in `decisions/` (`templates/decision-record.md`).
 - Write `implementation-plan.md` (`templates/implementation-plan.md`) for the approved approach only, with a one-line mention of each alternative not chosen and the decision reference.
-- Write the Planning → Implementation handoff.
+- Write the Planning → Implementation handoff when the Implementer is new.
 
-**7. Implement.** Brief the Implementer (`roles/implementer.md`). It writes production code only, follows the code quality standard, and reviews its own diff against the critic's checklist before the quality gate. It writes no tests. If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ `[gate: approach]` present it (`protocols/decisions.md`), update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and the Implementation → Testing handoff.
+**7. Implement.** Brief the Implementer (`roles/implementer.md`). It writes production code only, follows the code quality standard, and reviews its own diff against the critic's checklist before the quality gate. It writes no tests (exceptions: `SKILL.md` §4 *Who writes tests*). If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ `[gate: approach]` present it (`protocols/decisions.md`), update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and, when the Tester is new, the Implementation → Testing handoff.
 
 ## Phase 3: Testing and validation
 
@@ -49,13 +49,13 @@ The Planner returns implementation options, or a single option with the excluded
 - end-to-end testing through the real entry point (`knowledge/e2e-testing.md`), with status Applied / Not applicable + justification / Blocked + explanation;
 - evaluation of each black-box technique (Boundary Value Analysis, Fuzz, Symbolic/Concolic, Decision Table, Finite State Machine), with status Applied / Not applicable + justification / Blocked + explanation;
 - mutation testing, if mandatory or decided at step 6;
-- validation against the approved spec, in `reports/validation-report.md`, plus the Testing → Finalization handoff.
+- validation against the approved spec, in `reports/validation-report.md`, plus, when the incoming agent is new, the Testing → Finalization handoff.
 
-**Specialist audits.** Every specialist active in its `audit` phase runs as a clean agent, launched in parallel with the Tester and the first critic, and writes `reports/review/<name>.md` (`protocols/skills.md`). The built-in `security` specialist is mandatory for Critical features whose signals match. Audit findings go to the defects gate, merged and deduplicated with the critic's and the Tester's, and none is fixed automatically. After a finding is fixed, a **new** auditor of that specialist reviews only the fix diff.
+**Specialist audits.** Every specialist active in its `audit` phase runs as a clean agent, launched in parallel with the Tester and the first critic, and writes `reports/review/<name>.md` (`protocols/skills.md`). The built-in `security` specialist is mandatory for Critical features whose signals match. Audit findings go to the defects gate, merged and deduplicated with the critic's and the Tester's, and none is fixed automatically; a security audit Blocker stops the feature in every profile (`protocols/gates.md` §Hard stops). After a finding is fixed, a **new** auditor of that specialist reviews only the fix diff.
 
-**Review**, at the validated level (`protocols/review-cycle.md`). First re-check the level against the real diff. R1: one clean critic (`roles/reviewer.md`) **in parallel** with testing. R2: the first critic runs in parallel with testing, then the verify → fix → new-critic cycle; after it ends, the Tester re-runs the regression and E2E scenarios the fixes affect. R0: no review agent.
+**Review**, at the validated level (`protocols/review-cycle.md`). First re-check the level against the real diff. R1: one clean critic (`roles/reviewer.md`) **in parallel** with testing. R2: the first critic runs in parallel with testing, then the verify → fix → new-critic cycle, whose fixes and later rounds wait for the Tester (`protocols/review-cycle.md` step 3); after it ends, the Tester re-runs the regression and E2E scenarios the fixes affect. R0: no review agent.
 
-**Defects, discrepancies and discoveries.** ⛔ `[gate: defects, discoveries]` Present them to the programmer, including review findings that the cycle does not fix automatically and every discovery in `specification.md` §Discoveries. Each item states its relation to the intent (`protocols/decisions.md` rule 9). Fix now / accept as a known limitation / change the spec are options under the decision protocol; a fix that the programmer's words cover but the spec missed also updates the spec, which is stated as an effect, not as a disadvantage. Fixes go back to the **same** Implementer, resumed with `SendMessage` and the defect IDs (`SKILL.md` §4, *Reusing agents*). The reproducing test is the Tester's failing test. Then resume the same Tester to re-run the affected tests, and, when the level is R1 or R2, a new clean critic on the fix diff within the feature's cap of 3 critic rounds (`protocols/review-cycle.md`).
+**Defects, discrepancies and discoveries.** ⛔ `[gate: defects, discoveries]` Present them to the programmer, including review findings that the cycle does not fix automatically and every discovery in `specification.md` §Discoveries. Each item states its relation to the intent (`protocols/decisions.md` rule 9). Fix now / accept as a known limitation / change the spec are options under the decision protocol; a fix that the programmer's words cover but the spec missed also updates the spec, which is stated as an effect, not as a disadvantage. Fixes go back to the **same** Implementer, resumed with `SendMessage` and the defect IDs (`SKILL.md` §4, *Reusing agents*). The reproducing test is the Tester's failing test. Then resume the same Tester to re-run the affected tests, and, when the level is R1 or R2, a new clean critic on the fix diff within the feature's cap of 3 critic rounds (in EVO, the increment's: `protocols/review-cycle.md` §Rounds in EVO).
 
 **Anti-pattern candidates.** ⛔ `[gate: candidates]` In the same gate (or before acceptance if there were no defects), present `reports/anti-pattern-candidates.md` as described in `protocols/anti-pattern-registry.md` §The learning loop, steps 3–4. Update the registry with what the programmer approves; approved rule automation goes to the Implementer.
 
@@ -87,6 +87,6 @@ Execute only what the programmer chooses. Committing the feature's work on its b
 - [ ] Mandatory or decided mutation testing performed; review run at the validated level, with its round log.
 - [ ] Regressions evaluated.
 - [ ] Decisions documented; limitations and risks reported; no blocking issue concealed.
-- [ ] Final report and handoff complete.
+- [ ] Final report complete; `state.md` updated.
 
 Code being written, or tests passing, does not by itself make a feature done.

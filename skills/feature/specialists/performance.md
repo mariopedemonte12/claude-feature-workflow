@@ -54,4 +54,4 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - extra I/O or queries on a hot path.
 - **Vet every number** with `knowledge/measurement.md` (the seven questions): run count, range and limiter go with it.
 - **Evidence rule:** each finding cites its timing table or profile. A finding without measurements is a *Possible risk*. A measurement whose verdict is inconclusive is a *Possible risk* too, with the gap named.
-- **Output:** `reports/review/performance.md` (with a card: `performance.md` beside it). Return at most 150 words.
+- **Output:** `reports/review/performance.md` (in EVO `inc<k>-performance.md`; with a card, under its `review/`). Return at most 150 words.

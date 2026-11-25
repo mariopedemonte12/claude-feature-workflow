@@ -48,7 +48,7 @@ How features are grouped is the programmer's choice too: several features under 
    - `refined <slug> [flags]`: start a new feature from a refined record (`protocols/refinement.md` §Standalone), with the flags below.
    - `correct`: a correction sweep of the mistakes agents repeat in this repository. Read `protocols/anti-pattern-registry.md` §Correction sweep and follow it; it is not a feature.
    - `verify-skill app [<surface>]` or `verify-skill formal [<area or bug>]`: generate a project verification skill. Read `protocols/verification-skills.md` and follow it; it is not a feature.
-   - `resume <slug> [<slug>…]`: for each slug, locate its worktree (`.claude/worktrees/<slug>`, shown by `git worktree list`) and the feature folder inside it, read its `handoff.md` (or the card's *State*, for a feature with a card), confirm the role of this session for it (the one recorded, unless the programmer changes it), check freshness (`protocols/context-handoff.md` §Freshness), and report the current state and next step, tagged `[slug]`. Then continue.
+   - `resume <slug> [<slug>…]`: for each slug, locate its worktree (`.claude/worktrees/<slug>`, shown by `git worktree list`) and the feature folder inside it (for DIRECT with a card kept in the checkout, the folder its claim records; DIRECT without a card is not resumable: say so), read its `state.md` (or the card's *State*, for a feature with a card), confirm the role of this session for it (the one recorded, unless the programmer changes it), check freshness (`protocols/context-handoff.md` §Freshness), and report the current state and next step, tagged `[slug]`. Then continue.
    - `<description> [flags]`: a **new feature**. Give it a short kebab-case slug, unique among the features in progress, and state it. A workflow flag (`--direct`, `--sdd`, `--evo`; `--esdd` is an old name of `--evo`) means the programmer has already chosen its workflow; a role flag (`--orchestrate`, `--execute`) means they have chosen this session's role; `--gates` sets the feature's gate profile, with optional per-gate changes (`protocols/gates.md`); `--no-skills` turns the skills off for it (`protocols/skills.md`); `--no-refine` skips the readiness check (`protocols/refinement.md`). `--phased` runs an orchestrated feature in phased mode, which is **experimental and has never been run** (`protocols/phase-runners.md`): say so when it is chosen. `--lite`, `--medium` and `--high` are old flags: intensities no longer exist; say so in one line and continue. The description may contain several features: give each its slug.
    - Empty: if features are in progress, show the board and ask what to do; otherwise ask what the programmer wants built.
    - As soon as more than one feature is in progress, read `protocols/multi-feature.md` and follow it from then on.
@@ -71,7 +71,7 @@ How features are grouped is the programmer's choice too: several features under 
 6. **Ask the role of this session** (skip if a flag decided it, or if this session already orchestrates features: then it orchestrates this one too). A question, with these facts:
    - **Orchestrator:** delegates every role to subagents; keeps its own context small; can run this and other features at once, each in its worktree; costs more per feature in orchestration.
    - **Executor:** does the work in this session; the clean critic and specialist audits are subagents; in SDD, the Test Designer is a session the programmer opens (`protocols/executor.md`); one feature per session.
-   Ask it in the same message as the workflow recommendation. In executor mode, read `protocols/executor.md` and follow it, together with the workflow file; the rest of this skill applies where that protocol does not say otherwise. Record both choices in the feature's `decisions/` (or the card), and in its handoff.
+   Ask it in the same message as the workflow recommendation. In executor mode, read `protocols/executor.md` and follow it, together with the workflow file; the rest of this skill applies where that protocol does not say otherwise. Record both choices in the feature's `decisions/` (or the card), and in its `state.md`.
 7. **Load the workflow file** (once per session per workflow) and follow it for this feature: DIRECT → `workflows/direct.md`; SDD → `workflows/sdd.md`; EVO or Hybrid → `workflows/evo.md` (Hybrid also `workflows/sdd.md`).
 
 ## 3. Progressive loading: read only what the current step needs
@@ -86,7 +86,8 @@ How features are grouped is the programmer's choice too: several features under 
 | More than one feature in progress, `status`, or a multi-slug `resume` | `protocols/multi-feature.md` |
 | Before the first delegation of the session, and whenever an agent returns `STATUS: QUESTIONS` | `protocols/agent-questions.md` |
 | Checking a specification draft before its gate | `knowledge/specification-guide.md` |
-| Before any phase transition or delegation | `protocols/context-handoff.md`, `templates/handoff.md` |
+| Before any phase transition or delegation (a handoff only when the incoming agent is new) | `protocols/context-handoff.md`, `templates/handoff.md` |
+| The first stop of a feature (not DIRECT), as orchestrator or SDD executor | `templates/state.md` |
 | Recording a decision | `templates/decision-record.md` |
 | Writing the approved plan | `templates/implementation-plan.md` |
 | Project without `.quality/`, or anti-pattern candidates to present | `protocols/anti-pattern-registry.md`, then the matching `knowledge/anti-patterns/*.md` seeds |
@@ -102,7 +103,7 @@ How features are grouped is the programmer's choice too: several features under 
 
 As orchestrator, role files (`roles/*.md`) and the guides of the phases you delegate are for subagents: point them to the files (`protocols/skills.md` §Loading, step 3); you do not need to read them yourself. `scripts/quality_gate.py` is run by the Implementer and the Critic. As executor, you read them yourself when the step needs them. Do not preload everything at startup.
 
-If the conversation was compacted and you lost details of this workflow, re-read this `SKILL.md`, the project memory, the workflow file(s) in use, `protocols/multi-feature.md` if several features are in progress, and the `handoff.md` of the features you are acting on.
+If the conversation was compacted and you lost details of this workflow, re-read this `SKILL.md`, the project memory, the workflow file(s) in use, `protocols/multi-feature.md` if several features are in progress, and the `state.md` of the features you are acting on.
 
 ## 4. Roles, agent types and models
 
@@ -155,13 +156,13 @@ Typical deviations (illustrative, not exhaustive):
 
 ### Delegation practice
 
-**Who writes tests.** The Test Designer derives the cases from the approved spec, the Tester implements and runs them, and the Implementer writes production code only. It runs the existing tests to avoid handing over a regression, but adds none. DIRECT is the exception: its single Implementer writes code and tests.
+**Who writes tests.** The Test Designer derives the cases from the approved spec (in EVO, the intent record), the Tester implements and runs them, and the Implementer writes production code only. The Implementer runs the existing tests to avoid handing over a regression, but adds none, except a test fixture or helper the plan assigns it and the check or test that enforces an approved anti-pattern entry (`protocols/anti-pattern-registry.md`). DIRECT is the exception: its single Implementer writes code and tests.
 
 **Grouping.** Do not create a transition for a trivial task: read a couple of files yourself instead of spawning an analyst. Critics and verifiers are always new agents with a clean context (`protocols/review-cycle.md`): never the implementer, never reused across rounds. Independent tasks run in parallel, within a feature (several analyst queries; testing and the first critic) and across features. Within one feature, never run two code-modifying agents at the same time. Tester, Critic and Verifier may run together because the critic and verifier write only their reports.
 
 **Headless launches.** Every subagent runs in the background (`run_in_background: true` where the Agent tool offers it), so its tool calls and output never fill the programmer's screen. You are notified when it finishes. Do not paste, stream or summarize an agent's work as it happens: show the programmer one line when an agent starts or finishes (`[slug] Tester: done, 42/45 cases pass`), and the full content only at gates. Never wait with `sleep`.
 
-**Reusing agents.** Record each agent's ID in the feature's `handoff.md` (§Workflow state, *Agents*). When work returns to a role that already ran for this feature, **resume that same agent** with `SendMessage`, carrying only the new task and its IDs. The agent keeps its context, so it does not re-read the plan, the code or its own earlier work. This covers:
+**Reusing agents.** Record each agent's ID in the feature's `state.md` (§Workflow state, *Agents*) at every stop. When work returns to a role that already ran for this feature, **resume that same agent** with `SendMessage`, carrying only the new task and its IDs. The agent keeps its context, so it does not re-read the plan, the code or its own earlier work. This covers:
 - testing or review sending fixes back to the Implementer;
 - the Tester re-running after fixes;
 - a spec change going back to the Specification Writer or the Test Designer;
@@ -175,17 +176,17 @@ Launch a new agent only when:
 The new agent's brief then includes the earlier agent's last report. Critics, verifiers and specialist auditors are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
 
 **Launching subagents into the feature worktree.**
-- **Every role** is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
+- **Every role** (except the early analyst, below) is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
 - Write-capable roles (Specification Writer, Test Designer, Implementer, Tester, Critic, Verifier, specialists) write only inside their feature worktree, plus temporary files outside the repository when their role allows it.
 
-**Briefing a subagent.** Set the Agent `description` to `[<slug>] <Role>: <task>`. The prompt contains this, and only this:
+**Briefing a subagent.** Set the Agent `description` to `[<slug>] <Role>: <task>`. Before §2 step 3 creates the worktree, the Repository Analyst may be briefed read-only on the original checkout: "Feature worktree" becomes the checkout path and line 2 is omitted. The prompt contains this, and only this:
 
 ```
 You are the <Role> for feature "<slug>" in a multi-agent feature workflow.
 Feature worktree: <absolute path to .claude/worktrees/<slug>> (branch <branch>). Every project file you read, run or write is inside it; never touch files outside it.
 Work only through absolute paths into that worktree: start every shell command with `cd <worktree> &&`. First confirm `git -C <worktree> branch --show-current` prints <branch>; if not, stop and report. Never call EnterWorktree.
 1. Read and follow your role file: <absolute path to roles/<role>.md>
-2. Read the handoff: <absolute path to handoff.md inside the worktree>. Open other artifacts only at the sections it references.
+2. Read the handoff: <absolute path to handoff.md inside the worktree>. Open other artifacts only at the sections it references. (When no handoff was written for this agent, replace this line with the artifacts it needs and their sections, from the checklists in `protocols/context-handoff.md`.)
 Skills for this phase: <absolute paths of the guides that apply, protocols/skills.md §Loading; omit the line if none>
 Task: <one concrete paragraph>
 Scope: <in scope / outside the intent, as read so far; report anything else the intent seems to reach as a discovery>
@@ -193,6 +194,8 @@ Output: <absolute path(s) to write>   (Analyst and Planner are read-only: they r
 If you need an answer only the programmer can give, stop and ask as <absolute path to protocols/agent-questions.md> says; never guess.
 Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in the decision format.
 ```
+
+**Handoff to a new agent.** When you plan the next delegation and its incoming agent is new (`protocols/context-handoff.md`), the Task line of the outgoing agent's brief says so: `The incoming <Role> is new: write handoff.md (<transition>).` Without that line the agent writes no handoff.
 
 **Critic, Verifier and specialist `audit` briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature or its implementation. The critic's brief adds the programmer's own words from `intent.md`, verbatim: `Original request: <…>`, `Consolidated intent (confirmed, version n): <…>` and `Statements since: <S-n, each verbatim>`. Nothing else about intent: never an unconfirmed proposal, the history or the specification, so the critic can check the reach of the intent (`roles/reviewer.md`). The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
 
@@ -232,16 +235,17 @@ The same shape serves `/feature status` and any catch-up the programmer asks for
 └── <features-root>/<slug>/             # e.g. docs/features/<slug>/
 ├── intent.md                         # intent record: original request + consolidated intent + statements since (S-n)
 ├── intent-history.md                 # absorbed statements, verbatim, by consolidation version; not read by default
-├── feature.md         (the card: EVO in executor mode; DIRECT on request)
+├── feature.md         (the card: EVO in executor mode; DIRECT on request), with review/ beside it
 ├── specification.md   (SDD, Hybrid; none in EVO)
 ├── implementation-plan.md
 ├── testing-plan.md
 ├── decisions/D-001-<topic>.md …      # numbering is per feature
 ├── reports/  implementation-report.md · validation-report.md · final-report.md
 │             anti-pattern-candidates.md · e2e/ (traces, screenshots, logs)
-│             review/ rounds.md · round-<n>-critic.md · round-<n>-verification.md
+│             review/ rounds.md · round-<n>-critic.md · round-<n>-verification.md (EVO: inc<k>-round-<n>-…)
 ├── delegations.md                    # one row per delegation (role, model, reason, outcome)
-├── handoff.md                        # latest handoff + workflow state; overwritten at each transition
+├── handoff.md                        # message to a new agent at a phase transition (orchestrator mode); overwritten each time; handoff-<role>.md for parallel new agents
+├── state.md                          # resume state: workflow state, agent IDs, EVO open questions; written at every stop
 └── briefs/<role>.md                  # executor mode: briefs for the sessions the programmer opens
 
 <repo>/.quality/ or <git-common-dir>/quality/   # the registry, where the programmer chose at bootstrap; outlives features
@@ -249,10 +253,10 @@ The same shape serves `/feature status` and any catch-up the programmer asks for
 
 DIRECT has no feature folder unless the programmer asks for a card.
 
-**Size budgets are targets, never cuts.** Specification and plan target 500 lines each, the card 500, the handoff 30, each report 60. When the content needs more, keep the main document as a readable summary, move the overflow to linked files next to it (`decisions/D-NNN-<topic>.md`, `spec-appendix.md`, `feature-appendix.md`), link each moved part from where it belongs, and report the total size as a fact at the next gate ("spec 420 lines + appendix 310"). A requirement, case, decision or risk is never left out to stay within a budget, and work is never stopped because of size.
+**Size budgets are targets, never cuts.** Specification and plan target 500 lines each, the card 500, the handoff 30, `state.md` 30, each report 60. When the content needs more, keep the main document as a readable summary, move the overflow to linked files next to it (`decisions/D-NNN-<topic>.md`, `spec-appendix.md`, `feature-appendix.md`), link each moved part from where it belongs, and report the total size as a fact at the next gate ("spec 420 lines + appendix 310"). A requirement, case, decision or risk is never left out to stay within a budget, and work is never stopped because of size.
 
 ## 7. Ending
 
-- **A feature** ends at its own final acceptance, followed by the integration and cleanup gates in its workflow's finalization (status Done), or is paused when the programmer says so. Update its `handoff.md` first; the other features continue. A paused feature's worktree and branch stay on disk.
+- **A feature** ends at its own final acceptance, followed by the integration and cleanup gates in its workflow's finalization (status Done), or is paused when the programmer says so. Update its `state.md` first (DIRECT without a card has no resume state: report it as not resumable and offer a card); the other features continue. A paused feature's worktree and branch stay on disk.
 - **Worktree cleanup** (`git worktree remove <path>`, then deleting the branch) destroys local state. Do it only after the programmer confirms. `ExitWorktree` cannot remove these worktrees, because you already left them right after creating them.
-- **The orchestration** ends when no feature remains in progress, or when the programmer tells you to stop. Update every in-progress feature's `handoff.md` first, so that `/feature resume <slug>…` can continue in a new session.
+- **The orchestration** ends when no feature remains in progress, or when the programmer tells you to stop. Update every in-progress feature's `state.md` first, so that `/feature resume <slug>…` can continue in a new session; DIRECT without a card has no resume state: report it as not resumable and offer a card before stopping.

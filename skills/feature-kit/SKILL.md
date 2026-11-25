@@ -51,7 +51,7 @@ The programmer is working **by hand** and wants the workflow's knowledge availab
 | `formal-skill` | concurrency, retries, a state machine, a parser or unsafe code need more than tests; or a state machine should be shown as a statechart | `protocols/verification-skills.md` §Formal verification, §Statecharts |
 | `card` | the programmer wants a single-file record of the change (target 500 lines, overflow to linked files) | `templates/feature-card.md` |
 
-**`review`.** A reviewer that wrote the code is biased toward it. So for a review, spawn a clean subagent (model `opus`) briefed only with `roles/reviewer.md`, the repository path and the diff range: never the conversation, the plan or your own reasoning. If the programmer asks to verify its findings, spawn a second clean subagent (model `sonnet`) with `roles/verifier.md` and the findings. Present the verified findings; fix only what the programmer approves. For a quick self-check instead, the programmer must ask for it explicitly, and you say it is not a clean review.
+**`review`.** A reviewer that wrote the code is biased toward it. So for a review, spawn a clean subagent (model `opus`) briefed only with `roles/reviewer.md`, the repository path, the diff range and the programmer's own words about the change, verbatim (the request and, if refinement ran, the confirmed intent and later corrections): never the conversation, the plan or your own reasoning. If the programmer asks to verify its findings, spawn a second clean subagent (model `sonnet`) with `roles/verifier.md` and the findings. Present the verified findings; fix only what the programmer approves. For a quick self-check instead, the programmer must ask for it explicitly, and you say it is not a clean review.
 
 ## Commands
 

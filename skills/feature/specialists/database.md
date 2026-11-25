@@ -57,4 +57,4 @@ Clean context: the diff and the code it reaches, never the feature folder.
   - unbounded queries;
   - raw SQL built from input.
 - **Evidence rule:** each finding cites its query plan, query count, migration output or reproduction. A finding without one is a *Possible risk*.
-- **Output:** `reports/review/database.md` (with a card: `database.md` beside it). Return at most 150 words.
+- **Output:** `reports/review/database.md` (in EVO `inc<k>-database.md`; with a card, under its `review/`). Return at most 150 words.

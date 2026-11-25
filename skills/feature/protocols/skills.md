@@ -33,7 +33,7 @@ mandatory-when: never                # or: critical (runs on every Critical feat
 | Phase | DIRECT | SDD | EVO |
 | --- | --- | --- | --- |
 | `intent` | — | Intent and request understanding (step 1) | Intent pass (steps 1–2) |
-| `spec` | — | Specification (step 2) | — |
+| `spec` | — | Specification (step 2) | Intent pass (step 2) |
 | `plan` | — | Planning (steps 4–5) | Approach (step 4) and each increment's entry |
 | `test-design` | — | Test design (step 5) | Cases of each increment |
 | `implement` | the session's work | Implementation (step 7) | Implementation of each increment |
@@ -96,7 +96,7 @@ Record the choices in the feature's `decisions/`, or the card's *Decisions* when
 **Inherited rules, every phase:**
 - **Agent behavior:** headless (background) launches; no delegation; the project's installed tools only, never installing one without the programmer's approval; questions through `protocols/agent-questions.md`.
 - **Resuming:** advisory phases (`spec`, `plan`, `test-design`) may be resumed when work returns to them (`SKILL.md` §4, *Reusing agents*). The `audit` phase is always a new agent, and after a finding in its domain is fixed, a **new** one reviews only the fix diff.
-- **Logging:** each specialist run appears in `delegations.md`, or in the card, as role `Specialist: <name> (<phase>)`.
+- **Logging:** each specialist run appears in `delegations.md`, or in the card, or, in executor SDD, in a *Specialist runs* section of `reports/implementation-report.md` created when the first one runs, as role `Specialist: <name> (<phase>)`.
 - **Executor sessions** (`protocols/executor.md`) launch specialists as subagents exactly like the critic.
 
 ### Before a gate: merge and deduplicate

@@ -1,6 +1,6 @@
 # Cost estimates: direct vs phased orchestration
 
-> Every figure here was measured or modeled before workflows and roles were separated. *High intensity* and *direct mode* mean SDD as orchestrator with every agent; `/feature-lean` is today's EVO as executor; the checklist prompt is close to DIRECT.
+> Every figure here was measured or modeled before workflows and roles were separated. *High intensity* and *direct mode* mean SDD as orchestrator with every agent; `/feature-lean` is today's EVO as executor, whose *gate 1* is today's first gate (EVO gates 3 and 5 merged); the checklist prompt is close to DIRECT.
 
 These are **estimates from a model**, not measurements, except for the 3-feature calibration row. The model is in [`cost-model.py`](cost-model.py); run `python3 docs/cost-model.py` to reproduce the numbers.
 

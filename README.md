@@ -13,17 +13,17 @@ In every other session each skill costs, at most, a one-line description (~70 to
 
 **Workflow: how the work is done.**
 
-| Workflow | What it does | Gates | Use it when |
+| Workflow | What it does | Gates (profile `full`) | Use it when |
 | --- | --- | --- | --- |
 | **DIRECT** | One pass with the edge-case checklist: reach of every broad statement, the nearest existing analog, cases per input, tests for each, a self-review. Blocking questions only | Integration only | The request is clear and its risk and reach are small; the cheapest run |
 | **SDD** | Specification of your intent, a plan you approve, test cases designed from the spec without seeing the plan, then build, test and review | Spec · plan · defects · acceptance | Clear intent, with enough risk or reach to want everything settled before code |
 | **EVO** | No specification: your intent record, your decisions and the cases carry what the feature must do, delivered in one increment or several, as you choose | Intent and approach · one per increment · acceptance | Open requirements, technical unknowns, expected discoveries |
 
-Hybrid is SDD with an EVO loop for one uncertain area.
+Hybrid is SDD with an EVO loop for one uncertain area. Which gates stop depends on the feature's gate profile (*Gate profiles*, below).
 
 **Role of the session: who does the work.**
 - **Orchestrator:** delegates every role (analyst, spec writer, planner, test designer, implementer, tester, critic) to subagents, and can run several features at once, each in its own git worktree, each with its own workflow.
-- **Executor:** does one feature's work itself. The clean critic and specialist audits are still separate subagents. In SDD, the Test Designer must not see the plan, so it runs in a session you open with `/feature role test-designer <slug>`; the executor writes its brief and tells you when.
+- **Executor:** does one feature's work itself. The clean critic (with its verifier at R2) and specialist audits are still separate subagents. In SDD, the Test Designer must not see the plan, so it runs in a session you open with `/feature role test-designer <slug>`; the executor writes its brief and tells you when.
 
 **Grouping is yours too:** several features under one orchestrator, independent sessions (each orchestrating or executing), or a hierarchy of orchestrators under a hub.
 
@@ -66,7 +66,7 @@ Measured before this version, under the earlier names: `/feature-lean` is today'
 - **The spec is a reading of your intent, not a closed contract.** Your request evolves as you talk: every statement of yours that changes the intent goes, verbatim, to an intent record that is consolidated with your confirmation at each gate. The spec (SDD) or the cases (EVO) cite it as their source and map where the broad statements in your words reach. Anything a later step finds that it did not foresee comes back to you as a discovery, framed against your own words, never dismissed as "not in the spec".
 - **Decision gates with an open recommendation.** No presentation of options is neutral, since the agent picks the options and the words. So each decision shows every viable option with verifiable facts instead of adjectives, the options it left out and those excluded by a constraint, and a labeled recommendation with its reasons and the fact that would change it. You decide; nothing proceeds by silence.
 - **Refinement before the workflow.** When your request names a solution without the problem, has no observable outcome, admits several readings or needs context only you hold, the agent first works out with you what you need: the problem, the context it lacks (looking up what the repository answers, asking only the rest), and two or three readings plus the smallest version that would already solve it. The workflow is recommended from that, not from the first wording. `/feature refine` does it without starting anything.
-- **Gate profiles.** How often the workflow stops for you is chosen per feature: `full` stops at every gate, `key` (the default) only at the intent, at approaches that differ in what they change, at discoveries outside your words and at acceptance, and `auto` only at what is hard to undo. A gate that is off is decided by the agent with its recommendation, recorded, and listed in the final report. Integration, cleanup, new dependencies, data migrations and breaking public interfaces always stop. Set it with `--gates full|key|auto`, plus `+gate` or `-gate` for single gates.
+- **Gate profiles.** How often the workflow stops for you is chosen per feature: `full` stops at every gate, `key` (the default) only at the intent, the registry bootstrap, approaches that differ in what they change, discoveries outside your words and acceptance, and `auto` only at acceptance and at what is hard to undo. A gate that is off is decided by the agent with its recommendation, recorded, and listed in the final report: with `defects` off, the critic's and the Tester's Blocker and Major findings your words cover are fixed (test first when the fix changes behavior), and audit findings (except a security Blocker, which always stops) and the rest wait for acceptance; with `discoveries` off in `auto`, what lies outside your words is only recorded; with `depth` off, a higher review level by size and risk applies and is reported, a lower one is asked. Integration, cleanup, new dependencies, data migrations, breaking public interfaces, a discovery that contradicts your words, a Blocker from a security audit and a feature that turns out Critical always stop. Set it with `--gates full|key|auto`, plus `+gate` or `-gate` for single gates.
 - **A clean critic.** Review is done by a new agent that never saw the code being written, with your own words as its only statement of intent. Its findings come to you; nothing is fixed silently. Review levels: R0 gate only · R1 one critic · R2 critic, verifier and fix cycle (at most 3 rounds).
 - **Code quality standard.** The smallest complete change, no comments except `shortcut:` markers, short functions and files as signals of mixed responsibilities, design patterns only for problems present now. A dependency-free quality gate (`scripts/quality_gate.py`) checks the change.
 - **A per-project anti-pattern registry that learns.** Seeded from catalogs matching the project's architecture; agents record new anti-patterns as candidates; you approve what enters it, and what can be detected mechanically becomes a lint rule.
@@ -80,11 +80,11 @@ Measured before this version, under the earlier names: `/feature-lean` is today'
 - **Several features in parallel,** each with its own workflow, gates, artifacts and agents. A gate in one feature does not block the others. Overlaps between features are reported early, including those with features other sessions execute.
 - **Several orchestrators, if you want them:** independent sessions that see each other's features through shared claims, or a hierarchy (`/feature hub`) whose principal is your only channel and queues every decision request by how much work it blocks.
 - **Optional phased mode (experimental, never run):** with `--phased`, the orchestrator hands each phase to a short-lived runner and keeps only what needs you.
-- **Artifacts as source of truth:** intent record, specification, plan, testing plan, decision records, reports and a handoff per feature. Any feature can be resumed in a new session.
+- **Artifacts as source of truth:** intent record, specification, plan, testing plan, decision records, reports and a `state.md` per feature, from which any feature can be resumed in a new session (DIRECT only with a card). A handoff is written only when a new agent takes over a phase.
 
 ## Executor mode
 
-One feature per session, in its own worktree (DIRECT works in the current checkout unless you ask for one). EVO as executor keeps everything in one card (target 500 lines; overflow goes to linked files, never cut): your intent, the reach of your words, the nearest analog, the cases of every main flow, the increments and the result. Its first gate settles your intent, the approach, the cases and how many increments; each increment then has one gate with its results, the critic's findings and the next increment. How it works, step by step: [`docs/executor.md`](docs/executor.md).
+One feature per session, in its own worktree (DIRECT works in the current checkout unless you ask for one). EVO as executor keeps everything in one card (target 500 lines; overflow goes to linked files, never cut): your intent, the reach of your words, the nearest analog, the cases of every main flow, the increments and the result. Its first gate settles your intent, the approach, the cases and how many increments; each increment then has one gate with its results, the findings of the review at the level you validated, and the next increment. How it works, step by step: [`docs/executor.md`](docs/executor.md).
 
 ## `/feature-kit`
 
@@ -126,7 +126,7 @@ Then start a new Claude Code session.
 /feature add bulk import --direct --no-skills     # the bare baseline: checklist only
 /feature role test-designer audit-log             # in a new session: the Test Designer of an SDD executor
 /feature status                                   # every feature in progress, including other sessions'
-/feature resume csv-export                        # continue a feature from its handoff or card
+/feature resume csv-export                        # continue a feature from its state.md or card
 /feature hub                                      # principal orchestrator of several groups
 /feature join main-hub billing                    # in another session: run the "billing" group
 /feature-kit                                      # work by hand; skills load on demand
@@ -139,7 +139,7 @@ A typical SDD run as orchestrator:
 2. **Recommendation.** The session assesses clarity, uncertainty, risk and reach with evidence, recommends a workflow, and asks the role. You validate.
 3. **Specification.** The Specification Writer turns your request (kept in `intent.md`: your original request, a consolidated intent you confirm at each gate, and your statements since) into requirements, constraints, invariants and acceptance criteria, each traced to its source. You approve it and set the criticality.
 4. **Planning and test design.** In parallel, the Planner maps the viable approaches and the Test Designer derives the cases from the spec. You choose an approach, approve the testing plan, decide mutation testing, and validate the recommended review level.
-5. **Implementation.** The Implementer writes production code for the approved plan, without tests. Any deviation comes back to you.
+5. **Implementation.** The Implementer writes production code for the approved plan, without tests (except the fixtures, helpers and anti-pattern checks of `SKILL.md` §4). Any deviation comes back to you.
 6. **Testing and review.** The Tester implements and runs the designed cases while a clean critic reviews. Defects come back to you as decisions.
 7. **Final report, acceptance, integration and cleanup,** each decided by you.
 
@@ -164,15 +164,16 @@ skills/feature/
 ├── specialists/         security · ux-ui · database · network · performance · observability (extensible)
 ├── knowledge/           edge-cases · specification-guide · testing-techniques · code-quality · design-patterns · e2e-testing · anti-patterns/
 ├── scripts/             quality_gate.py
-└── templates/           specification · implementation-plan · testing-plan · decision-record · handoff · final-report · feature-card
+└── templates/           specification · implementation-plan · testing-plan · decision-record · handoff · state · final-report · feature-card
 ```
 
 Artifacts created per feature in your project (default `docs/features/<slug>/`, or your project's own convention):
 
 ```
 intent.md  specification.md  implementation-plan.md  testing-plan.md     (SDD)
-feature.md (the card)  decisions/  review-<n>.md                         (EVO as executor)
+feature.md (the card)  decisions/  review/                               (EVO as executor)
 decisions/D-NNN-*.md  reports/*.md  delegations.md  handoff.md     (orchestrator)
+state.md                                                          (orchestrator, SDD as executor; not DIRECT)
 ```
 
 And once per project, after your approval: the anti-pattern registry (`config.json` with limits and checks, `anti-patterns.md`, `rules/`), either versioned at `<repo>/.quality/` or local to your clone at `<git-common-dir>/quality/`, as you choose.

@@ -1,6 +1,6 @@
 # Feature: <name> · <EVO executor · DIRECT> · <status> · base `abc1234` · worktree <path or "checkout">
 
-<!-- The single-file record of a feature: EVO in executor mode (every section), or DIRECT when the programmer asks for a record (Intent, Scope, Cases and Result only). Target 500 lines, never a cut: overflow goes to decisions/ or feature-appendix.md, linked by section. Omit the sections a feature does not use. -->
+<!-- The single-file record of a feature: EVO in executor mode (every section), or DIRECT when the programmer asks for a record (Intent, Scope, Cases, Result and State only). Target 500 lines, never a cut: overflow goes to decisions/ or feature-appendix.md, linked by section. Omit the sections a feature does not use. -->
 
 ## Intent
 The intent record, as `templates/intent.md` describes. The programmer's words are the source; everything else in this card is the current reading of them, not a closed contract.
@@ -35,7 +35,7 @@ The executable criteria: no other section restates what the feature must do.
 Skills that applied, by phase, with their location (library · programmer · repository · module `<path>`); specialists run and their phases.
 
 ## State
-Increment # and step · next step · what blocks it.
+Plays the role of `state.md` (`protocols/context-handoff.md` §Resume state), rewritten at every stop: increment # and step · next step · what blocks it · last gate passed (date) · pending decisions (D-NNN) · git (commit · branch · dirty yes/no).
 
 ## Result
 Files changed · test commands with real results, per increment · testing technique statuses · specialists and their results · mutation testing · quality gate result · `shortcut:` markers · known limitations · accepted findings · deferred edge cases never covered.

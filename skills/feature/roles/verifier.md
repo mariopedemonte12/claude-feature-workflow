@@ -28,6 +28,6 @@ First confirm the feature worktree named in the brief: `git -C <worktree> branch
 
 ## Output
 
-Write the path given in the brief (e.g. `reports/review/round-<n>-verification.md`): a table with finding ID · verdict · evidence · adjusted severity · fix class · `candidate`. Then counts: VALID / INVALID / AMBIGUOUS, and VALID by fix class.
+Write the path given in the brief (e.g. `reports/review/round-<n>-verification.md`; in EVO `inc<k>-round-<n>-verification.md`): a table with finding ID · verdict · evidence · adjusted severity · fix class · `candidate`. Then counts: VALID / INVALID / AMBIGUOUS, and VALID by fix class.
 
 Return a summary of at most 200 words.
