@@ -1,8 +1,7 @@
 ---
 name: feature
-description: Feature workflow with three types of work (DIRECT, SDD, EVO) and two roles for the session (orchestrator of one or several features, each in its own git worktree, or executor of one feature), with human decision gates where the agent shows its options and its recommendation, classified skills, per-delegation model selection and shared artifacts. Manual invocation only.
+description: Feature workflow with three types of work (DIRECT, SDD, EVO) and two roles for the session (orchestrator of one or several features, each in its own git worktree, or executor of one feature), with human decision gates where the agent shows its options and its recommendation, classified skills, per-delegation model selection and shared artifacts. Claude launches it only when the programmer explicitly asks for a feature; never on its own initiative.
 argument-hint: "<what you want built> [--direct | --sdd | --evo] [--orchestrate | --execute] [--gates full|key|auto[,+gate,-gate…]] [--no-skills] [--no-refine] [--phased] [--with <specialist>,…] | refine <request> | refined <slug> [flags] | role <role> <slug> | correct | verify-skill app|formal [<target>] | continue <answer> | resume <slug>... | status | hub | join <hub> <group>"
-disable-model-invocation: true
 ---
 
 # Feature Workflow

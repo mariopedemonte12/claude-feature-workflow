@@ -174,7 +174,7 @@ A typical SDD run as orchestrator:
 
 ## How it stays out of your context
 
-- `disable-model-invocation: true` in the skill frontmatter: Claude never loads the skill on its own; only you can, by typing the command. Per Claude Code's documentation, such a skill's description is not offered to the model. `claude plugin details` estimates ~70 always-on tokens as an upper bound; its estimate is the same with or without the flag.
+- `disable-model-invocation: true` in the `feature-kit` frontmatter: Claude never loads that skill on its own; only you can, by typing the command. The `feature` skill does not have it: Claude can launch it when you explicitly ask for a feature (its description says never on its own initiative), at the cost of its description being always in context (~70 tokens as an upper bound per `claude plugin details`).
 - **Progressive disclosure.** On invocation, only `SKILL.md` loads. Workflows, protocols, skills and templates are read when a phase needs them; skills are indexed by their frontmatter alone.
 - **Roles are files, not global agents.** Agents defined in `~/.claude/agents/` have their descriptions injected into every session. Here, the orchestrator spawns Claude Code's built-in subagents (`Explore`, `Plan`, `general-purpose`) with a model override and points each one at its role file.
 

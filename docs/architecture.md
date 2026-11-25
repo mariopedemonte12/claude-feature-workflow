@@ -115,7 +115,7 @@ flowchart LR
 | `/feature verify-skill app\|formal [<target>]` | Generates a repository verification skill (§6). |
 | `/feature-kit` | Separate skill. It exposes the roles and skills as modules (edge-cases, explore, spec, plan, decide, quality/ponytail, patterns, antipatterns, test, e2e, gate, review, writing, measure, correct, verify-skill, formal-skill, card, specialists) plus the programmer's, repository's and modules' own skills, without phases, gates, artifacts or worktrees. Only `review` launches subagents. |
 
-Both skills have `disable-model-invocation: true`: they load only when the programmer types the command.
+`feature-kit` has `disable-model-invocation: true`: it loads only when the programmer types the command. `feature` does not, so Claude can launch it when the programmer explicitly asks for a feature; its description says never on its own initiative.
 
 ## 3. Startup of a feature
 
