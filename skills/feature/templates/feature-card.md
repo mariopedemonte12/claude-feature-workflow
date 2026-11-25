@@ -38,4 +38,4 @@ Skills that applied, by phase, with their location (library · programmer · rep
 Plays the role of `state.md` (`protocols/context-handoff.md` §Resume state), rewritten at every stop: increment # and step · next step · what blocks it · last gate passed (date) · pending decisions (D-NNN) · git (commit · branch · dirty yes/no).
 
 ## Result
-Files changed · test commands with real results, per increment · testing technique statuses · specialists and their results · mutation testing · quality gate result · `shortcut:` markers · known limitations · accepted findings · deferred edge cases never covered.
+Files changed · test commands with real results, per increment · testing technique statuses · specialists and their results · mutation testing · quality gate result · `shortcut:` markers · known limitations · accepted findings · commits after the last critic round, with their hashes, marked unreviewed (`protocols/review-cycle.md` §R2 · The cycle) · deferred edge cases never covered.
