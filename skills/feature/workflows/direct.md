@@ -18,7 +18,7 @@ One session does the whole feature with the edge-case checklist: no specificatio
 
 **5. Self-review** (`knowledge/edge-cases.md` §After code), and fix what it finds. A clean critic (`roles/reviewer.md`, a new `opus` subagent, as in `protocols/executor.md` §The critic) runs only if the programmer asks for one; its rounds, their cap and the stop at the cap follow `protocols/review-cycle.md` §R2 · The cycle.
 
-**6. Report.** Files changed; test commands and their real results; the reach found and the cases covered; questions asked and answers; anything you saw that the request seems to reach and you did not do, as a discovery (`protocols/decisions.md` rule 9), never dropped silently; self-review findings and their fixes; when a critic ran, the commits made after its last round, listed as unreviewed (`protocols/review-cycle.md` §R2 · The cycle).
+**6. Report.** Files changed; test commands and their real results; the reach found and the cases covered; questions asked and answers; anything you saw that the request seems to reach and you did not do, as a discovery (`protocols/decisions.md` rule 9), never dropped silently; self-review findings and their fixes; the commits made after the last critic round (with no critic, that none ran), listed as unreviewed (`protocols/review-cycle.md` §R2 · The cycle).
 
 **7. ⛔ Integration** (hard stop: `protocols/gates.md` §Hard stops). DIRECT has no other gate in any profile (`protocols/gates.md`); its blocking questions (step 3) are asked in every profile. Present it (merge, pull request, leave the branch or changes as they are), with the facts: uncommitted changes, commits ahead and behind, and the commits step 6 lists as unreviewed (`protocols/review-cycle.md` §R2 · The cycle). Execute only what is chosen.
 
