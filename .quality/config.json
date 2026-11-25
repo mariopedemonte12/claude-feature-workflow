@@ -1,0 +1,9 @@
+{
+  "limits": { "fileLines": 400, "functionLines": 30, "parameters": 4, "cyclomaticComplexity": 10 },
+  "exclude": [],
+  "allowedCommentPatterns": [],
+  "checks": [
+    { "name": "rule copies (skills)", "command": "python3 scripts/rule_copies.py skills", "covers": ["AP-001"] },
+    { "name": "rule copies tests", "command": "python3 -m unittest discover -s scripts -p 'test_*.py'", "covers": ["AP-001"] }
+  ]
+}

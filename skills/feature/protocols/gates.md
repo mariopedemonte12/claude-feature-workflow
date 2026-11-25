@@ -1,6 +1,6 @@
 # Gates Protocol
 
-Every human gate (⛔) of a workflow has a **name**. Whether a gate stops the feature depends on the feature's **gate profile**, chosen at startup with the workflow and the role. A gate that is off does not disappear: the agent decides what the gate would have asked, records it, and reports it. A few **hard stops** stop the feature in every profile.
+Every human gate (⛔) of a workflow has a **name**. Whether a gate stops the feature depends on the feature's **gate profile**, chosen at startup with the workflow and the role. A gate that is off does not disappear: the agent decides what the gate would have asked, records it, and reports it. Some events are **hard stops** instead (§Hard stops).
 
 ## The gates
 
@@ -27,10 +27,10 @@ Integration and cleanup are hard stops, not gates (§Hard stops).
 | `specialists` | stops | off: the mandatory ones and those named with `--with` run; the others are listed with their signals | off, as in `key` |
 | `bootstrap` | stops | stops | off: a registry **local to the clone** with the `general` seeds and the default limits; nothing versioned |
 | `approach` | stops | stops only when more than one viable option has different observable consequences (a public API, data or schema, a dependency, a structure other features will follow); otherwise off | off |
-| `depth` | stops | off: the defaults (review level from `protocols/review-cycle.md`: a raise by size and risk applies and is reported, a lowering is asked; mutation testing only when Critical, the testing plan as designed, an existing end-to-end harness or the status Blocked) | off, as in `key` |
-| `increment` | stops | off: the increment's results go to the programmer as a report, and the work continues, unless another gate that is on or a hard stop stops it | off, as in `key` |
-| `defects` | stops | off: the Implementer (resumed) fixes the Blocker and Major findings of the critic and the Tester that the programmer's words cover, at any review level, test first when the fix changes behavior (the Tester, resumed, writes the reproducing test, then the Implementer fixes); at R2 the cycle's automatic fixes of behavior-preserving VALID findings still run; the rest, and every specialist audit finding except a security Blocker (a hard stop), go to acceptance | off, as in `key` |
-| `discoveries` | stops | stops for a discovery *outside what the programmer stated* or that *contradicts* their words; one *covered by* their words is fixed | off: covered ones are fixed; those outside the programmer's words are **not built**, only recorded for acceptance; one that **contradicts** them is a hard stop (below) |
+| `depth` | stops | off: the defaults (review level: `protocols/review-cycle.md` §Recommending the level, which says what applies with this gate off; mutation testing only when Critical, the testing plan as designed, an existing end-to-end harness or the status Blocked) | off, as in `key` |
+| `increment` | stops | off: the increment's results go to the programmer as a report, and the work continues, unless another gate that is on or a hard stop (§Hard stops) stops it | off, as in `key` |
+| `defects` | stops | off: the Implementer (resumed) fixes the Blocker and Major findings of the critic and the Tester that the programmer's words cover, at any review level, test first when the fix changes behavior (the Tester, resumed, writes the reproducing test, then the Implementer fixes); at R2 the cycle's automatic fixes of behavior-preserving VALID findings still run; the rest, and every specialist audit finding except a security Blocker (a hard stop: §Hard stops), go to acceptance | off, as in `key` |
+| `discoveries` | stops | stops for a discovery *outside what the programmer stated* or that *contradicts* their words; one *covered by* their words is fixed | off: covered ones are fixed; those outside the programmer's words are **not built**, only recorded for acceptance; one that **contradicts** them is a hard stop (§Hard stops) |
 | `candidates` | stops | off: presented together at `acceptance` | off: listed in the final report, not registered |
 | `acceptance` | stops | stops, together with integration | stops, together with integration |
 
@@ -45,7 +45,7 @@ At startup, in the same message as the workflow recommendation (`SKILL.md` §2.5
 - **`key`** for SDD and EVO otherwise. It is the default.
 - **`auto`** for DIRECT.
 
-**Criticality decided later.** When a feature in `key` or `auto` turns out Critical (at the intent gate, or from the agent's own assessment when that gate is off), stop once and propose `full`, with the evidence. This is a stop in every profile.
+**Criticality decided later.** When a feature in `key` or `auto` turns out Critical (at the intent gate, or from the agent's own assessment when that gate is off), stop once and propose `full`, with the evidence. This is a hard stop (§Hard stops).
 
 ## When a gate is off
 

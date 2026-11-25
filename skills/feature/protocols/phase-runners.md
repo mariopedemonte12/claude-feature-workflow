@@ -28,7 +28,7 @@ A runner handles one phase of one feature, from its first step to the first ⛔ 
 | SDD | Specification | 1 (analyst) – 2 | ⛔ 3 spec gate |
 | SDD | Planning | 4 – 5, and the plan gate's content | ⛔ 6 plan gate |
 | SDD | Build | 7 – 11 and the review at the validated level | ⛔ defects and candidates gate (or a deviation gate) |
-| SDD | Fixes | approved fixes, affected tests, new critic if R1/R2 | ⛔ defects gate again, or step 12 then ⛔ 13 acceptance |
+| SDD | Fixes | approved fixes, affected tests, new critic (`workflows/sdd.md` §Defects, discrepancies and discoveries) | ⛔ defects gate again, or step 12 then ⛔ 13 acceptance |
 | EVO | Intent | 1 – 2 | ⛔ 3 |
 | EVO | Approach | 4 | ⛔ 5 |
 | EVO | Increment | 6 – 9 | ⛔ 10 increment gate |
@@ -72,7 +72,7 @@ You orchestrate one phase of one feature.
 2. **Delegate** each step to its role exactly as `SKILL.md` §4 describes: model choice per delegation, logged in `delegations.md`; briefs in its format; parallel launches where independent. Roles never delegate further.
 3. **Verify** what each agent returns against the artifacts and the diff before using it, keeping each agent's recommendation attributed to it.
 4. **Agent questions.** Answer from evidence what you can. For the rest, stop: record them as `protocols/agent-questions.md` §For the orchestrator, steps 1–2, describes (including the agent's ID in `state.md`) and return with `QUESTIONS`. When resumed with the answers, record them and resume that agent with `SendMessage`; if it cannot be resumed, relaunch it with its work so far.
-5. **Stop at the first ⛔ whose gate is on** in your range (a gate that is off is decided and recorded as `protocols/gates.md` §When a gate is off describes, and you continue within your range, returning as `GATE` at its end, or as `DONE` when nothing is pending). A hard stop (`protocols/gates.md` §Hard stops, including a security audit Blocker) stops you in every profile: record it as Pending and return as `GATE`. Do nothing that depends on a pending decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `state.md`.
+5. **Stop at the first ⛔ whose gate is on** in your range (a gate that is off is decided and recorded as `protocols/gates.md` §When a gate is off describes, and you continue within your range, returning as `GATE` at its end, or as `DONE` when nothing is pending). A hard stop (`protocols/gates.md` §Hard stops) stops you, as a gate that is on does: record it as Pending and return as `GATE`. Do nothing that depends on a pending decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `state.md`.
 6. **Return**, and nothing else:
 
 ```

@@ -57,7 +57,7 @@ Rows are alphabetical by slug. Above the board, the catch-up of `SKILL.md` §5 *
 
 Every feature already lives in its own built-in worktree (`SKILL.md` §2.3), so features never share a working tree, and isolation is not a decision to ask about. Three things remain shared:
 
-- **Integration.** Branches that change the same files will conflict when integrated. Report the overlap as a fact (files, branches) as soon as plans show it, not only at the end. The integration order and method across features are the programmer's decisions, presented as `protocols/decisions.md` describes; integration is a hard stop in every gate profile.
+- **Integration.** Branches that change the same files will conflict when integrated. Report the overlap as a fact (files, branches) as soon as plans show it, not only at the end. The integration order and method across features are the programmer's decisions, presented as `protocols/decisions.md` describes; integration is a hard stop (`protocols/gates.md` §Hard stops).
 - **Runtime resources.** Test runs in different worktrees can still collide on ports, databases, caches or external services. If two features would use the same resource at the same time, report it; serializing or isolating those runs is the programmer's decision.
 - **Base drift.** Each worktree branches from its base at creation. Once another feature is integrated, the remaining branches may need updating (merge or rebase of the new base). Whether and how to do that is the programmer's decision.
 
