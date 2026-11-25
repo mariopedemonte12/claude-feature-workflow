@@ -152,7 +152,7 @@ flowchart TB
 | `bootstrap` (registry) | stops | stops | agent: local registry only |
 | `approach` | stops | stops when options differ in API, data, dependencies or shared structure | agent |
 | `depth` (testing plan, mutation, review level, E2E harness) | stops | agent: defaults; a higher review level applies, a lower one is asked | same |
-| `increment` (EVO) | stops | report and continue, unless a gate still on or a hard stop applies | same |
+| `increment` (EVO) | stops | report and continue, unless a gate still on, a hard stop or a decision that `protocols/gates.md` §When a gate is off sends to the programmer applies | same |
 | `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings (a security Blocker is a hard stop) and the rest to acceptance | same |
 | `discoveries` | stops | stops when outside or contradicting the intent | agent: covered ones fixed, outside ones not built, listed; contradicting: hard stop |
 | `candidates` | stops | at acceptance | listed only |
@@ -479,7 +479,7 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 2. **Artifacts are the source of truth.** Any feature can be resumed in a new session from its folder (DIRECT only with a card).
 3. **Separation of concerns:** spec (what and why) ≠ plan (how) ≠ implementation ≠ validation, and each feature is separate from every other.
 4. **Explicit uncertainty and evidence:** claims carry a status. A test that was not run is never "passed".
-5. **No silent drift:** deviations, scope changes and behavior changes go back to the programmer, at a gate or, when its gate is off, as a decision recorded and reported.
+5. **No silent drift:** deviations, scope changes and behavior changes go back to the programmer, at a gate or, when its gate is off, as `protocols/gates.md` §When a gate is off describes.
 9. **Supervision is chosen per feature:** the gate profile sets how often the programmer is stopped; what is hard to undo always stops.
 6. **Ask, don't guess:** gaps become questions relayed by the orchestrator, never invented requirements.
 7. **Clean review:** whoever reviews code never saw it being written.

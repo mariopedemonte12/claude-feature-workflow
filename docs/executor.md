@@ -61,7 +61,7 @@ Written into the card before any code:
 
 ### 4. First gate: intent, approach and first increment
 
-One message, every item in full; the items of gates that are off in the feature's profile are decided by the session and reported in it:
+One message, every item in full; the items of gates that are off in the feature's profile are handled as `protocols/gates.md` §When a gate is off describes and reported in it:
 - the consolidated intent and completion criteria, and the readings to confirm;
 - blocking questions, each with what the analog does as a fact and the agent's recommendation; questions that only later increments need wait for them;
 - the approach: options in the decision format, each with its security consequence and its worst case (probed for parsers, regular expressions, escaping or safe-marking);
