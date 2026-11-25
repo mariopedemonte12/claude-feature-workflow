@@ -199,47 +199,140 @@ class ConfigurationErrors(ScratchRepository):
         self.assertIn("invalid fingerprint", error)
 
 
+class RuleFileValidation(ScratchRepository):
+    def assert_configuration_error(self, mutate, message):
+        broken = json.loads(json.dumps(RULES))
+        mutate(broken)
+        self.rules.write_text(json.dumps(broken), encoding="utf-8")
+        code, _, error = self.check()
+        self.assertEqual(code, 2, error)
+        self.assertIn(message, error)
+
+    def test_fingerprints_given_as_a_string(self):
+        self.assert_configuration_error(lambda data: data["rules"][0].update(fingerprints="abc"), "must be a list of strings")
+
+    def test_empty_fingerprints(self):
+        self.assert_configuration_error(lambda data: data["rules"][0].update(fingerprints=[]), "must not be empty")
+
+    def test_scan_paths_given_as_a_string(self):
+        self.assert_configuration_error(lambda data: data["scan"].update(paths="protocols"), "scan.paths must be a list")
+
+    def test_duplicated_rule_ids(self):
+        self.assert_configuration_error(lambda data: data["rules"].append(dict(data["rules"][0])), "duplicated rule ids: CAP")
+
+    def test_no_rules(self):
+        self.assert_configuration_error(lambda data: data.update(rules=[]), "non-empty list")
+
+
+class MarkupAndLines(ScratchRepository):
+    def test_html_emphasis_copy_is_reported(self):
+        self.write("notes.md", "Up to <b>3</b> critic rounds.\n")
+        code, output, _ = self.check()
+        self.assertEqual(code, 1)
+        self.assertIn("notes.md:1: CAP", output)
+
+    def test_snake_case_names_are_kept(self):
+        self.write("notes.md", "The cap_of_3 setting.\n")
+        code, output, _ = self.check()
+        self.assertEqual(code, 0, output)
+
+    def test_form_feed_does_not_shift_line_numbers(self):
+        (self.repo / "paged.md").write_bytes(b"One\x0cstill one\nCap of 3 here.\n")
+        _, output, _ = self.check()
+        self.assertIn("paged.md:2: CAP", output)
+
+
+POINTER_RULES = {
+    "scan": {"paths": ["."]},
+    "rules": [{
+        "id": "STOP",
+        "source": {"file": "protocols/gates.md", "section": "Hard stops"},
+        "fingerprints": [r"(?<!§)(?<!§ )\bhard[- ]stops?\b"],
+        "pointer": r"protocols/gates\.md|§ ?hard stops",
+    }],
+}
+
+
+class PointerWindow(ScratchRepository):
+    def setUp(self):
+        super().setUp()
+        self.rules.write_text(json.dumps(POINTER_RULES), encoding="utf-8")
+        self.write("protocols/gates.md", "# Gates\n\n## Hard stops\n\nIntegration.\n")
+
+    def reported(self, line):
+        self.write("probe.md", line + "\n")
+        code, output, _ = self.check()
+        return code == 1 and "probe.md:1: STOP" in output
+
+    @staticmethod
+    def gap(characters):
+        return " " + "x" * (characters - 2) + " "
+
+    def test_pointer_after_within_sixty_characters(self):
+        self.assertFalse(self.reported("a hard stop" + self.gap(60) + "§Hard stops"))
+
+    def test_pointer_after_beyond_sixty_characters(self):
+        self.assertTrue(self.reported("a hard stop" + self.gap(61) + "§Hard stops"))
+
+    def test_pointer_before_within_sixty_characters(self):
+        self.assertFalse(self.reported("protocols/gates.md" + self.gap(60) + "hard stop here"))
+
+    def test_pointer_before_beyond_sixty_characters(self):
+        self.assertTrue(self.reported("protocols/gates.md" + self.gap(61) + "hard stop here"))
+
+    def test_spaced_section_sign_is_a_pointer_not_a_copy(self):
+        self.assertFalse(self.reported("Integration (`gates.md` § Hard stops) stops."))
+
+    def test_mention_without_pointer(self):
+        self.assertTrue(self.reported("Integration is a hard stop."))
+
+
 class RepositoryRules(unittest.TestCase):
     def setUp(self):
         self.repo = Path(tempfile.mkdtemp(prefix="rule-copies-repo-"))
         self.addCleanup(shutil.rmtree, self.repo, ignore_errors=True)
         shutil.copytree(REPOSITORY / "skills", self.repo / "skills")
 
-    def edit(self, relative, old, new):
-        path = self.repo / relative
+    def set_cap_at_source(self, value):
+        path = self.repo / CAP_SOURCE
         text = path.read_text(encoding="utf-8")
-        self.assertEqual(text.count(old), 1, f"{old!r} in {relative}")
-        path.write_text(text.replace(old, new), encoding="utf-8")
+        self.assertEqual(text.count("3 critic rounds in total"), 1)
+        path.write_text(text.replace("3 critic rounds in total", f"{value} critic rounds in total"), encoding="utf-8")
+
+    def append(self, relative, line):
+        path = self.repo / relative
+        lines = path.read_text(encoding="utf-8").rstrip("\n").split("\n") + ["", line]
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        return len(lines)
 
     def test_skills_have_no_copies_of_the_consolidated_rules(self):
         code, output, _ = run_check(self.repo, "skills")
         self.assertEqual(code, 0, output)
 
     def test_changing_the_cap_at_its_source_reports_nothing_when_only_pointers_exist(self):
-        self.edit(CAP_SOURCE, "3 critic rounds in total", "4 critic rounds in total")
+        self.set_cap_at_source(4)
         code, output, _ = run_check(self.repo, "skills")
         self.assertEqual(code, 0, output)
 
     def test_changed_cap_reports_an_older_copy_as_disagreeing(self):
-        self.edit(CAP_SOURCE, "3 critic rounds in total", "4 critic rounds in total")
-        self.edit("skills/feature/workflows/sdd.md", "within the round cap (", "within the cap of 3 critic rounds (")
+        self.set_cap_at_source(4)
+        line = self.append("skills/feature/workflows/sdd.md", "A new critic, within the cap of 3 critic rounds.")
         code, output, _ = run_check(self.repo, "skills")
         self.assertEqual(code, 1)
-        self.assertRegex(output, r"skills/feature/workflows/sdd\.md:\d+: RC-1 .*DISAGREES: source says 4")
+        self.assertIn(f"skills/feature/workflows/sdd.md:{line}: RC-1", output)
+        self.assertIn("DISAGREES: source says 4", output)
 
     def test_hard_stop_named_without_a_pointer_is_reported(self):
-        self.edit("skills/feature/workflows/direct.md", "(hard stop: `protocols/gates.md` §Hard stops)", "(hard stop)")
+        line = self.append("skills/feature/workflows/direct.md", "Integration is a hard stop.")
         code, output, _ = run_check(self.repo, "skills")
         self.assertEqual(code, 1)
-        self.assertIn("skills/feature/workflows/direct.md", output)
-        self.assertIn("HS-2", output)
+        self.assertIn(f"skills/feature/workflows/direct.md:{line}: HS-2", output)
 
     def test_hard_stop_condition_restated_is_reported(self):
-        self.edit("skills/feature/protocols/multi-feature.md", "integration is a hard stop (`protocols/gates.md` §Hard stops).",
-                  "integration stops the feature in every profile.")
+        line = self.append("skills/feature/protocols/multi-feature.md", "Integration stops the feature in every profile.")
         code, output, _ = run_check(self.repo, "skills")
         self.assertEqual(code, 1)
-        self.assertIn("HS-1", output)
+        self.assertIn(f"skills/feature/protocols/multi-feature.md:{line}: HS-1", output)
 
 
 if __name__ == "__main__":

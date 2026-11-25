@@ -37,7 +37,7 @@ Shared by every worktree of the repository and never committed. **Hard limit: 80
 Rules:
 - Facts about the project carry evidence (a path or a command), like the analyst report.
 - Each feature gets one row. Its details stay in its own artifacts.
-- Remove a feature's row once it is Done and its cleanup gate has passed.
+- Remove a feature's row once it is Done and its cleanup (a hard stop: `protocols/gates.md` §Hard stops) is settled.
 - Never store decisions here. They live in `decisions/`; the memory points to the feature.
 
 ## Session lifecycle

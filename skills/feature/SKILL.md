@@ -257,6 +257,6 @@ DIRECT has no feature folder unless the programmer asks for a card.
 
 ## 7. Ending
 
-- **A feature** ends at its own final acceptance, followed by the integration and cleanup gates in its workflow's finalization (status Done), or is paused when the programmer says so. Update its `state.md` first (DIRECT without a card has no resume state: report it as not resumable and offer a card); the other features continue. A paused feature's worktree and branch stay on disk.
-- **Worktree cleanup** (`git worktree remove <path>`, then deleting the branch) destroys local state. Do it only after the programmer confirms. `ExitWorktree` cannot remove these worktrees, because you already left them right after creating them.
+- **A feature** ends at its own final acceptance, followed by the integration and cleanup hard stops (`protocols/gates.md` §Hard stops) in its workflow's finalization (status Done), or is paused when the programmer says so. Update its `state.md` first (DIRECT without a card has no resume state: report it as not resumable and offer a card); the other features continue. A paused feature's worktree and branch stay on disk.
+- **Worktree cleanup** (`git worktree remove <path>`, then deleting the branch) destroys local state. It is a hard stop (`protocols/gates.md` §Hard stops): do it only after the programmer confirms. `ExitWorktree` cannot remove these worktrees, because you already left them right after creating them.
 - **The orchestration** ends when no feature remains in progress, or when the programmer tells you to stop. Update every in-progress feature's `state.md` first, so that `/feature resume <slug>…` can continue in a new session; DIRECT without a card has no resume state: report it as not resumable and offer a card before stopping.

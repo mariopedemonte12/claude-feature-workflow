@@ -60,7 +60,6 @@ class HostileFiles(SkillsCopy):
         self.assertIn("20000 restated copies", output)
         self.assertLess(seconds, RUN_TIME_BOUND_SECONDS)
 
-    @unittest.expectedFailure
     def test_td_5_a_fifo_named_like_markdown_does_not_hang(self):
         os.mkfifo(self.repo / "docs" / "pipe.md")
         command = [sys.executable, str(base.SCRIPT), "--repo", str(self.repo), "docs"]

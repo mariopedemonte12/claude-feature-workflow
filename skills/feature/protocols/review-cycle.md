@@ -14,7 +14,7 @@ Code review is done by **clean agents**: a fresh subagent that never saw how the
 
 ### Recommending the level
 
-The recommendation goes in the plan gate (SDD step 6, EVO step 5; with the `depth` gate off, a level above the default by the size and risk criteria below applies and is reported, and a lower one is asked, `protocols/gates.md`), labeled *Recommendation*, with the evidence behind it:
+The recommendation goes in the plan gate (SDD step 6, EVO step 5; with the `depth` gate off, a level above the default by the size and risk criteria below applies and is reported, and a lower one is asked; the `depth` gate: `protocols/gates.md` §Profiles), labeled *Recommendation*, with the evidence behind it:
 
 - **Size:** files and components the plan touches; estimated changed lines.
 - **Complexity:** new branching logic, state machines, parsers, concurrency, money, security, data writes or migrations, public interfaces, changes across several features or layers.
@@ -22,7 +22,7 @@ The recommendation goes in the plan gate (SDD step 6, EVO step 5; with the `dept
 
 **Start from the default:** R1 for SDD and EVO; R2 for Critical (above). DIRECT: `workflows/direct.md` step 5. Recommend a different level only with evidence: lower to R0 only for a mechanical change with no new branching logic, none of the risk areas above and a small diff (on the order of 50 changed lines); raise to R2 for several risk areas or a large diff. The recommendation always states the default and why it deviates, if it does. A standing acceptance of recommendations covers only the default; a deviation is asked every time (standing approvals: `protocols/decisions.md` rule 7). The programmer validates or changes the level; record it in `decisions/` and in the plan's verification depth.
 
-**Re-check after implementation.** Before review starts, compare the real diff (`git diff --shortstat <base>`, the files touched, the risk areas reached) with the estimate. If it crosses into another level, state the facts and recommend again; the programmer validates. With the `depth` gate off, the same rule as at plan time applies, measured against the estimated size.
+**Re-check after implementation.** Before review starts, compare the real diff (`git diff --shortstat <base>`, the files touched, the risk areas reached) with the estimate. If it crosses into another level, state the facts and recommend again; the programmer validates. With the `depth` gate off, a level above the one validated at plan time applies and is reported; a lower one is asked.
 
 ## Specialist audits
 
@@ -52,7 +52,7 @@ round n:  Critic(n) ──► Verifier(n) ──► VALID behavior-preserving fi
 - the feature (in EVO, the increment) has had 3 critic rounds in total, counting every path (R1, R2 and the critics after defect fixes); or
 - the loop oscillates: a finding asks to undo an earlier fix, or the same location is flagged again for the same problem after being fixed. Present the oscillation at the ⛔ defects gate.
 
-**Rounds in EVO** count per increment: each increment's review starts at round 1 and has its own cap (§Stop when above), since every increment's diff is reviewed (`workflows/evo.md` step 9). Reports are `reports/review/inc<k>-round-<n>-critic.md` and `inc<k>-round-<n>-verification.md`, and specialist audits `reports/review/inc<k>-<name>.md`; with a card, the same names under the card's `review/`. A DIRECT card has no increments: `review/round-<n>-critic.md`. `rounds.md` adds the increment to each row (§Round log and feedback).
+**Rounds in EVO** count per increment: each increment's review starts at round 1 and has its own cap (*Stop when* above), since every increment's diff is reviewed (`workflows/evo.md` step 9). Reports are `reports/review/inc<k>-round-<n>-critic.md` and `inc<k>-round-<n>-verification.md`, and specialist audits `reports/review/inc<k>-<name>.md`; with a card, the same names under the card's `review/`. A DIRECT card has no increments: `review/round-<n>-critic.md`. `rounds.md` adds the increment to each row (§Round log and feedback).
 
 After the loop, the Tester re-runs the regression suite and the E2E scenarios affected by the fixes.
 

@@ -5,13 +5,20 @@ import fnmatch
 import json
 import os
 import re
+import stat
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 DEFAULT_RULES = Path(__file__).with_name("rule_copies.json")
 EXIT_CLEAN, EXIT_FOUND, EXIT_CONFIG = 0, 1, 2
-MARKUP = re.compile(r"[*`]")
+EXIT_CODES = (f"exit codes: {EXIT_CLEAN} no copy found and every file read; "
+              f"{EXIT_FOUND} restated copies found or a file could not be read (both are listed); "
+              f"{EXIT_CONFIG} configuration error in the rules file or a missing source section")
+POINTER_WINDOW = 60
+POINTER_MAX_LENGTH = 200
+MARKUP = re.compile(r"[*`]|(?<!\w)_+|_+(?!\w)|</?(?:b|i|em|strong|code|u|s|mark)>", re.IGNORECASE)
+BLOCKQUOTE = re.compile(r"^\s*(?:>\s?)+")
 WHITESPACE = re.compile(r"\s+")
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)(?:\s+#+)?\s*$")
 FENCE = re.compile(r"^\s*(```|~~~)")
@@ -33,12 +40,13 @@ class Rule:
     source_path: str
     source_section: str
     fingerprints: tuple
+    pointer: re.Pattern | None
 
 
 @dataclass(frozen=True)
 class FlatText:
     text: str
-    line_starts: list
+    line_starts: tuple
 
     def line_at(self, offset):
         return bisect.bisect_right(self.line_starts, offset)
@@ -50,7 +58,7 @@ class Copy:
     line: int
     rule: str
     excerpt: str
-    value: str
+    value: str | None
     source_values: frozenset
 
     def describe(self):
@@ -64,14 +72,25 @@ class Copy:
 
 
 def parse_arguments(argv):
-    parser = argparse.ArgumentParser(description="Report restated copies of workflow rules outside their single source")
+    parser = argparse.ArgumentParser(description="Report restated copies of workflow rules outside their single source",
+                                     epilog=EXIT_CODES)
     parser.add_argument("--repo", default=".")
     parser.add_argument("--rules", default=str(DEFAULT_RULES))
     parser.add_argument("paths", nargs="*", help="files or folders to scan, relative to --repo; default: the data file's scan.paths")
     return parser.parse_args(argv)
 
 
-def compile_fingerprint(pattern, identifier):
+def string_list(value, what, allow_empty=True):
+    if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+        raise ConfigError(f"{what} must be a list of strings, got {value!r}")
+    if not value and not allow_empty:
+        raise ConfigError(f"{what} must not be empty")
+    return value
+
+
+def compile_pattern(pattern, identifier):
+    if not isinstance(pattern, str):
+        raise ConfigError(f"rule {identifier}: a pattern must be a string, got {pattern!r}")
     try:
         return re.compile(pattern, re.IGNORECASE)
     except re.error as error:
@@ -81,23 +100,43 @@ def compile_fingerprint(pattern, identifier):
 def parse_rule(raw):
     try:
         identifier, source = raw["id"], raw["source"]
-        fingerprints = tuple(compile_fingerprint(pattern, identifier) for pattern in raw["fingerprints"])
-        return Rule(identifier, source["file"], source["section"], fingerprints)
+        patterns = string_list(raw["fingerprints"], f"rule {identifier}: fingerprints", allow_empty=False)
+        pointer = compile_pattern(raw["pointer"], identifier) if "pointer" in raw else None
+        rule = Rule(identifier, source["file"], source["section"],
+                    tuple(compile_pattern(pattern, identifier) for pattern in patterns), pointer)
     except (KeyError, TypeError) as error:
         raise ConfigError(f"malformed rule entry {raw!r}: missing {error}") from error
+    if not all(isinstance(field, str) and field for field in (rule.identifier, rule.source_path, rule.source_section)):
+        raise ConfigError(f"rule {identifier!r}: id, source.file and source.section must be non-empty strings")
+    return rule
+
+
+def parse_rules(entries):
+    if not isinstance(entries, list) or not entries or not all(isinstance(entry, dict) for entry in entries):
+        raise ConfigError(f"rules must be a non-empty list of objects, got {entries!r}")
+    rules = [parse_rule(entry) for entry in entries]
+    identifiers = [rule.identifier for rule in rules]
+    duplicated = sorted({identifier for identifier in identifiers if identifiers.count(identifier) > 1})
+    if duplicated:
+        raise ConfigError(f"duplicated rule ids: {', '.join(duplicated)}")
+    return rules
 
 
 def load_data(path):
     try:
         raw = json.loads(Path(path).read_text(encoding="utf-8"))
         scan = raw.get("scan", {})
-        return [parse_rule(entry) for entry in raw["rules"]], scan.get("paths", ["."]), scan.get("exclude", [])
+        paths = string_list(scan.get("paths", ["."]), "scan.paths")
+        exclude = string_list(scan.get("exclude", []), "scan.exclude")
+        return parse_rules(raw["rules"]), paths, exclude
     except (OSError, ValueError, KeyError, AttributeError) as error:
         raise ConfigError(f"cannot load rules from {path}: {error}") from error
 
 
 def read_markdown(path):
     try:
+        if not stat.S_ISREG(os.stat(path).st_mode):
+            raise UnreadableFile("not a regular file")
         data = path.read_bytes()
     except OSError as error:
         raise UnreadableFile(error.strerror or str(error)) from error
@@ -109,14 +148,18 @@ def read_markdown(path):
         raise UnreadableFile(f"not UTF-8 ({error.reason} at byte {error.start})") from error
 
 
+def markdown_lines(path):
+    return read_markdown(path).replace("\r\n", "\n").replace("\r", "\n").split("\n")
+
+
 def flatten(lines):
     pieces, line_starts, offset = [], [], 0
     for line in lines:
-        piece = WHITESPACE.sub(" ", MARKUP.sub("", line)).strip() + " "
+        piece = WHITESPACE.sub(" ", MARKUP.sub("", BLOCKQUOTE.sub("", line))).strip() + " "
         line_starts.append(offset)
         pieces.append(piece)
         offset += len(piece)
-    return FlatText("".join(pieces), line_starts)
+    return FlatText("".join(pieces), tuple(line_starts))
 
 
 def heading_of(line):
@@ -155,19 +198,19 @@ def fingerprint_matches(flat, rule):
     for match in matches:
         if match.start() >= covered_until:
             covered_until = match.end()
-            yield flat.line_at(match.start()), match.group(0).strip(), normalized_value(match)
+            yield match
 
 
 def source_values(repo, rule):
     try:
-        lines = read_markdown(repo / rule.source_path).splitlines()
+        lines = markdown_lines(repo / rule.source_path)
     except UnreadableFile as error:
         raise ConfigError(f"rule {rule.identifier}: source {rule.source_path} unreadable: {error}") from error
     span = section_span(lines, rule.source_section)
     if span is None:
         raise ConfigError(f"rule {rule.identifier}: section '{rule.source_section}' not found in {rule.source_path}")
     flat = flatten(lines[span[0] - 1:span[1]])
-    values = {value for _, _, value in fingerprint_matches(flat, rule) if value is not None}
+    values = {normalized_value(match) for match in fingerprint_matches(flat, rule)} - {None}
     return span, frozenset(values)
 
 
@@ -188,7 +231,7 @@ def markdown_files(repo, paths, exclude):
             for folder, _, names in os.walk(target, onerror=walk_errors.append):
                 found.update(Path(folder) / name for name in names if name.endswith(".md"))
             unreadable += [(relative_to_repo(error.filename, repo), error.strerror) for error in walk_errors]
-        elif target.is_file() or target.is_symlink():
+        elif target.exists() or target.is_symlink():
             found.add(target)
         else:
             unreadable.append((path, "not found"))
@@ -196,14 +239,24 @@ def markdown_files(repo, paths, exclude):
     return [relative for relative in relatives if not is_excluded(relative, exclude)], unreadable
 
 
+def has_pointer_nearby(flat, rule, match):
+    if rule.pointer is None:
+        return False
+    window_start, window_end = match.start() - POINTER_WINDOW, match.end() + POINTER_WINDOW
+    search_start, search_end = max(0, window_start - POINTER_MAX_LENGTH), window_end + POINTER_MAX_LENGTH
+    return any(pointer.end() >= window_start and pointer.start() <= window_end
+               for pointer in rule.pointer.finditer(flat.text, search_start, search_end))
+
+
 def copies_in_file(relative, lines, rules, sources):
     flat = flatten(lines)
     for rule in rules:
         (start, end), values = sources[rule.identifier]
         own_source = relative == rule.source_path
-        for line, excerpt, value in fingerprint_matches(flat, rule):
-            if not (own_source and start <= line <= end):
-                yield Copy(relative, line, rule.identifier, excerpt, value, values)
+        for match in fingerprint_matches(flat, rule):
+            line = flat.line_at(match.start())
+            if not (own_source and start <= line <= end) and not has_pointer_nearby(flat, rule, match):
+                yield Copy(relative, line, rule.identifier, match.group(0).strip(), normalized_value(match), values)
 
 
 def scan(repo, rules, relatives):
@@ -211,7 +264,7 @@ def scan(repo, rules, relatives):
     copies, unreadable = [], []
     for relative in relatives:
         try:
-            lines = read_markdown(repo / relative).splitlines()
+            lines = markdown_lines(repo / relative)
         except UnreadableFile as error:
             unreadable.append((relative, str(error)))
             continue

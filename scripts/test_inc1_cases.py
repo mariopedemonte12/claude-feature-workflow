@@ -102,25 +102,20 @@ class PointersAndBareNames(SkillsCopy):
             with self.subTest(text=text):
                 self.assertFalse(self.reported(text))
 
-    @unittest.expectedFailure
     def test_td_1_pointer_before_the_mention_is_not_a_copy(self):
         self.assertFalse(self.reported(f"Per {POINTER}, integration is a hard stop."))
 
-    @unittest.expectedFailure
     def test_td_1_bare_path_pointer_is_not_a_copy(self):
         self.assertFalse(self.reported("The hard stops are listed in `protocols/gates.md`."))
 
-    @unittest.expectedFailure
     def test_td_2_levels_named_next_to_a_pointer_are_not_a_copy(self):
         self.assertFalse(self.reported("Run the critic (R1/R2) as `protocols/review-cycle.md` §Review levels says."))
 
 
 class RecallOfFingerprints(SkillsCopy):
-    @unittest.expectedFailure
     def test_td_3_review_rounds_with_a_number_is_a_cap_copy(self):
         self.assertTrue(self.reported("After 3 review rounds the feature stops."))
 
-    @unittest.expectedFailure
     def test_td_3_limited_to_a_number_of_critic_rounds_is_a_cap_copy(self):
         self.assertTrue(self.reported("Critic rounds are limited to 3."))
 
@@ -156,11 +151,9 @@ class VerdictInvariance(SkillsCopy):
     def test_t_l1_12_a_copy_split_by_a_blank_line_is_not_one_sentence(self):
         self.assertFalse(self.reported("up to 3 critic\n\nrounds"))
 
-    @unittest.expectedFailure
     def test_td_4_copy_wrapped_inside_a_blockquote_is_reported(self):
         self.assertTrue(self.reported("> up to 3 critic\n> rounds"))
 
-    @unittest.expectedFailure
     def test_td_4_copy_in_underscore_emphasis_is_reported(self):
         self.assertTrue(self.reported("__3 critic rounds__"))
 
