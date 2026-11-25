@@ -1,4 +1,4 @@
-<!-- A message to a new agent at a phase transition, in orchestrator mode: written only when the incoming agent is new (`protocols/context-handoff.md`). Overwritten each time. Resume state goes to `state.md`. Omit any section that has no content. -->
+<!-- A message to a new agent at a phase transition, in orchestrator mode: written only when the incoming agent is new (`protocols/context-handoff.md`) (a new agent of a role that already ran gets relay notes instead: `protocols/context-handoff.md` §Relay). Overwritten each time. Resume state goes to `state.md`. Omit any section that has no content. -->
 # Handoff: <from role> → <to role>
 
 ## Objective

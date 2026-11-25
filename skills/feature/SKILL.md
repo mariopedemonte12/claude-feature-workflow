@@ -86,7 +86,7 @@ How features are grouped is the programmer's choice too: several features under 
 | More than one feature in progress, `status`, or a multi-slug `resume` | `protocols/multi-feature.md` |
 | Before the first delegation of the session, and whenever an agent returns `STATUS: QUESTIONS` | `protocols/agent-questions.md` |
 | Checking a specification draft before its gate | `knowledge/specification-guide.md` |
-| Before any phase transition or delegation (a handoff only when the incoming agent is new) | `protocols/context-handoff.md`, `templates/handoff.md` |
+| Before any phase transition or delegation (a handoff only when the incoming agent is new; a relay for a new agent of a role that already ran: `protocols/context-handoff.md` §Relay) | `protocols/context-handoff.md`, `templates/handoff.md` |
 | The first stop of a feature (not DIRECT), as orchestrator or SDD executor | `templates/state.md` |
 | Recording a decision | `templates/decision-record.md` |
 | Writing the approved plan | `templates/implementation-plan.md` |

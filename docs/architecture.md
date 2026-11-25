@@ -223,7 +223,7 @@ flowchart TB
     G4 -->|"completion criteria met"| P6["Finalization<br/>mutation testing once · short final report<br/>⛔ acceptance · ⛔ integration · ⛔ cleanup"]
 ```
 
-- **Leaner by design:** one gate per increment, the Planner only at the start and when the approach is in question, mutation testing once at the end, `handoff.md` only when a new agent takes over a phase (resume state in `state.md`), and a short final report that links the intent, the cases and the decisions.
+- **Leaner by design:** one gate per increment, the Planner only at the start and when the approach is in question, mutation testing once at the end, `handoff.md` only when a new agent takes over a phase (relay notes instead for a new agent of a role that already ran: `protocols/context-handoff.md` §Relay; resume state in `state.md`), and a short final report that links the intent, the cases and the decisions.
 - **Hypotheses** are the team's, kept in the plan's *Increments* with their status (Hypothesis, Under exploration, Confirmed, Rejected) and evidence. The programmer's words stay in the intent record.
 - **Deferred edge cases** need a programmer decision naming the increment that will cover them; they never accumulate silently.
 - **Prototypes** live outside production paths. They are discarded unless the programmer promotes them.
