@@ -86,7 +86,7 @@ The session checks every finding against the code and re-runs each specialist's 
 
 ### 8. Increment gate
 
-The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments. With the `increment` gate off, it is a report and the work continues, unless a gate that is still on (e.g. `discoveries` in `key`) or a hard stop stops it.
+The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments. With the `increment` gate off, it is a report and the work continues, unless a gate that is still on (e.g. `discoveries` in `key`), a hard stop or a decision that `protocols/gates.md` §When a gate is off sends to the programmer stops it.
 
 ### 9. Fix and evolve
 
