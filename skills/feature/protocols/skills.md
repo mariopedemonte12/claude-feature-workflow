@@ -94,7 +94,7 @@ Record the choices in the feature's `decisions/`, or the card's *Decisions* when
 | `audit` | After the code, in parallel with the critic | **Clean:** only the diff, the code it reaches and the project's conventions, as the critic (`roles/reviewer.md` §Clean context) | Findings with **executed evidence**: a reproduction, a measurement, a screenshot, a query plan | No evidence, no confirmed finding: it is a *Possible risk*. The model is `opus`, never `haiku`. Never resumed. Never fixed automatically. |
 
 **Inherited rules, every phase:**
-- **Agent behavior:** headless (background) launches; no delegation; the project's installed tools only, never installing one without the programmer's approval; questions through `protocols/agent-questions.md`.
+- **Agent behavior:** headless (background) launches; no delegation; the project's installed tools only (installing one is a hard stop: `protocols/gates.md` §Hard stops); questions through `protocols/agent-questions.md`.
 - **Resuming:** advisory phases (`spec`, `plan`, `test-design`) may be resumed when work returns to them (`SKILL.md` §4, *Reusing agents*). The `audit` phase is always a new agent, and after a finding in its domain is fixed, a **new** one reviews only the fix diff.
 - **Logging:** each specialist run appears in `delegations.md`, or in the card, or, in executor SDD, in a *Specialist runs* section of `reports/implementation-report.md` created when the first one runs, as role `Specialist: <name> (<phase>)`.
 - **Executor sessions** (`protocols/executor.md`) launch specialists as subagents exactly like the critic.

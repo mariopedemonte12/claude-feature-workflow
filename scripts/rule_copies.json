@@ -1,0 +1,167 @@
+{
+  "scan": {
+    "paths": [
+      "skills",
+      "README.md",
+      "docs"
+    ],
+    "exclude": [
+      "docs/features/*",
+      "docs/master-prompt.md"
+    ]
+  },
+  "rules": [
+    {
+      "id": "RC-1",
+      "summary": "The cap on critic rounds per feature (in EVO, per increment), counting every review path.",
+      "source": {
+        "file": "skills/feature/protocols/review-cycle.md",
+        "section": "R2 · The cycle"
+      },
+      "fingerprints": [
+        "\\b(?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) critic rounds\\b",
+        "\\bup to (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) (?:critic |review )?rounds\\b",
+        "\\bat most (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) (?:critic |review )?rounds\\b",
+        "\\blimit of (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) (?:critic |review )?rounds\\b",
+        "\\bcap of (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten)\\b",
+        "\\b(?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten)[- ]round cap\\b",
+        "\\b(?P<value>\\d+) (?:critic |review )?rounds (?:in total|at most|max)",
+        "\\b(?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) review rounds\\b",
+        "\\b(?:critic |review )?rounds (?:are |is )?(?:limited|capped) (?:to|at) (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten)\\b",
+        "\\bcapped at (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) (?:critic |review )?rounds\\b"
+      ],
+      "searches": [
+        "grep -rniE 'rounds?|cap' <paths>: read each hit about critic or review rounds"
+      ]
+    },
+    {
+      "id": "RL-1",
+      "summary": "The default review level (R1 for SDD and EVO) and Critical features always at R2.",
+      "source": {
+        "file": "skills/feature/protocols/review-cycle.md",
+        "section": "Review levels"
+      },
+      "fingerprints": [
+        "\\bcritical (?:features? )?(?:is |are )?always (?:uses? |at |runs? )?r2\\b",
+        "\\br2 for critical\\b",
+        "\\br1 for sdd\\b",
+        "\\bdefault[^.;]{0,15}\\(?r1\\b",
+        "\\br2 (?:review )?cycle (?:is |are )?mandatory\\b"
+      ],
+      "searches": [
+        "grep -rniE 'critical[^.]*(R2|review)|default[^.]*R1|review level' <paths>"
+      ]
+    },
+    {
+      "id": "RL-2",
+      "summary": "What each review level runs (R0 no critic, R1 one critic, R2 the cycle) and which levels have a critic. Naming the levels (names) next to a pointer to the source, in the same paragraph, cell or list item and within 60 characters, is not a copy; what a level runs is always a copy outside the source.",
+      "source": {
+        "file": "skills/feature/protocols/review-cycle.md",
+        "section": "Review levels"
+      },
+      "fingerprints": [
+        "\\br0[:,]? no (?:clean )?(?:critic|review agent)\\b",
+        "\\br1[:,]? one (?:clean )?critic\\b",
+        "\\br2[:,]? (?:the first )?critic\\b"
+      ],
+      "names": [
+        "\\br1 (?:and|or) r2\\b",
+        "\\br1/r2\\b"
+      ],
+      "pointer": "protocols/review-cycle\\.md|§ ?review levels",
+      "searches": [
+        "grep -rnE '\\bR[012]\\b' <paths>: read each hit that says what a level runs"
+      ]
+    },
+    {
+      "id": "RL-3",
+      "summary": "Review level with the depth gate off or under a standing acceptance: a raise applies and is reported, a lowering is asked; a standing acceptance covers only the default.",
+      "source": {
+        "file": "skills/feature/protocols/review-cycle.md",
+        "section": "Review levels"
+      },
+      "fingerprints": [
+        "\\blower(?:ing| one| level)? (?:is|are) asked\\b",
+        "\\ba raise (?:by [^.,;]{0,40})?(?:is )?appl",
+        "\\bstanding acceptance[^.]{0,60}covers only\\b",
+        "\\blevel you recommend and the programmer validates\\b"
+      ],
+      "searches": [
+        "grep -rniE 'raise|lower|standing acceptance' <paths>: read each hit about the review level"
+      ]
+    },
+    {
+      "id": "RL-4",
+      "summary": "DIRECT runs a clean critic only when the programmer asks for one.",
+      "source": {
+        "file": "skills/feature/workflows/direct.md",
+        "section": "Steps"
+      },
+      "fingerprints": [
+        "\\bdirect (?:runs|has) no (?:clean )?(?:critic|review agent)\\b"
+      ],
+      "searches": [
+        "grep -rniE 'DIRECT[^.]*(critic|review)' <paths>"
+      ]
+    },
+    {
+      "id": "RL-5",
+      "summary": "As executor at R1, a second critic on the fixes runs only if the programmer asks.",
+      "source": {
+        "file": "skills/feature/protocols/executor.md",
+        "section": "EVO as executor"
+      },
+      "fingerprints": [
+        "\\br1, (?:no |a )?(?:new |second )?critic on the fixes\\b"
+      ],
+      "searches": [
+        "grep -rniE 'critic on the fix' <paths>"
+      ]
+    },
+    {
+      "id": "RL-6",
+      "summary": "A later critic round reports only Blocker and Major findings in the diff since the previous round.",
+      "source": {
+        "file": "skills/feature/roles/reviewer.md",
+        "section": "Rules"
+      },
+      "fingerprints": [
+        "\\breport(?:s|ing)? only blocker and major\\b"
+      ],
+      "searches": [
+        "grep -rniE 'only (the )?Blocker' <paths>"
+      ]
+    },
+    {
+      "id": "HS-1",
+      "summary": "Hard stops stop the feature in every gate profile.",
+      "source": {
+        "file": "skills/feature/protocols/gates.md",
+        "section": "Hard stops"
+      },
+      "fingerprints": [
+        "\\bhard stops?[^.]{0,30}in (?:every|any|all) (?:gate )?profiles?\\b",
+        "\\bstops? (?:the feature |you |it )?in (?:every|any|all) (?:gate )?profiles?\\b"
+      ],
+      "searches": [
+        "grep -rniE 'hard stop|every (gate )?profile|any profile' <paths>: read each hit that says what stops regardless of the profile"
+      ]
+    },
+    {
+      "id": "HS-2",
+      "summary": "Which events are hard stops: a mention outside the source names one only with a pointer to protocols/gates.md §Hard stops (or the bare protocols/gates.md, or §Hard stops) in the same paragraph, cell or list item and within 60 characters before or after it.",
+      "source": {
+        "file": "skills/feature/protocols/gates.md",
+        "section": "Hard stops"
+      },
+      "fingerprints": [],
+      "names": [
+        "(?<!§)(?<!§ )\\bhard[- ]stops?\\b"
+      ],
+      "pointer": "protocols/gates\\.md ?§ ?hard stops|protocols/gates\\.md(?! ?§)|§ ?hard stops",
+      "searches": [
+        "grep -rniE 'hard stop|stops? (the feature )?(always|regardless|whatever)' <paths>: read each hit that names an event as a hard stop"
+      ]
+    }
+  ]
+}

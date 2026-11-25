@@ -69,7 +69,7 @@ First confirm the feature worktree: `git -C <worktree> branch --show-current` mu
 
 - **No exploit, no confirmed finding.** A finding you cannot reproduce is reported as a **Possible risk**, with exactly what would need to be true for it to be exploitable. Never present a theoretical concern as a vulnerability.
 - **Severity:**
-  - **Blocker:** exploitable now, with a security impact (data exposure, code or query execution, privilege gain, account takeover, unbounded resource use). It stops the feature in every gate profile (`protocols/gates.md` §Hard stops).
+  - **Blocker:** exploitable now, with a security impact (data exposure, code or query execution, privilege gain, account takeover, unbounded resource use). It is a hard stop (`protocols/gates.md` §Hard stops).
   - **Major:** exploitable only under a plausible configuration or usage.
   - **Minor:** defense in depth is missing, but no path to exploit exists today.
 - **Report everything you can defend,** but do not repeat a finding under several categories.

@@ -87,7 +87,7 @@ The bootstrap happens once per project. If another feature in progress also boot
 
 **2. Detect.**
 - The Implementer runs `scripts/quality_gate.py`, which runs the limits, the comment check and every `checks` command.
-- At review levels R1 and R2, the clean Critic re-runs the gate and checks the `manual` entries against the diff (`protocols/review-cycle.md`).
+- At every review level that runs a critic (`protocols/review-cycle.md` §Review levels), the clean Critic re-runs the gate and checks the `manual` entries against the diff (`protocols/review-cycle.md`).
 - The Implementer and the Tester write unregistered recurring mistakes as candidates in the feature's `reports/anti-pattern-candidates.md`. Critics and verifiers only mark findings `candidate`; the orchestrator copies them into that file.
 
 Candidate format, one row per candidate:

@@ -74,7 +74,7 @@ Every message starts with a header line, then the body:
 | `DECISION` | principal → sub | id; the programmer's answer, verbatim where it matters |
 | `QUESTION` / `ANSWER` | either way | a clarification that is not a decision |
 | `OVERLAP` | principal → subs | the facts of a cross-group overlap and the decision id if the programmer must resolve it |
-| `DONE` | sub → principal | the feature reached final acceptance, integration and cleanup gates; links to the final report |
+| `DONE` | sub → principal | the feature reached final acceptance and the integration and cleanup hard stops (`protocols/gates.md` §Hard stops); links to the final report |
 
 A message is self-contained: the receiver acts on it without the sender's conversation.
 
