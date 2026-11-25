@@ -14,7 +14,7 @@ Facts to present when the programmer asks which mode to use:
 | --- | --- | --- |
 | Decisions | Every ⛔ gate is the programmer's | Same gates. A runner cannot talk to the programmer, so it cannot pass a gate that is on: it must stop and return it. A gate that is off it handles as `protocols/gates.md` §When a gate is off describes: what that section sends to the programmer stops it like a gate that is on; the rest it decides, records and reports, and continues |
 | What the programmer sees during a phase | Each agent's result, as it arrives | The phase's result at its gate; the runner's log in `delegations.md` on request |
-| Stopping or redirecting mid-phase | One agent at a time | Stop the whole runner (`TaskStop`), then relaunch the phase from the feature's `state.md` |
+| Stopping or redirecting mid-phase | One agent at a time | Stop the whole runner (`TaskStop`) as a stop everything (`SKILL.md` §7, *Pause and stop everything*), then relaunch the phase from the feature's `state.md` |
 | Agent questions | Agent → orchestrator → programmer | Agent → runner → orchestrator → programmer, and back |
 | Who verifies agents' claims | The orchestrator the programmer talks to | The runner; the orchestrator adds a cheap consistency check at each gate |
 | Orchestration cost | Measured once (3 features) | Not measured. A model in the skill repository's `docs/cost-estimates.md` gives estimates, built on assumed parameters |
@@ -91,4 +91,4 @@ Agents waiting on answers: <agent ID> (<role>), or none
 - **Reusing agents across phases.** `SKILL.md` §4, *Reusing agents*, decides when the same Implementer or Tester is resumed. In phased mode, those agents were launched by an earlier runner that no longer exists. Whether a later runner can resume them with `SendMessage` is **untested**; if it cannot, it replaces them through a relay whose notes it writes from the earlier agent's last report (`protocols/context-handoff.md` §Relay).
 
 - **Nesting.** Orchestrator → runner → role uses 2 of the 3 subagent levels Claude Code allows by default (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). In the hierarchical mode with the *Subagents* transport (`protocols/hierarchy.md`), sub-orchestrator → runner → role reaches 3 of 3: it works only at the default limit or above. With the *Agent team* or *Separate sessions* transports, a sub-orchestrator is a full session and uses phased mode like any orchestrator.
-- **Session end.** A runner lives only as long as the orchestrator's session. A phase interrupted by the end of the session is relaunched from `state.md`; work already written to disk is not redone.
+- **Session end.** A runner lives only as long as the orchestrator's session. A phase interrupted by the end of the session is relaunched from `state.md`; what it left on disk is handled as `SKILL.md` §7, *Pause and stop everything*, says.
