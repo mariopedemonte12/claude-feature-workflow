@@ -112,6 +112,38 @@ class PointersAndBareNames(SkillsCopy):
         self.assertFalse(self.reported("Run the critic (R1/R2) as `protocols/review-cycle.md` §Review levels says."))
 
 
+class PointerWindowBoundaries(SkillsCopy):
+    def test_t_l1_06_a_pointer_wrapped_inside_the_same_block_counts(self):
+        wrapped = [
+            "Integration is a hard\nstop (`protocols/gates.md`\n§Hard stops).",
+            "Integration is a hard stop\n(`protocols/gates.md` §Hard stops).",
+            "- Integration is a hard stop\n  (`protocols/gates.md` §Hard stops).",
+            "1. Integration is a hard stop\n   (`protocols/gates.md` §Hard stops).",
+            "> Integration is a hard stop\n> (`protocols/gates.md` §Hard stops).",
+            "| a | hard stop (`protocols/gates.md` §Hard stops) | b |",
+            "At R1 or R2\n(`protocols/review-cycle.md` §Review levels) a critic runs.",
+        ]
+        for text in wrapped:
+            with self.subTest(text=text):
+                self.assertFalse(self.reported(text))
+
+    def test_t_l1_06_a_pointer_in_another_block_does_not_count(self):
+        separate = [
+            "Integration is a hard stop.\n\nSee `protocols/gates.md` §Hard stops.",
+            "- Integration is a hard stop\n- `protocols/gates.md` §Hard stops",
+            "| a | hard stop | `protocols/gates.md` §Hard stops |",
+            "## Hard stop\n`protocols/gates.md` §Hard stops",
+        ]
+        for text in separate:
+            with self.subTest(text=text):
+                self.assertTrue(self.reported(text))
+
+    def test_t_l1_06_a_pointer_to_another_section_of_gates_does_not_count(self):
+        for section in ("Profiles", "Questions"):
+            with self.subTest(section=section):
+                self.assertTrue(self.reported(f"Per `protocols/gates.md` §{section}, a hard stop is relevant."))
+
+
 class RecallOfFingerprints(SkillsCopy):
     def test_td_3_review_rounds_with_a_number_is_a_cap_copy(self):
         self.assertTrue(self.reported("After 3 review rounds the feature stops."))
