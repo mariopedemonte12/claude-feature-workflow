@@ -242,6 +242,11 @@ class BaselinePower(unittest.TestCase):
         path = self.repo / source["file"]
         return path.exists() and rule_copies.section_span(rule_copies.markdown_lines(path), source["section"]) is not None
 
+    def test_only_the_relay_rule_lacks_a_source_in_the_baseline(self):
+        rules = json.loads(RULES_FILE.read_text(encoding="utf-8"))["rules"]
+        dropped = {rule["id"] for rule in rules if not self.has_source(rule["source"])}
+        self.assertEqual(dropped, {"RY-1"})
+
     def check(self, *paths):
         return base.run_check(self.repo, *paths, rules=self.rules)
 
