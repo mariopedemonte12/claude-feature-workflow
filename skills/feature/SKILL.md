@@ -151,7 +151,7 @@ Typical deviations (illustrative, not exhaustive):
 - You may use any model alias the Agent tool accepts in this session.
 - Programmer overrides (per role, per feature or per delegation) take precedence over your choice. If a pinned model proves insufficient, moving away from it is the programmer's decision: report the evidence.
 - When launching with a non-standard model, state it in one line, e.g. `[slug] Implementer → opus (standard: sonnet): migrates live data`.
-- Log every delegation in the feature's `delegations.md`, one row each: date · step · role · model · reason if non-standard · agent ID · last `subagent_tokens` · new or resumed · outcome (done · escalated · failed).
+- Log every delegation in the feature's `delegations.md`, one row each: date · step · role · model · reason if non-standard · agent ID · last `subagent_tokens` · new, resumed or relay (with its reason) · outcome (done · escalated · failed).
 - Different features may use different models for the same role.
 
 ### Delegation practice
@@ -162,22 +162,20 @@ Typical deviations (illustrative, not exhaustive):
 
 **Headless launches.** Every subagent runs in the background (`run_in_background: true` where the Agent tool offers it), so its tool calls and output never fill the programmer's screen. You are notified when it finishes. Do not paste, stream or summarize an agent's work as it happens: show the programmer one line when an agent starts or finishes (`[slug] Tester: done, 42/45 cases pass`), and the full content only at gates. Never wait with `sleep`.
 
-**Reusing agents.** This paragraph is the one source of when an agent is resumed and when a new one takes over. Record each agent's ID and its last reported `subagent_tokens` in the feature's `state.md` (§Workflow state, *Agents*) at every stop. When work returns to a role that already ran for this feature, **resume that same agent** with `SendMessage`, carrying only the new task and its IDs: it keeps its context, so it does not re-read the plan, the code or its own earlier work. This covers:
-- a short fix follow-up from testing or review to the Implementer: a pointed defect or one finding, not a round (below);
-- the Tester re-running after fixes;
-- a spec change going back to the Specification Writer or the Test Designer;
-- an intent change going back to the Test Designer, and the next increment, in EVO;
-- an agent's answer to its question (`protocols/agent-questions.md`).
+**Reusing agents.** This paragraph and the two after it are the one source of when an agent is resumed and when a new agent of the same role replaces it (a **relay**). Record, at every stop, each resumable agent's ID, its model and its last reported `subagent_tokens` (from its latest completion notification) in the feature's `state.md` (§Workflow state, *Agents*), so a fresh session can apply this rule. An agent with no recorded `subagent_tokens` is resumed, and its usage is recorded from its next notification. Critics, verifiers and specialist auditors are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
 
-**Token caps.** An agent is resumed only while its last reported `subagent_tokens` is at or below its model's cap: **200k** for `sonnet` and `opus`, **400k** for `haiku`. Above the cap, a **new** agent of the same role takes over (Claude Code's auto-compact setting is one per session, so per-model caps are this rule, not a setting).
+When work returns to a role that already ran for this feature, classify the next task. A **point follow-up** is at most 3 findings or defects in files already in the agent's context, the Tester re-running the tests those fixes touch, or an agent's answer to its own question (`protocols/agent-questions.md`). Other returning work: a spec change going back to the Specification Writer or the Test Designer and, in EVO, an intent change going back to the Test Designer and the next increment. Then:
+1. **Resume the same agent** with `SendMessage`, carrying only the new task and its IDs, when none of the cases of item 2 holds: in practice, a point follow-up at or below its model's cap, or other returning work in files already in its context while its usage is under 100k. It keeps its context, so it does not re-read the plan, the code or its own earlier work.
+2. **Replace it with a relay** (`protocols/context-handoff.md` §Relay) when any of these holds:
+   - its last reported `subagent_tokens` is above its model's cap;
+   - the task is a fix round larger than a point follow-up, or touches files the agent did not have in its context;
+   - the task is not a point follow-up and the usage is from 100k up to the cap;
+   - a different model was decided for the task;
+   - the agent cannot be resumed (a new session, the agent no longer exists, an error).
 
-Launch a new agent when:
-- the last reported `subagent_tokens` is above the cap of its model;
-- the fix round is larger than a point fix (several findings or several files): a new Implementer with a handoff, so it starts clean;
-- the old one cannot be resumed (a new session, the agent no longer exists, an error);
-- a different model was decided for the task.
+   Log the replacement and its reason in `delegations.md`. The new agent's brief includes the earlier agent's last report.
 
-The new agent starts with a handoff (`protocols/context-handoff.md`; you write it when the outgoing agent did not) and its brief includes the earlier agent's last report. Critics, verifiers and specialist auditors are **never** resumed: every round needs a clean context (`protocols/review-cycle.md`).
+**Token caps.** The cap is **200k** for `sonnet` and `opus` and **400k** for `haiku` (Claude Code's auto-compact setting is one per session, so per-model caps are this rule, not a setting). The 100k band is a **hypothesis** from one measured run: resumes at 79k–90k for point fixes were cheap, and no break-even between resuming and relaying was measured. Tune it when a run measures one.
 
 **Launching subagents into the feature worktree.**
 - **Every role** (except the early analyst, below) is launched **without** `isolation` and works in the feature worktree through absolute paths: `cd <worktree> && …` in each shell command (the working directory does not persist between a subagent's commands), `git -C <worktree> …`, and absolute paths for file tools. No role calls `EnterWorktree`: Claude Code refuses to switch an isolated agent into another worktree, and a non-isolated switch could move your session.
@@ -190,7 +188,7 @@ You are the <Role> for feature "<slug>" in a multi-agent feature workflow.
 Feature worktree: <absolute path to .claude/worktrees/<slug>> (branch <branch>). Every project file you read, run or write is inside it; never touch files outside it.
 Work only through absolute paths into that worktree: start every shell command with `cd <worktree> &&`. First confirm `git -C <worktree> branch --show-current` prints <branch>; if not, stop and report. Never call EnterWorktree.
 1. Read and follow your role file: <absolute path to roles/<role>.md>
-2. Read the handoff: <absolute path to handoff.md inside the worktree>. Open other artifacts only at the sections it references. (When no handoff was written for this agent, replace this line with the artifacts it needs and their sections, from the checklists in `protocols/context-handoff.md`.)
+2. Read the handoff: <absolute path to handoff.md inside the worktree>. Open other artifacts only at the sections it references. (When no handoff was written for this agent, replace this line with the artifacts it needs and their sections, from the checklists in `protocols/context-handoff.md`. For a relay, this line names the relay notes and the diff to read: `protocols/context-handoff.md` §Relay.)
 Skills for this phase: <absolute paths of the guides that apply, protocols/skills.md §Loading; omit the line if none>
 Task: <one concrete paragraph>
 Scope: <in scope / outside the intent, as read so far; report anything else the intent seems to reach as a discovery>
@@ -199,7 +197,7 @@ If you need an answer only the programmer can give, stop and ask as <absolute pa
 Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in the decision format.
 ```
 
-**Handoff to a new agent.** When you plan the next delegation and its incoming agent is new (`protocols/context-handoff.md`), the Task line of the outgoing agent's brief says so: `The incoming <Role> is new: write handoff.md (<transition>).` Without that line the agent writes no handoff.
+**Handoff to a new agent.** When you plan the next delegation and its incoming agent is new (`protocols/context-handoff.md`), the Task line of the outgoing agent's brief says so: `The incoming <Role> is new: write handoff.md (<transition>).` Without that line the agent writes no handoff. A new agent of a role that already ran for this feature takes over through a relay instead (§Reusing agents).
 
 **Critic, Verifier and specialist `audit` briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature or its implementation. The critic's brief adds the programmer's own words from `intent.md`, verbatim: `Original request: <…>`, `Consolidated intent (confirmed, version n): <…>` and `Statements since: <S-n, each verbatim>`. Nothing else about intent: never an unconfirmed proposal, the history or the specification, so the critic can check the reach of the intent (`roles/reviewer.md`). The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
 
@@ -253,6 +251,7 @@ The same shape serves `/feature status` and any catch-up the programmer asks for
 └── briefs/<role>.md                  # executor mode: briefs for the sessions the programmer opens
 
 <repo>/.quality/ or <git-common-dir>/quality/   # the registry, where the programmer chose at bootstrap; outlives features
+<git-common-dir>/feature-workflow/relay/<slug>/<role>.md   # relay notes (protocols/context-handoff.md §Relay); local, never committed
 ```
 
 DIRECT has no feature folder unless the programmer asks for a card.
