@@ -23,6 +23,6 @@ The script `scripts/post_compact_state.py` runs as a `SessionStart` hook with th
 - the Portfolio section of the project memory (`$(git rev-parse --git-common-dir)/feature-workflow/memory.md`);
 - for each claim with status `Active` (`$(git rev-parse --git-common-dir)/feature-workflow/claims/*.json`), the claim's `state.md` in its `featureFolder`, or, when the folder has no `state.md`, the *State* section of its `feature.md` card (EVO as executor, DIRECT with a card).
 
-It reads files only, never writes, and prints nothing when there is nothing to report, when the directory is not a git repository, or when the input is not what it expects. Each file is cut to a fixed size; a cut is marked and names the file to read in full. The hook is optional: without it, the orchestrator recovers by re-reading `state.md` and the memory, as `SKILL.md` §3 says.
+It reads files only, never writes, and prints nothing when there is nothing to report, when the directory is not a git repository, or when the input is not what it expects. Each file is cut to a fixed size; a cut is marked and names the file to read in full. The hook is optional: without it, the orchestrator recovers by re-reading `state.md` and the memory (`SKILL.md` §3).
 
 The programmer enables it: with the plugin, `hooks/hooks.json` does it; with a standalone install, they add the `SessionStart` entry shown in the README to their `settings.json`.
