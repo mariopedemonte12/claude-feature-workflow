@@ -31,7 +31,7 @@ flowchart TB
     IM --> CR["9 · Review at the validated level on the increment's diff<br/>R0 none · R1 critic · R2 critic, verifier, fixes"]
     CR --> CK["Check each finding (protocols/executor.md)<br/>Reproduced · Not reproduced · Unclear"]
     CK --> G2{"⛔ 10 · Increment gate<br/>results · findings and discoveries · deferred edge cases ·<br/>new consolidated intent · next increment<br/>fixes: reproducing test first, then the fix"}
-    G2 --> FX["11 · Evolve<br/>consolidate the intent, retire superseded cases"]
+    G2 --> FX["11 · Evolve<br/>consolidate the intent, cases revised (roles/test-designer.md)"]
     FX -->|"next increment"| IM
     FX -->|"completion criteria met"| G3{"⛔ 12–13 · Mutation testing once, final report, acceptance,<br/>integration, cleanup"}
 ```
@@ -54,7 +54,7 @@ Only what the feature needs: CLAUDE.md, the affected code and its tests, the bui
 
 Written into the card before any code:
 - **The intent record.** The request evolves as you talk, so the card keeps your original request verbatim, a consolidated intent you confirm at each gate (with the completion criteria: what "done" means for you), and your statements since, verbatim (S-1, S-2…), only those that change the intent. At each gate the session proposes a new consolidated version; once you confirm it, the absorbed statements move to an appendix, so the card does not grow with the conversation.
-- **Scope:** for each broad statement ("everywhere that…", "all…", "consistently"), the search run and the places found so far, including subclasses, overrides and copies of the same list. And what a reader might assume is included, marked as the session's reading, for you to confirm.
+- **Scope:** for each broad statement ("everywhere that…", "all…", "consistently"), the searches run, by concept (`knowledge/edge-cases.md` §Before code, step 1), and the places found so far, including subclasses, overrides and copies of the same list. And what a reader might assume is included, marked as the session's reading, for you to confirm.
 - **Nearest analog:** the existing feature of the project most like this one, with its `path:line`, and how it handles empty and invalid input, whitespace, exceptions from user objects, escaping and error messages.
 - **Main flows:** the feature's main flows, in order, as the possible split into increments.
 - **Cases** for every main flow: every case with its expected result, its source (your request, a statement, a decision, or existing behavior with `path:line`) and what the analog does: boundaries, empty and missing values, invalid values and encodings, error paths, duplicates and ordering, concurrency, security (escaping, injection, safe-marking, authorization), and the worst-case input. Cases of later flows may be revised when their increment starts.

@@ -330,6 +330,106 @@
       "searches": [
         "grep -rniE 'catch-up|transition|increment report|as a report' <paths>: read each hit about what the programmer is told unasked in auto"
       ]
+    },
+    {
+      "id": "CS-1",
+      "summary": "The first reach mapping of a broad statement searches by concept (meaning, synonyms, paraphrases, restatements, places that apply the rule without naming it), every search is recorded, and a place found late is recorded as a discovery with the search that found it. Naming the concept search (names) next to a pointer to knowledge/edge-cases.md §Before code, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/knowledge/edge-cases.md",
+        "section": "Before code"
+      },
+      "fingerprints": [
+        "\\bsearch\\w* (?:for )?the (?:meaning|concept|intent) of the rule\\b",
+        "\\b(?:synonyms?|paraphras\\w+|restatements?)\\b[^.;]{0,60}\\b(?:search|places?|apply|applies)\\b",
+        "\\bplaces? that (?:apply|applies|enforce|enforces) (?:it|the rule|a rule) without (?:naming|citing|mentioning)\\b",
+        "\\bnot only (?:by |for )?(?:the )?(?:literal|exact) (?:strings?|words?|text|wording)\\b",
+        "\\b(?:literal|exact) (?:strings?|words?|text)s? (?:alone )?(?:is|are) not enough\\b",
+        "\\bsearch(?:es)? that found (?:it|the place|them)\\b[^.;]{0,50}\\b(?:recorded|reused?|added)\\b",
+        "\\bmapping with only literal searches\\b"
+      ],
+      "names": [
+        "\\bsearch(?:ed|es)? by concept\\b",
+        "\\bby concept\\b[^.;]{0,40}\\bevery search\\b",
+        "\\bevery search (?:run )?(?:is |recorded|\\w+ recorded)"
+      ],
+      "pointer": "edge-cases\\.md|§ ?before code",
+      "searches": [
+        "grep -rniE 'by concept|synonym|paraphras|restatement|search(es)? (run|recorded)|found so far' <paths>: read each hit about how the reach of a broad statement is searched"
+      ]
+    },
+    {
+      "id": "DC-1",
+      "summary": "When a decision or statement that cases depend on changes during an increment, the Test Designer is resumed or relayed at once, before the Tester's next run, to retire or update every dependent case; with no dependent case it is not resumed; each case records what it depends on. Naming it (names) next to a pointer to roles/test-designer.md §Decisions that cases depend on, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/roles/test-designer.md",
+        "section": "Decisions that cases depend on"
+      },
+      "fingerprints": [
+        "\\bretire(?:s|d)? or update(?:s|d)? (?:every|all|each|the)\\b",
+        "\\bno case depends\\b",
+        "\\bnever runs? a case that asserts a superseded\\b",
+        "\\bcases? records? the decisions?\\b[^.;]{0,40}\\bdepend",
+        "\\bdependent cases?\\b[^.;]{0,50}\\b(?:retire|update|review|are found|can be found)",
+        "\\btest designer\\b[^.;]{0,50}\\b(?:is |are )?(?:not )?(?:resumed|relayed)\\b[^.;]{0,40}\\b(?:at once|immediately|when no case)",
+        "\\bsuperseded (?:decisions?|statements?)\\b[^.;]{0,50}\\b(?:cases?|tester)\\b[^.;]{0,30}\\b(?:never|must not|not)\\b"
+      ],
+      "names": [
+        "\\bbefore the tester'?s next run\\b",
+        "\\bcases? (?:that )?depend(?:s)? on (?:it|a decision|a changed)\\b"
+      ],
+      "pointer": "test-designer\\.md|§ ?decisions that cases depend on",
+      "searches": [
+        "grep -rniE 'depend(s|ent)? on|superseded|retire' <paths>: read each hit about what happens to cases when a decision changes"
+      ]
+    },
+    {
+      "id": "TX-1",
+      "summary": "Cases that check text artifacts assert the presence and meaning of what the source requires, not its exact wording, so a rewording that keeps the rule does not fail them. Naming it (names) next to a pointer to roles/test-designer.md §Cases that check text, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/roles/test-designer.md",
+        "section": "Cases that check text"
+      },
+      "fingerprints": [
+        "\\bassert(?:s|ing)? (?:the )?presence and (?:the )?meaning\\b",
+        "\\bnot (?:its |their |the )?exact (?:wording|text|phrasing)\\b",
+        "\\b(?:rewording|reworded)\\b[^.;]{0,60}\\b(?:does not|doesn't|must not|should not|never) fail\\b",
+        "\\bbrittle\\b[^.;]{0,40}\\b(?:text|pattern|wording|checks?)\\b",
+        "\\b(?:text|prose) (?:checks?|assertions?)\\b[^.;]{0,60}\\b(?:meaning|wording|rewording)\\b"
+      ],
+      "names": [
+        "\\btext checks?\\b"
+      ],
+      "pointer": "test-designer\\.md|§ ?cases that check text",
+      "searches": [
+        "grep -rniE 'wording|brittle|rewording|text (check|artifact)|presence and meaning' <paths>: read each hit about how tests check prose"
+      ]
+    },
+    {
+      "id": "CV-1",
+      "summary": "Every copy of a touched rule is searched across skills/, README.md and docs/ and fixed in the same round; verification commands (copy checker, unit tests, quality gate) run after committing, on a clean tree, as separate steps. Naming it (names) next to a pointer to roles/implementer.md §Rules touched and verification, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/roles/implementer.md",
+        "section": "Rules touched and verification"
+      },
+      "fingerprints": [
+        "\\b(?:search|find|grep)\\w*\\b[^.;]{0,60}\\ball (?:its |the |their )?copies\\b",
+        "\\b(?:search|find|grep)\\w*\\b[^.;]{0,60}\\bevery copy\\b",
+        "\\bcop(?:y|ies)\\b[^.;]{0,50}\\b(?:fixed|fix|updated?|corrected) in the same (?:round|commit|pass)\\b",
+        "\\bfix(?:es|ed)? (?:them|every copy|all copies)\\b[^.;]{0,30}\\bsame (?:round|pass)\\b",
+        "\\btests? compare the base commit with the committed head\\b",
+        "\\buncommitted changes proves? nothing\\b",
+        "\\bseparate steps?\\b[^.;]{0,60}\\b(?:clean tree|committ)",
+        "\\b(?:clean tree|committing)\\b[^.;]{0,60}\\bas separate steps?\\b"
+      ],
+      "names": [
+        "\\bafter committing\\b",
+        "\\bon a clean tree\\b",
+        "\\bcopies of (?:the |a )?rules? (?:it |you )?touch"
+      ],
+      "pointer": "implementer\\.md|§ ?rules touched and verification",
+      "searches": [
+        "grep -rniE 'all copies|every copy|copies of|clean tree|after committing|same round' <paths>: read each hit about copies of a touched rule and when verification runs"
+      ]
     }
   ]
 }

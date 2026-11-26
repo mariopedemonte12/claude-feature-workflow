@@ -10,8 +10,8 @@ In scope: … Out of scope: …
 
 ## Functional scenarios
 
-| ID | Increment (EVO) | Scenario | Type (positive · negative · error · security · worst case · integration · regression) | Technique | Covers (AC/FR/INV) or source (S-n · intent vN · D-n · `path:line`) | Input or setup | Expected result (from the source) | Status (planned · implemented · passed · failed · retired) |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ID | Increment (EVO) | Scenario | Type (positive · negative · error · security · worst case · integration · regression) | Technique | Covers (AC/FR/INV) or source (S-n · intent vN · D-n · `path:line`) | Depends on (D-n · S-n; `roles/test-designer.md` §Decisions that cases depend on) | Input or setup | Expected result (from the source) | Status (planned · implemented · passed · failed · retired) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## End-to-end
 

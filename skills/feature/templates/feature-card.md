@@ -9,7 +9,7 @@ The intent record, as `templates/intent.md` describes. The programmer's words ar
 - Statements since the last consolidation: verbatim, only those that change the intent: S-n · date · statement · prompted by (Q-n, D-n, gate, unprompted) · what it changes. Absorbed statements move to the card appendix, under the version that absorbed them.
 
 ## Scope
-- Reach: for each broad statement of the programmer's words, the search run and the places found so far.
+- Reach: for each broad statement of the programmer's words, the searches run (`knowledge/edge-cases.md` §Before code, step 1) and the places found so far.
 - Outside the intent: each item marked *programmer* (S-n) or *reading* (to confirm).
 
 ## Discoveries
@@ -25,7 +25,7 @@ The existing feature most like this one, `path:line`, and how it handles empty a
 ## Cases
 The executable criteria: no other section restates what the feature must do.
 
-| ID | Increment | Case (input or setup) | Type (positive · negative · error · security · worst case) | Expected result | Source (request · S-n · D-n · `path:line`) | Analog does | Status (planned · passed · failed · deferred to # · retired) |
+| ID | Increment | Case (input or setup) | Type (positive · negative · error · security · worst case) | Expected result | Source (request · S-n · D-n · `path:line`) · depends on (`roles/test-designer.md` §Decisions that cases depend on) | Analog does | Status (planned · passed · failed · deferred to # · retired) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Decisions

@@ -44,7 +44,7 @@ Approved spec version · confirmed FR/AC/INV IDs · reach of the intent and outs
 Approved approach (D ref) · alternatives not chosen, with the reason only when that prevents re-litigating · technical decisions · affected files and components · dependencies · implementation sequence · risks · `testing-plan.md` (the behaviors the code must handle; the Implementer writes no tests, except `SKILL.md` §4) · decisions still pending and what must not be touched until they are made · verification depth (mutation testing yes or no · review level R0 / R1 / R2) · end-to-end harness · registry entries (AP IDs) relevant to the change.
 
 **Implementation → Testing** (critics and verifiers never read handoffs: `protocols/review-cycle.md` §Clean context)
-Implemented functionality by FR/AC · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · how to start the system for end-to-end tests · quality gate result · suggested testing focus.
+Implemented functionality by FR/AC · verification run after committing on a clean tree (`roles/implementer.md` §Rules touched and verification) · files modified · actual behavior implemented · deviations from the plan, with D refs · assumptions · known limitations · test commands · test data and setup · higher-risk areas · base commit for the diff · how to start the system for end-to-end tests · quality gate result · suggested testing focus.
 
 **Testing → Evolution** (EVO)
 Tests executed, with results and evidence · failures · uncovered scenarios · discrepancies between the intent or cases and the implementation · newly discovered behavior (as hypotheses or discoveries) · deferred edge cases still open · invalidated assumptions · risks · possible intent, case or plan changes, phrased as options with your recommendation, labeled (`protocols/decisions.md`).
@@ -78,7 +78,7 @@ A relay replaces an agent by a new agent of the **same role**, when `SKILL.md` �
 - <rule, copy or component>: <path:line, …> · proof: `<grep or command that finds every place>`
 
 ## Verification
-- `<command>`: what it checks · trap: <what makes it pass or fail for the wrong reason, e.g. "run only after committing, on a clean tree">
+- `<command>`: what it checks · trap: <what makes it pass or fail for the wrong reason, e.g. a verification run on uncommitted changes (`roles/implementer.md` §Rules touched and verification)>
 
 ## Decisions in force
 - D-NNN: <one line>

@@ -29,6 +29,16 @@ Do **not** read `implementation-plan.md`, the planner's options or any implement
 6. **EVO, per increment:** design the cases of the increment's flow, including its edge, error, security and worst-case cases. List any edge case of that flow you would design but the increment defers, so the orchestrator can ask the programmer to defer it explicitly. When a source statement is superseded, retire its cases (they keep their IDs) and design the new ones.
 7. **Traceability check:** every AC (in EVO, every part of the consolidated intent and every behavior-settling decision in scope for the increment) has at least one case, and every case has a source. Report what has no case, and any case you would need but cannot justify from the sources.
 
+## Decisions that cases depend on
+
+- Each case records the decision(s) and statement(s) it depends on (D-ID, S-ID, intent version, spec ID) in the *Depends on* column of `testing-plan.md`, so that the dependent cases of a changed decision can be found.
+- When a decision or a statement that cases depend on changes during an increment (not only at the increment gate), you are resumed or relayed at once (`SKILL.md` §4, *Reusing agents*) before the Tester's next run. Retire or update every case that depends on it (a retired case keeps its ID; a case whose source is superseded is never left active). The Tester never runs a case that asserts a superseded decision.
+- When no case depends on the change, you are not resumed.
+
+## Cases that check text
+
+A case that checks a text artifact (a rule in prose, a document) asserts the presence and the meaning of what the source requires, not its exact wording, so that an intended rewording that keeps the rule does not fail it. When the meaning changes, the case fails.
+
 ## Do not
 
 - Invent expected results, requirements or behaviors your sources do not state.

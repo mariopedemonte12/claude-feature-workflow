@@ -16,7 +16,7 @@ One session does the whole feature with the edge-case checklist: no specificatio
 
 **4. Implement and test.** Code that follows the active guides, a test for every case, the project's tests, lint and type checks, and, if the library guides are active, `python3 <skill dir>/scripts/quality_gate.py --repo <repo> --base <base>`.
 
-**5. Self-review** (`knowledge/edge-cases.md` §After code), and fix what it finds. A clean critic (`roles/reviewer.md`, a new `opus` subagent, as in `protocols/executor.md` §The critic) runs only if the programmer asks for one; its rounds, their cap and the stop at the cap follow `protocols/review-cycle.md` §R2 · The cycle.
+**5. Self-review** (`knowledge/edge-cases.md` §After code), and fix what it finds; every rule you touched is searched for its copies and the verification runs after committing, on a clean tree (`roles/implementer.md` §Rules touched and verification). A clean critic (`roles/reviewer.md`, a new `opus` subagent, as in `protocols/executor.md` §The critic) runs only if the programmer asks for one; its rounds, their cap and the stop at the cap follow `protocols/review-cycle.md` §R2 · The cycle.
 
 **6. Report.** Files changed; test commands and their real results; the reach found and the cases covered; questions asked and answers; anything you saw that the request seems to reach and you did not do, as a discovery (`protocols/decisions.md` rule 9), never dropped silently; self-review findings and their fixes; the commits made after the last critic round (with no critic, that none ran), listed as unreviewed (`protocols/review-cycle.md` §R2 · The cycle).
 

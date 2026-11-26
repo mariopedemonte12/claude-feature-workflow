@@ -28,7 +28,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 **1. Understand and explore.** Start the intent record with the request verbatim, and the refinement's output if it ran, as `workflows/sdd.md` step 1 describes. Delegate broad inspection to the Repository Analyst: existing behavior of the area, the nearest analog of the feature in the project, constraints, test framework and E2E tooling. Separate known from unknown, product from technical uncertainties, and classify each uncertainty as *blocking now* or *investigable later*.
 
 **2. Intent pass.** Without writing a specification, prepare the first gate from the request and the analyst's evidence:
-- the reach of each broad statement, with the search run and the places found so far (`knowledge/specification-guide.md` §Process, step 2);
+- the reach of each broad statement, as `knowledge/edge-cases.md` §Before code, step 1, requires, and the places found so far (`knowledge/specification-guide.md` §Process, step 2);
 - the ambiguity checklist of `knowledge/specification-guide.md`, kept to what blocks the first increment;
 - the main flows the feature has, as candidates for the first increments;
 - the specialists whose signals match, from the skill index (`protocols/skills.md`);
@@ -48,7 +48,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 
 **6. Plan the increment.** You write its entry in `implementation-plan.md` (*Increments*): the flow it delivers, the hypotheses it confirms or rejects and how, its done criteria, and the edge cases of that flow it covers or defers. **A deferred edge case needs a decision** (D-ID) naming the increment that will cover it, the programmer's or, with the `increment` gate off, the agent's, recorded as such; edge cases never accumulate silently. The first increment's entry is the one approved at the approach gate.
 
-**7. Implement.** Brief the Implementer (`roles/implementer.md`); for later increments, the same Implementer is resumed or replaced through a relay, as `SKILL.md` §4, *Reusing agents*, decides. It writes production code only, for the increment's flow and the cases planned for it. It follows the approved approach, keeps changes focused, adds no speculative functionality and records discoveries and invalidated assumptions.
+**7. Implement.** Brief the Implementer (`roles/implementer.md`); for later increments, the same Implementer is resumed or replaced through a relay, as `SKILL.md` §4, *Reusing agents*, decides. It writes production code only, for the increment's flow and the cases planned for it. It follows the approved approach, keeps changes focused, adds no speculative functionality and records discoveries and invalidated assumptions. Every rule it touches is searched for its copies and its verification runs after committing (`roles/implementer.md` §Rules touched and verification).
 
 **8. Discoveries.** For each discovery, note its relation to the intent (`protocols/decisions.md` rule 9) and its impact: affected intent items (S-IDs, consolidated version), components, cases and tests, decisions, and the estimated consequences, with the minimum change that would satisfy the need as *one* option among the viable ones. **Only a discovery that blocks the work stops the increment** (⛔ `[gate: discoveries]` at once); every other one goes to the increment gate.
 
@@ -65,7 +65,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 - **Next:** the next increment's entry (flow, hypotheses, edge cases covered or deferred), or, if the completion criteria in the intent record are met, the move to finalization. The programmer may also regroup the remaining increments: merge them into one, split one, reorder them. If the approach is in question, the approach gate instead.
 - **Anti-pattern candidates** of the increment (`protocols/anti-pattern-registry.md` §The learning loop).
 
-**11. Evolve.** Apply what the programmer decided: consolidate the intent on their confirmation (`templates/intent.md`); record the hypotheses' statuses and the next increment's entry in the plan (with its change log); the Test Designer, resumed or relayed as `SKILL.md` §4, *Reusing agents*, decides, updates the affected cases and designs the next increment's. A case whose source statement was superseded is retired, never left active, and keeps its ID. Then go to step 6, or to finalization when step 10 decided it.
+**11. Evolve.** Apply what the programmer decided: consolidate the intent on their confirmation (`templates/intent.md`); record the hypotheses' statuses and the next increment's entry in the plan (with its change log); the Test Designer, resumed or relayed as `SKILL.md` §4, *Reusing agents*, decides, updates the affected cases and designs the next increment's. A change of a decision or statement during an increment does not wait for this step, and a case whose source was superseded is never left active: `roles/test-designer.md` §Decisions that cases depend on. Then go to step 6, or to finalization when step 10 decided it.
 
 ## Phase 4: Finalization
 

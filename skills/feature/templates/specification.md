@@ -19,7 +19,7 @@ Why this feature exists and what outcome it produces (2–5 sentences).
 
 ## Reach of the intent
 
-For each broad statement in the request: the search run and the places found so far.
+For each broad statement in the request: the searches run (`knowledge/edge-cases.md` §Before code, step 1) and the places found so far.
 
 | Statement (quoted, with its source: original request or S-n) | Search | Places found so far |
 | --- | --- | --- |
