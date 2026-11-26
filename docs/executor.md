@@ -31,7 +31,7 @@ flowchart TB
     IM --> CR["9 · Review at the validated level on the increment's diff<br/>R0 none · R1 critic · R2 critic, verifier, fixes"]
     CR --> CK["Check each finding (protocols/executor.md)<br/>Reproduced · Not reproduced · Unclear"]
     CK --> G2{"⛔ 10 · Increment gate<br/>results · findings and discoveries · deferred edge cases ·<br/>new consolidated intent · next increment<br/>fixes: reproducing test first, then the fix"}
-    G2 --> FX["11 · Evolve<br/>consolidate the intent, dependent cases updated (roles/test-designer.md)"]
+    G2 --> FX["11 · Evolve<br/>consolidate the intent, cases revised (roles/test-designer.md)"]
     FX -->|"next increment"| IM
     FX -->|"completion criteria met"| G3{"⛔ 12–13 · Mutation testing once, final report, acceptance,<br/>integration, cleanup"}
 ```
