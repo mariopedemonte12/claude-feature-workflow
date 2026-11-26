@@ -64,7 +64,7 @@ Scope · tool · score · surviving mutants · gaps · limitations, or "Not perf
 
 ## Review
 
-Level (R0 / R1 / R2, D-NNN) · rounds run and why the cycle stopped · the commits made after the last critic round, each with its hash, marked **unreviewed** (`protocols/review-cycle.md` §R2 · The cycle) · per round: findings raised, VALID / INVALID / AMBIGUOUS, fixed automatically, sent to the gate · how each remaining finding was resolved · Nits not applied · share of INVALID findings.
+Level (R0 / R1 / R2, D-NNN) · rounds run and why the cycle stopped · the commits made after the last critic round, each with its hash, marked **unreviewed** (`protocols/review-cycle.md` §Round cap) · per round: findings raised, VALID / INVALID / AMBIGUOUS, fixed automatically, sent to the gate · how each remaining finding was resolved · Nits not applied · share of INVALID findings.
 
 ## Remaining hypotheses (EVO)
 

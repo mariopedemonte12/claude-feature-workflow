@@ -6,6 +6,7 @@ import unittest
 import subprocess
 from pathlib import Path
 
+import rule_copies
 import test_rule_copies as base
 
 REPOSITORY = base.REPOSITORY
@@ -30,6 +31,43 @@ def rule_searches():
 
 def recorded_pattern(rule):
     return re.search(r"'([^']+)'", rule_searches()[rule][0]).group(1)
+
+
+def section(relative, title):
+    lines = rule_copies.markdown_lines(REPOSITORY / relative)
+    start, end = rule_copies.section_span(lines, title)
+    return "\n".join(lines[start:end])
+
+
+def flat(text):
+    return re.sub(r"\s+", " ", re.sub(r"[*`]", "", text))
+
+
+def rules():
+    return {rule["id"]: rule for rule in json.loads(RULES_FILE.read_text(encoding="utf-8"))["rules"]}
+
+
+def new_rules_recorded(identifiers, minimum_fingerprints):
+    class NewRulesRecorded(unittest.TestCase):
+        def setUp(self):
+            self.rules = rules()
+
+        def test_each_new_rule_has_a_source_fingerprints_and_a_concept_search(self):
+            for identifier in identifiers:
+                with self.subTest(rule=identifier):
+                    rule = self.rules[identifier]
+                    self.assertTrue(rule["fingerprints"] and rule["searches"] and rule["source"]["section"])
+                    re.compile(recorded_pattern(identifier))
+
+        def test_the_fingerprints_find_the_wording_of_their_own_source(self):
+            for identifier in identifiers:
+                rule = self.rules[identifier]
+                source = flat(section(rule["source"]["file"], rule["source"]["section"]))
+                found = [pattern for pattern in rule["fingerprints"] if re.search(pattern, source, re.IGNORECASE)]
+                with self.subTest(rule=identifier):
+                    self.assertGreaterEqual(len(found), minimum_fingerprints, found)
+
+    return NewRulesRecorded
 
 
 class SkillsCopy(unittest.TestCase):

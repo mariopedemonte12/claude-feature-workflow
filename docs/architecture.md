@@ -153,7 +153,7 @@ flowchart TB
 | `approach` | stops | stops when options differ in API, data, dependencies or shared structure | agent |
 | `depth` (testing plan, mutation, review level, E2E harness) | stops | agent: defaults; review level per `protocols/gates.md` §When a gate is off | same |
 | `increment` (EVO) | stops | report and continue, unless a gate still on or a stop in `protocols/gates.md` applies | same, as a catch-up (`SKILL.md` §5) |
-| `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings (a security Blocker always stops) and the rest to acceptance | same |
+| `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings (a security Blocker always stops) and the rest to acceptance (cap with one open: stop, `protocols/review-cycle.md` §Round cap) | same |
 | `discoveries` | stops | stops when outside or contradicting the intent | agent: covered ones fixed, outside ones not built, listed; contradicting: stops |
 | `candidates` | stops | at acceptance | listed only |
 | `acceptance` | stops | stops | stops |
@@ -302,10 +302,11 @@ flowchart LR
     V -->|"Nits"| FRP["Final report"]
     I --> STOP{"Stop?<br/>stop rule in<br/>protocols/review-cycle.md"}
     STOP -->|"no"| C
+    STOP -->|"cap with Blocker/Major open"| H{"⛔ Programmer<br/>(§Round cap)"}
     STOP -->|"yes"| RT["Tester re-runs affected<br/>regression and E2E"]
 ```
 
-- **Cap reached with a Blocker or Major open** (`protocols/review-cycle.md` §R2 · The cycle): the feature stops and asks the programmer, in every profile. Commits made after the last round reach acceptance marked unreviewed (`protocols/review-cycle.md`).
+- **Cap reached with a Blocker or Major open** (`protocols/review-cycle.md` §Round cap): the feature stops and asks the programmer, in every profile. Commits made after the last round reach acceptance marked unreviewed (`protocols/review-cycle.md`).
 
 - **Review level:** the default, the recommendation and what a standing "accept your recommendation" covers are in `protocols/review-cycle.md` §Review levels; with the `depth` gate off, `protocols/gates.md` §When a gate is off decides.
 - **Automatic fixes** happen only at R2, except that with the `defects` gate off the Implementer (resumed or relayed, `SKILL.md` §4, *Reusing agents*) fixes the critic's and the Tester's covered Blocker and Major at any level (`protocols/gates.md`). Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).

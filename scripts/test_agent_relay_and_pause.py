@@ -1,9 +1,8 @@
-import json
 import re
 import unittest
 
 import test_rule_copies as base
-from inc1_support import REPOSITORY, RULES_FILE, SkillsCopy, recorded_pattern
+from inc1_support import REPOSITORY, SkillsCopy, flat, new_rules_recorded, rules, section
 
 FEATURE = REPOSITORY / "skills" / "feature"
 SKILL = "skills/feature/SKILL.md"
@@ -19,30 +18,10 @@ PAUSE_POINTER = "`SKILL.md` §7, *Pause and stop everything*"
 CATCH_UP_POINTER = "`SKILL.md` §5, *Catch-up in `auto`*"
 
 
-def section(relative, title):
-    lines = (REPOSITORY / relative).read_text(encoding="utf-8").splitlines()
-    start = lines.index(f"## {title}") + 1
-    taken, in_fence = [], False
-    for line in lines[start:]:
-        in_fence ^= line.startswith("```")
-        if line.startswith("## ") and not in_fence:
-            break
-        taken.append(line)
-    return "\n".join(taken)
-
-
-def flat(text):
-    return re.sub(r"\s+", " ", re.sub(r"[*`]", "", text))
-
-
 def paragraph(text, opening):
     start = text.index(opening)
     end = text.find("\n\n", start)
     return text[start:end if end != -1 else len(text)]
-
-
-def rules():
-    return {rule["id"]: rule for rule in json.loads(RULES_FILE.read_text(encoding="utf-8"))["rules"]}
 
 
 class ReuseRuleSource(unittest.TestCase):
@@ -189,24 +168,7 @@ class Pointers(unittest.TestCase):
                 self.assertNotRegex((REPOSITORY / relative).read_text(encoding="utf-8"), r"new (?:agent|Implementer)[^.]{0,30}with a handoff")
 
 
-class NewRulesRecorded(unittest.TestCase):
-    def setUp(self):
-        self.rules = rules()
-
-    def test_each_new_rule_has_a_source_fingerprints_and_a_concept_search(self):
-        for identifier in NEW_RULES:
-            with self.subTest(rule=identifier):
-                rule = self.rules[identifier]
-                self.assertTrue(rule["fingerprints"] and rule["searches"] and rule["source"]["section"])
-                re.compile(recorded_pattern(identifier))
-
-    def test_the_fingerprints_find_the_wording_of_their_own_source(self):
-        for identifier in NEW_RULES:
-            rule = self.rules[identifier]
-            source = flat(section(rule["source"]["file"], rule["source"]["section"]))
-            found = [pattern for pattern in rule["fingerprints"] if re.search(pattern, source, re.IGNORECASE)]
-            with self.subTest(rule=identifier):
-                self.assertGreaterEqual(len(found), 3, found)
+NewRulesRecorded = new_rules_recorded(NEW_RULES, 3)
 
 
 class Restatements(SkillsCopy):
@@ -298,7 +260,7 @@ class Restatements(SkillsCopy):
 
 class CurrentTree(unittest.TestCase):
     def test_no_copy_of_the_new_rules_anywhere(self):
-        code, output, _ = base.run_check(REPOSITORY)
+        _, output, _ = base.run_check(REPOSITORY)
         reported = [line for line in output.splitlines() if any(f" {rule} " in line for rule in NEW_RULES)]
         self.assertEqual(reported, [])
 
