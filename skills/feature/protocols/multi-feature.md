@@ -12,7 +12,7 @@ Every feature in progress has:
 - a **status**: Active · Paused · Done (pausing or stopping a feature with running agents: `SKILL.md` §7, *Pause and stop everything*);
 - a current phase/step, running agents and pending decisions.
 
-Each feature's `state.md` (§Workflow state, written at every stop) is its persistent source of truth. The portfolio board is **derived** from those files plus the agents currently running, so there is no separate registry file to keep in sync.
+Each feature's `state.md` (§Workflow state; when it is written: `protocols/context-handoff.md` §Resume state) is its persistent source of truth. The portfolio board is **derived** from those files plus the agents currently running, so there is no separate registry file to keep in sync.
 
 On `/feature status`, when the programmer asks, or when the state of several features changed in one turn, show the board:
 
@@ -35,7 +35,7 @@ Rows are alphabetical by slug. Above the board, the catch-up of `SKILL.md` §5 *
 ## Independence and scheduling
 
 - **A gate blocks only its own feature.** While a feature waits for the programmer, keep the others moving.
-- Launch independent agents in parallel, within and across features. Name each with its Agent `description`: `[slug] <Role>: <task>`.
+- Parallel launches: `SKILL.md` §4, *Delegation practice* (Grouping). Name each with its Agent `description`: `[slug] <Role>: <task>`.
 - **When an agent finishes:**
   1. identify its feature;
   2. verify the output;

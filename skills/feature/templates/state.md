@@ -1,4 +1,4 @@
-<!-- Resume state. Written at every stop (a gate, a pending question, the end of the turn, a pause or a stop everything: `SKILL.md` §7) by whoever drives the session: the orchestrator, a phase runner, or the SDD executor (`protocols/context-handoff.md` §Resume state). Overwritten each time. In EVO as executor, and in DIRECT with a card, the card's *State* replaces it; DIRECT without a card has none. Omit any section that has no content. -->
+<!-- Resume state. When and by whom it is written: `protocols/context-handoff.md` §Resume state. Overwritten each time. In EVO as executor, and in DIRECT with a card, the card's *State* replaces it; DIRECT without a card has none. Omit any section that has no content. -->
 # State: <slug>
 
 ## Workflow state

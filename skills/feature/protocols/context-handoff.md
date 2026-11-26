@@ -104,5 +104,5 @@ A relay replaces an agent by a new agent of the **same role**, when `SKILL.md` Â
 - the phase deliverable exists;
 - important decisions are recorded;
 - unresolved issues are documented;
-- when the incoming agent is new, the handoff is written and checked by the orchestrator (otherwise the brief names the artifacts);
+- the handoff is written and checked by the orchestrator when Â§Who writes it calls for one (otherwise the brief names the artifacts);
 - the next agent can start without reconstructing the previous phase.

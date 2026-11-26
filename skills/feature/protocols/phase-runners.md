@@ -50,7 +50,7 @@ It keeps everything that needs the programmer or spans features:
 2. **Consistency check**, one batched command per gate: `git -C <worktree> status --porcelain` and `git -C <worktree> diff --stat <base>`, plus the existence of the reports the phase must produce. Code changes before the plan is approved, or a missing report, are reported to the programmer as facts.
 3. Gates of several features that are ready together are presented in one message, grouped by feature.
 
-**Launching runners.** One runner per feature and phase, never reused for the next phase. Runners of different features launch together in one message. Within one feature, never two runners at once. Standard model `sonnet`; `opus` for Critical features; never `haiku`. Log each runner in `delegations.md` as role *Phase runner*.
+**Launching runners.** One runner per feature and phase, never reused for the next phase. Runners of different features launch together in one message. Within one feature, never two runners at once. Model: `SKILL.md` §4, *Model selection per delegation* (floors included). Log each runner in `delegations.md` as role *Phase runner*.
 
 **Runner brief:**
 
