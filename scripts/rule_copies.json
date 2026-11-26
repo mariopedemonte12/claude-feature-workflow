@@ -168,7 +168,7 @@
       "summary": "When the critic-round cap is reached with a Blocker or Major finding of any round still open, the feature stops and asks the programmer. What counts as open is always a copy outside the source; naming the stop (names) next to a pointer to the source, in the same paragraph, cell or list item and within 60 characters, is not.",
       "source": {
         "file": "skills/feature/protocols/review-cycle.md",
-        "section": "R2 · The cycle"
+        "section": "Round cap"
       },
       "fingerprints": [
         "\\bverifier refuted\\b|\\brefuted by the verifier\\b",
@@ -184,7 +184,7 @@
         "\\brounds (?:run|ran) out[^.;]{0,40}\\b(?:blocker|major)s?\\b",
         "\\b(?:blocker|major)s?[^.;]{0,30}\\bopen (?:at|when|after) the (?:round )?cap\\b"
       ],
-      "pointer": "protocols/review-cycle\\.md|§ ?r2 . the cycle",
+      "pointer": "protocols/review-cycle\\.md|§ ?round cap",
       "searches": [
         "grep -rniE 'cap|rounds? run out|(blocker|major)[^.]*open' <paths>: read each hit about what happens when the critic rounds end with findings open"
       ]
@@ -194,7 +194,7 @@
       "summary": "Commits made after the last critic round (its fixes included) are listed with their hashes as unreviewed before acceptance, never presented as reviewed. Naming them as unreviewed (names) next to a pointer to the source, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
       "source": {
         "file": "skills/feature/protocols/review-cycle.md",
-        "section": "R2 · The cycle"
+        "section": "Round cap"
       },
       "fingerprints": [
         "\\bnever (?:be )?presented as reviewed\\b",
@@ -205,7 +205,7 @@
         "\\bunreviewed\\b",
         "\\bcommits?\\b[^.;]{0,40}\\bnot (?:been )?reviewed\\b"
       ],
-      "pointer": "protocols/review-cycle\\.md|§ ?r2 . the cycle",
+      "pointer": "protocols/review-cycle\\.md|§ ?round cap",
       "searches": [
         "grep -rniE 'unreviewed|not (been )?reviewed|after the last (critic )?round' <paths>: read each hit about commits that no critic saw"
       ]
@@ -247,7 +247,8 @@
         "\\bcaps? (?:of|is|at|=) (?P<value>\\d+) ?k\\b",
         "\\b(?:from|over|above|under|below|past) (?P<value>\\d+) ?k(?: tokens)?\\b[^.;]{0,40}\\b(?:resum|relay|replac|cap|band|follow-up)",
         "\\b(?:resum|relay|replac)\\w*\\b[^.;]{0,60}\\b(?:from|over|above|under|below|past) (?P<value>\\d+) ?k\\b",
-        "\\b(?P<value>\\d+) ?k band\\b|\\bband (?:of |from )?(?P<value2>\\d+) ?k\\b",
+        "\\b(?P<value>\\d+) ?k band\\b",
+        "\\bband (?:of |from )?(?P<value>\\d+) ?k\\b",
         "\\bpoint follow-ups?\\b[^.;]{0,40}\\b(?:up to|at most|no more than) (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) (?:findings|defects)\\b",
         "\\b(?:up to|at most|no more than) (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) (?:findings|defects)\\b[^.;]{0,60}\\b(?:context|resum|follow-up)",
         "\\bsubagent_tokens\\b[^.;]{0,40}\\b(?:at or below|above|below|under|over|exceeds?|beyond)\\b",

@@ -287,10 +287,11 @@ flowchart LR
     V -->|"Nits"| FRP["Final report"]
     I --> STOP{"Stop?<br/>stop rule in<br/>protocols/review-cycle.md"}
     STOP -->|"no"| C
+    STOP -->|"cap with Blocker/Major open"| H{"⛔ Programmer<br/>(§Round cap)"}
     STOP -->|"yes"| RT["Tester re-runs affected<br/>regression and E2E"]
 ```
 
-- **Cap reached with a Blocker or Major open** (`protocols/review-cycle.md` §R2 · The cycle): the feature stops and asks the programmer, in every profile. Commits made after the last round reach acceptance marked unreviewed (`protocols/review-cycle.md`).
+- **Cap reached with a Blocker or Major open** (`protocols/review-cycle.md` §Round cap): the feature stops and asks the programmer, in every profile. Commits made after the last round reach acceptance marked unreviewed (`protocols/review-cycle.md`).
 
 - **Review level:** the default, the recommendation and what a standing "accept your recommendation" covers are in `protocols/review-cycle.md` §Review levels; with the `depth` gate off, `protocols/gates.md` §When a gate is off decides.
 - **Automatic fixes:** when they run is in `protocols/review-cycle.md` §R2 · The cycle and `protocols/gates.md` §Profiles. Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).

@@ -1,30 +1,19 @@
-import json
 import re
 import unittest
 
-from inc1_support import REPOSITORY, RULES_FILE, SkillsCopy, recorded_pattern
+from inc1_support import REPOSITORY, SkillsCopy, flat, new_rules_recorded, section
 
 FEATURE = REPOSITORY / "skills" / "feature"
 REVIEW_CYCLE = "skills/feature/protocols/review-cycle.md"
 GATES = "skills/feature/protocols/gates.md"
-CAP_POINTER = "`protocols/review-cycle.md` §R2 · The cycle"
+CAP_POINTER = "`protocols/review-cycle.md` §Round cap"
 AUTO_POINTER = "`protocols/gates.md` §When a gate is off"
 NEW_RULES = ("RC-2", "RC-3", "AU-1")
 
 
-def section(relative, title):
-    text = (REPOSITORY / relative).read_text(encoding="utf-8")
-    match = re.search(rf"^## {re.escape(title)}\n(.*?)(?=^## |\Z)", text, re.MULTILINE | re.DOTALL)
-    return match.group(1)
-
-
-def flat(text):
-    return re.sub(r"\s+", " ", re.sub(r"[*`]", "", text))
-
-
 class CapStopSource(unittest.TestCase):
     def setUp(self):
-        self.cycle = flat(section(REVIEW_CYCLE, "R2 · The cycle"))
+        self.cycle = flat(section(REVIEW_CYCLE, "R2 · The cycle") + section(REVIEW_CYCLE, "Round cap"))
 
     def test_ac7_cap_with_blocker_or_major_open_stops_and_lists_the_findings(self):
         self.assertIn("Cap reached with a Blocker or Major open.", self.cycle)
@@ -67,25 +56,25 @@ class CapStopIsAHardStop(unittest.TestCase):
 
     def test_defects_off_points_to_the_cap_stop(self):
         profiles = flat(section(GATES, "Profiles"))
-        self.assertIn("still open when the round cap is reached, which stop the feature (protocols/review-cycle.md §R2 · The cycle)", profiles)
+        self.assertIn("still open when the round cap is reached, which stop the feature (protocols/review-cycle.md §Round cap)", profiles)
 
     def test_the_cap_stop_is_listed_as_a_pointer(self):
-        self.assertIn("cap reached with a Blocker or Major open (protocols/review-cycle.md §R2 · The cycle)", self.stops)
+        self.assertIn("cap reached with a Blocker or Major open (protocols/review-cycle.md §Round cap)", self.stops)
 
 
 class ReviewPathsPoint(unittest.TestCase):
     PLACES = {
         "workflows/sdd.md": ["stop when the round cap is reached with a Blocker or Major open",
-                             "listed as unreviewed (protocols/review-cycle.md §R2 · The cycle)"],
-        "workflows/evo.md": ["the stop when it is reached with a Blocker or Major open (protocols/review-cycle.md §R2 · The cycle)",
+                             "listed as unreviewed (protocols/review-cycle.md §Round cap)"],
+        "workflows/evo.md": ["the stop when it is reached with a Blocker or Major open (protocols/review-cycle.md §Round cap)",
                              "increment's last critic round, listed as unreviewed"],
-        "workflows/direct.md": ["the stop at the cap follow protocols/review-cycle.md §R2 · The cycle",
-                                "listed as unreviewed (protocols/review-cycle.md §R2 · The cycle)"],
-        "protocols/executor.md": ["the stop when it is reached with a Blocker or Major open: §R2 · The cycle",
-                                  "with the round cap and its stop (protocols/review-cycle.md §R2 · The cycle)",
-                                  "listed as unreviewed (protocols/review-cycle.md §R2 · The cycle)"],
-        "templates/final-report.md": ["marked unreviewed (protocols/review-cycle.md §R2 · The cycle)"],
-        "templates/feature-card.md": ["marked unreviewed (protocols/review-cycle.md §R2 · The cycle)"],
+        "workflows/direct.md": ["the stop at the cap follow protocols/review-cycle.md §Round cap",
+                                "listed as unreviewed (protocols/review-cycle.md §Round cap)"],
+        "protocols/executor.md": ["the stop when it is reached with a Blocker or Major open: §Round cap",
+                                  "with the round cap and its stop (protocols/review-cycle.md §Round cap)",
+                                  "listed as unreviewed (protocols/review-cycle.md §Round cap)"],
+        "templates/final-report.md": ["marked unreviewed (protocols/review-cycle.md §Round cap)"],
+        "templates/feature-card.md": ["marked unreviewed (protocols/review-cycle.md §Round cap)"],
     }
 
     def test_ac10_each_review_path_points_to_the_cap_and_its_stop(self):
@@ -137,24 +126,7 @@ class AutoStopSource(unittest.TestCase):
         self.assertIn("a choice between rules the author wrote (§When a gate is off, step 1)", flat(section(GATES, "Questions")))
 
 
-class NewRulesRecorded(unittest.TestCase):
-    def setUp(self):
-        self.rules = {rule["id"]: rule for rule in json.loads(RULES_FILE.read_text(encoding="utf-8"))["rules"]}
-
-    def test_each_new_rule_has_a_source_fingerprints_and_a_concept_search(self):
-        for identifier in NEW_RULES:
-            with self.subTest(rule=identifier):
-                rule = self.rules[identifier]
-                self.assertTrue(rule["fingerprints"] and rule["searches"] and rule["source"]["section"])
-                re.compile(recorded_pattern(identifier))
-
-    def test_the_fingerprints_find_the_wording_of_their_own_source(self):
-        for identifier in NEW_RULES:
-            rule = self.rules[identifier]
-            source = flat(section(rule["source"]["file"], rule["source"]["section"]))
-            found = [pattern for pattern in rule["fingerprints"] if re.search(pattern, source, re.IGNORECASE)]
-            with self.subTest(rule=identifier):
-                self.assertGreaterEqual(len(found), 2, found)
+NewRulesRecorded = new_rules_recorded(NEW_RULES, 2)
 
 
 class RestatementsReported(SkillsCopy):

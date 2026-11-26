@@ -67,7 +67,7 @@ A relay replaces an agent by a new agent of the **same role**, when `SKILL.md` �
 
 **Who writes the notes.** Before the replacement, the orchestrator resumes the **outgoing** agent for one turn, whatever its usage, with only this task: `Write the relay notes to <path>, as protocols/context-handoff.md §Relay says, and stop.` A read-only role (Repository Analyst, Planner) returns the notes instead, and the orchestrator writes them. If the outgoing agent cannot be resumed (a new session, the agent no longer exists, an error), the orchestrator, or the phase runner that drives the phase, writes the notes from the agent's last reports and says so in the notes' first line.
 
-**Where.** `$(git rev-parse --git-common-dir)/feature-workflow/relay/<slug>/<role>.md`: local, shared by the worktrees of the repository, never committed, and available in DIRECT, which has no feature folder. Each relay of that role overwrites it.
+**Where.** `$(git rev-parse --git-common-dir)/feature-workflow/relay/<slug>/<role>.md`: local, shared by the worktrees of the repository, never committed, and available in DIRECT, which has no feature folder. Each relay of that role overwrites it; two agents of one role in the same phase (specialists) use `<role>-<specialist>.md`. Worktree cleanup deletes `relay/<slug>/` (`SKILL.md` §7).
 
 **What the notes hold:** the exploration the new agent would otherwise repeat, and nothing else. No diffs, no file contents, no logs: those are on disk.
 
