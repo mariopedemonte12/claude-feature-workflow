@@ -407,5 +407,12 @@ class PointerScopeReproductions(unittest.TestCase):
         self.assertEqual(self.copies("- Every push is a hard stop\n  (`protocols/gates.md` §Hard stops)."), [])
 
 
+class RealTreeHasNoRestatedCopies(unittest.TestCase):
+    def test_skills_readme_and_docs_have_no_restated_copy(self):
+        code, output, _ = run_check(REPOSITORY)
+        self.assertEqual(code, 0, output)
+        self.assertIn("0 restated copies", output)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -151,14 +151,14 @@ flowchart TB
 | `specialists` | stops | agent: mandatory and `--with` run | agent |
 | `bootstrap` (registry) | stops | stops | agent: local registry only |
 | `approach` | stops | stops when options differ in API, data, dependencies or shared structure | agent |
-| `depth` (testing plan, mutation, review level, E2E harness) | stops | agent: defaults; a higher review level applies, a lower one is asked | same |
-| `increment` (EVO) | stops | report and continue, unless a gate still on, a hard stop or a decision that `protocols/gates.md` §When a gate is off sends to the programmer applies | same, as a catch-up (`SKILL.md` §5) |
-| `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings (a security Blocker is a hard stop) and the rest to acceptance | same |
-| `discoveries` | stops | stops when outside or contradicting the intent | agent: covered ones fixed, outside ones not built, listed; contradicting: hard stop |
+| `depth` (testing plan, mutation, review level, E2E harness) | stops | agent: defaults; review level per `protocols/gates.md` §When a gate is off | same |
+| `increment` (EVO) | stops | report and continue, unless a gate still on or a stop in `protocols/gates.md` applies | same, as a catch-up (`SKILL.md` §5) |
+| `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings (a security Blocker always stops) and the rest to acceptance | same |
+| `discoveries` | stops | stops when outside or contradicting the intent | agent: covered ones fixed, outside ones not built, listed; contradicting: stops |
 | `candidates` | stops | at acceptance | listed only |
 | `acceptance` | stops | stops | stops |
 
-A gate that is off is decided by the agent with its recommendation, recorded as *Decided by agent* and listed in the final report; in `auto`, a choice between rules the author wrote goes to the programmer instead (`protocols/gates.md` §When a gate is off). **Hard stops** in every profile: integration, cleanup, installing anything new, migrating non-test data, breaking a public interface not asked for, a discovery that contradicts the programmer's words, a Blocker from a security audit, a review cap reached with a Blocker or Major open (`protocols/review-cycle.md`), and a feature that turns out Critical outside `full`. Questions are always allowed.
+A gate that is off is decided by the agent with its recommendation, recorded as *Decided by agent* and listed in the final report; in `auto`, a choice between rules the author wrote goes to the programmer instead (`protocols/gates.md` §When a gate is off). What always stops, in every profile, is listed in `protocols/gates.md` §Hard stops. Questions are always allowed.
 
 - **Worktree failures** (not a git repository, a git error, already inside a worktree session) stop the feature and are presented to the programmer. The orchestrator never falls back to the shared checkout.
 
@@ -174,16 +174,16 @@ flowchart TB
     end
     subgraph F2["Phase 2 · Implementation"]
         AN["4 · Analyze<br/>architecture, folders, tests, E2E and quality tooling,<br/>registry bootstrap if no .quality/"] --> PL["5 · Plan + design tests, in parallel<br/>Planner: options and outlines<br/>Test Designer: testing-plan.md from the spec only"]
-        PL --> G2{"⛔ 6 · Plan gate<br/>approach · testing plan · mutation testing ·<br/>review level R0/R1/R2 recommended and validated · E2E harness"}
+        PL --> G2{"⛔ 6 · Plan gate<br/>approach · testing plan · mutation testing ·<br/>review level recommended and validated · E2E harness"}
         G2 --> IM["7 · Implement<br/>Implementer: production code only, self-review,<br/>quality gate, report, handoff if the Tester is new"]
         IM -->|"plan invalid or deviation"| G2b{"⛔ Deviation gate"}
         G2b --> IM
     end
     subgraph F3["Phase 3 · Testing and validation"]
         TE["8–11 · Test<br/>Tester: implements the designed cases, functional, E2E,<br/>exploration, mutation if decided, validation report"]
-        RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature<br/>cap reached with Blocker or Major open: stop<br/>(protocols/review-cycle.md)<br/>+ specialist audits chosen"]
+        RV["Review at the validated level<br/>what each level runs, the round limit and the stop rule:<br/>protocols/review-cycle.md<br/>+ specialist audits chosen"]
         TE & RV --> G3{"⛔ Defects and anti-pattern candidates gate<br/>fix now · accept as limitation · change spec"}
-        G3 -->|"fix"| FX["Implementer (resumed or relayed, SKILL.md §4): makes the Tester's failing test pass<br/>→ Tester re-runs (resumed or relayed, SKILL.md §4) → new clean critic at R1/R2"]
+        G3 -->|"fix"| FX["Implementer (resumed or relayed, SKILL.md §4): makes the Tester's failing test pass<br/>→ Tester re-runs (resumed or relayed, SKILL.md §4) → new clean critic per the review level"]
         FX --> G3
     end
     subgraph F4["Phase 4 · Finalization"]
@@ -292,7 +292,7 @@ Source: `protocols/review-cycle.md`. The orchestrator **recommends** the level w
 | --- | --- | --- |
 | R0 | Quality gate and project lint only | Mechanical change, about 50 changed lines, no risk areas |
 | R1 | One clean critic, in parallel with the Tester | Standard feature with new logic |
-| R2 | Critic → verifier → automatic fixes → new critic on the fixes only, 3 critic rounds per feature at most (EVO: per increment) | Critical, or large or complex |
+| R2 | The cycle in `protocols/review-cycle.md` §R2 · The cycle | Critical, or large or complex |
 
 ```mermaid
 flowchart LR
@@ -300,16 +300,16 @@ flowchart LR
     V -->|"VALID + behavior-preserving<br/>Blocker/Major/Minor"| I["Implementer fixes<br/>tests + quality gate"]
     V -->|"behavior-changing · AMBIGUOUS ·<br/>correctness or security Blockers"| G{"⛔ Defects gate"}
     V -->|"Nits"| FRP["Final report"]
-    I --> STOP{"Stop?<br/>no new Blocker or Major ·<br/>3 critic rounds · oscillation"}
+    I --> STOP{"Stop?<br/>stop rule in<br/>protocols/review-cycle.md"}
     STOP -->|"no"| C
     STOP -->|"yes"| RT["Tester re-runs affected<br/>regression and E2E"]
 ```
 
 - **Cap reached with a Blocker or Major open** (`protocols/review-cycle.md` §R2 · The cycle): the feature stops and asks the programmer, in every profile. Commits made after the last round reach acceptance marked unreviewed (`protocols/review-cycle.md`).
 
-- **Review level:** the recommendation starts from the default (R1 for SDD and EVO, R2 for Critical; DIRECT runs no critic unless asked). A standing "accept your recommendation" covers only that default; a deviation is asked every time. With the `depth` gate off, a raise by size and risk applies and is reported; a lowering is asked.
+- **Review level:** the default, the recommendation and what a standing "accept your recommendation" covers are in `protocols/review-cycle.md` §Review levels; with the `depth` gate off, `protocols/gates.md` §When a gate is off decides.
 - **Automatic fixes** happen only at R2, except that with the `defects` gate off the Implementer (resumed or relayed, `SKILL.md` §4, *Reusing agents*) fixes the critic's and the Tester's covered Blocker and Major at any level (`protocols/gates.md`). Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
-- **Convergence:** round 1 reviews the whole diff. Later rounds review only the fixes, and report only Blocker and Major findings.
+- **Convergence:** what each round reviews and reports is in `protocols/review-cycle.md` §R2 · The cycle.
 - **Clean context:** the critic and the verifier never read the spec, plan, decisions, handoffs, implementation report or earlier rounds. Each round launches a **new** critic.
 - **Round log** in `reports/review/rounds.md`. Findings that recur become anti-pattern candidates. The INVALID rate shows how noisy the critic is.
 - **Why it is built this way:** self-attribution and self-preference bias in LLM evaluators, adversarial refutation, and diminishing returns after three or four repair iterations. The papers are cited in [`references.md`](references.md).

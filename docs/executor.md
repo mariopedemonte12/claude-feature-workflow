@@ -28,7 +28,7 @@ flowchart TB
     RD --> SP["2 · Intent pass, in the card (with step 4's cases)<br/>intent record · reach · nearest analog ·<br/>main flows · cases for every flow"]
     SP --> G1{"⛔ 3–5 · First gate (EVO gates 3 and 5 merged, step 4's approach in it)<br/>consolidated intent and completion criteria<br/>blocking questions with the analog's behavior<br/>approach · how many increments (your choice) · cases · approve / change / reject"}
     G1 --> IM["6–8 · Implement the increment<br/>code to the quality standard, a test per case,<br/>technique statuses, lint, quality gate; discoveries to the card"]
-    IM --> CR["9 · Review at the validated level on the increment's diff<br/>R0 none · R1 critic · R2 critic, verifier, fixes"]
+    IM --> CR["9 · Review at the validated level on the increment's diff<br/>per the validated level"]
     CR --> CK["Check each finding (protocols/executor.md)<br/>Reproduced · Not reproduced · Unclear"]
     CK --> G2{"⛔ 10 · Increment gate<br/>results · findings and discoveries · deferred edge cases ·<br/>new consolidated intent · next increment<br/>fixes: reproducing test first, then the fix"}
     G2 --> FX["11 · Evolve<br/>consolidate the intent, cases revised (roles/test-designer.md)"]
@@ -78,7 +78,7 @@ The session writes the increment's code to the quality standard and a test for e
 
 ### 6. The review, per increment, and the specialist audits you chose
 
-At the level you validated: R0 no critic; R1 one critic; R2 critic, verifier, fixes and a new critic, up to 3 rounds (Critical is always R2). The critic, a new opus subagent in the background, reviews the increment's diff from the commit where it started (from round 2, the diff since the previous round). It sees only that diff, the code it touches, the project's conventions, the quality standard and your own words (original request, confirmed consolidated intent, statements since). It never sees the card or how the code was written. The specialist auditors you chose run alongside it under the same rules. None is ever resumed. If the rounds run out with a Blocker or Major still open (`protocols/review-cycle.md` §R2 · The cycle), the session stops and asks you; commits made after the last round reach you marked as unreviewed (`protocols/review-cycle.md`).
+At the level you validated (what each level runs: `protocols/review-cycle.md` §Review levels). The critic, a new opus subagent in the background, reviews the increment's diff from the commit where it started (from round 2, the diff since the previous round). It sees only that diff, the code it touches, the project's conventions, the quality standard and your own words (original request, confirmed consolidated intent, statements since). It never sees the card or how the code was written. The specialist auditors you chose run alongside it under the same rules. None is ever resumed. If the rounds run out with a Blocker or Major still open (`protocols/review-cycle.md` §R2 · The cycle), the session stops and asks you; commits made after the last round reach you marked as unreviewed (`protocols/review-cycle.md`).
 
 ### 7. Checking the findings
 
@@ -86,11 +86,11 @@ The session checks every finding against the code and re-runs each specialist's 
 
 ### 8. Increment gate
 
-The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments. With the `increment` gate off, it is a report (in `auto`, a catch-up: `SKILL.md` §5) and the work continues, unless a gate that is still on (e.g. `discoveries` in `key`), a hard stop or a decision that `protocols/gates.md` §When a gate is off sends to the programmer stops it.
+The only gate of the increment: test and gate results; every finding and discovery with its relation to your words, and fix, accept or change behavior as options; the deferred edge cases still open; a new consolidated intent when you said something new; and the next increment's flow and cases, or the move to acceptance when the completion criteria are met. You can also regroup the remaining increments. With the `increment` gate off, it is a report (in `auto`, a catch-up: `SKILL.md` §5) and the work continues, unless a gate that is still on (e.g. `discoveries` in `key`), or a stop in `protocols/gates.md` stops it.
 
 ### 9. Fix and evolve
 
-A defect that changes behavior is fixed test-first: a test that reproduces it fails, then the fix makes it pass. A specialist's fixed finding gets a new auditor on the fix diff. At R1, a second critic on the fixes runs only if you ask; at R2 the cycle runs it. Then the intent is consolidated if you confirmed a new version, cases whose source statement you superseded are retired, and the next increment starts.
+A defect that changes behavior is fixed test-first: a test that reproduces it fails, then the fix makes it pass. A specialist's fixed finding gets a new auditor on the fix diff. Whether a second critic reviews the fixes depends on the review level (`protocols/review-cycle.md`). Then the intent is consolidated if you confirmed a new version, cases whose source statement you superseded are retired, and the next increment starts.
 
 ### 10. Mutation testing, acceptance, integration and cleanup
 
