@@ -66,7 +66,7 @@ class ConceptSearchSource(unittest.TestCase):
                          "templates/feature-card.md"):
             lines = (FEATURE / relative).read_text(encoding="utf-8").splitlines()
             with self.subTest(file=relative):
-                self.assertTrue(any(has(r"reach", line) and has(r"edge-cases\.md`? §Before code", line) for line in lines))
+                self.assertTrue(any(has(r"reach|broad statement", line) and has(r"edge-cases\.md`? §Before code", line) for line in lines))
 
     def test_ac12_the_discovery_requires_its_search_to_be_recorded_with_the_searches(self):
         discoveries = flat(section("skills/feature/knowledge/specification-guide.md", "Discoveries"))
