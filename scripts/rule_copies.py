@@ -225,7 +225,7 @@ def non_overlapping(matches):
 
 
 def fingerprint_matches(flat, rule):
-    """Fingerprints win over names: a name match never hides a fingerprint it overlaps."""
+    # Fingerprints win over names: a name match never hides a fingerprint it overlaps.
     found = list(non_overlapping(match for fingerprint in rule.fingerprints for match in fingerprint.finditer(flat.text)))
     names = (match for name in rule.names for match in name.finditer(flat.text))
     names = [match for match in non_overlapping(names)

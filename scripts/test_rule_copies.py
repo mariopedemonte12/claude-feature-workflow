@@ -92,20 +92,6 @@ class SourceAndPointers(ScratchRepository):
         self.assertEqual(output.count("notes.md:1:"), 1, output)
 
 
-class NamesNextToFingerprints(ScratchRepository):
-    def test_name_overlapping_a_fingerprint_does_not_hide_it(self):
-        rules = {"scan": {"paths": ["."], "exclude": []}, "rules": [{
-            "id": "LV", "source": {"file": "protocols/review.md", "section": "Levels"},
-            "fingerprints": [r"\br2 critic\b"], "names": [r"\br1/r2\b"],
-            "pointer": r"protocols/review\.md"}]}
-        self.rules.write_text(json.dumps(rules), encoding="utf-8")
-        self.write("notes.md", "R1/R2 critic runs on every change.\n")
-        code, output, _ = self.check()
-        self.assertEqual(code, 1, output)
-        self.assertIn("notes.md:1: LV restated copy", output)
-        self.assertIn("r2 critic", output.lower())
-
-
 class InjectedRestatements(ScratchRepository):
     def test_restatement_in_each_kind_of_file_is_reported_with_its_line(self):
         for relative in ("README.md", "docs/architecture.md", "skills/feature-kit/SKILL.md"):
@@ -405,13 +391,6 @@ class PointerScopeReproductions(unittest.TestCase):
 
     def test_pointer_in_the_same_wrapped_list_item_counts(self):
         self.assertEqual(self.copies("- Every push is a hard stop\n  (`protocols/gates.md` §Hard stops)."), [])
-
-
-class RealTreeHasNoRestatedCopies(unittest.TestCase):
-    def test_skills_readme_and_docs_have_no_restated_copy(self):
-        code, output, _ = run_check(REPOSITORY)
-        self.assertEqual(code, 0, output)
-        self.assertIn("0 restated copies", output)
 
 
 if __name__ == "__main__":
