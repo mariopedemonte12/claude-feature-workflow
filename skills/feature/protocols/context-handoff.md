@@ -78,7 +78,7 @@ A relay replaces an agent by a new agent of the **same role**, when `SKILL.md` �
 - <rule, copy or component>: <path:line, …> · proof: `<grep or command that finds every place>`
 
 ## Verification
-- `<command>`: what it checks · trap: <what makes it pass or fail for the wrong reason, e.g. "run only after committing, on a clean tree">
+- `<command>`: what it checks · trap: <what makes it pass or fail for the wrong reason, e.g. a verification run on uncommitted changes (`roles/implementer.md` §Rules touched and verification)>
 
 ## Decisions in force
 - D-NNN: <one line>

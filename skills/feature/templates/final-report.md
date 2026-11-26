@@ -13,7 +13,7 @@
 
 ## Implemented functionality
 
-The verification commands run after committing on a clean tree, each with the tail of its real output (`roles/implementer.md` §Rules touched and verification); a command not run is reported as not run.
+Verification (`roles/implementer.md` §Rules touched and verification): each command with the tail of its real output; a command not run is reported as not run.
 
 ## Final specification state
 

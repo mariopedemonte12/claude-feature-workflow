@@ -201,7 +201,7 @@ Return to the orchestrator in that protocol's format: the STATUS line, a summary
 
 **Critic, Verifier and specialist `audit` briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature or its implementation. The critic's brief adds the programmer's own words from `intent.md`, verbatim: `Original request: <…>`, `Consolidated intent (confirmed, version n): <…>` and `Statements since: <S-n, each verbatim>`. Nothing else about intent: never an unconfirmed proposal, the history or the specification, so the critic can check the reach of the intent (`roles/reviewer.md`). The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
 
-A brief for a fix round, and any Implementer brief, says: `Search every copy of each rule you touch and run the verification as <skill dir>/roles/implementer.md §Rules touched and verification says.`
+A brief for a fix round, and any Implementer brief, says: `Follow <skill dir>/roles/implementer.md §Rules touched and verification.`
 
 Never paste conversation history, whole artifacts or another feature's context into a brief.
 

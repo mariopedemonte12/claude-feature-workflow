@@ -25,7 +25,7 @@ A discovery is recorded in the specification's *Discoveries* table (the card's, 
 
 - **What was found,** with evidence (`path:line`, a probe, a failing case).
 - **Relation to the intent:** *Covered by the programmer's words* (quote them, from the original request or a statement, with its S-ID), *Implied by the intent* (the reasoning, marked as reading), *Outside what the programmer stated*, or *Contradicts the original request or a statement*. Cite the latest statement on the point: it wins.
-- **The search that found it,** recorded with the earlier searches of *Reach of the intent* (`knowledge/edge-cases.md` §Before code, step 1), so the next mapping reuses it.
+- **Its place in the record:** where the search that found it goes (`knowledge/edge-cases.md` §Before code, step 1).
 - **Options,** in the decision format: for example, change the code, change the specification, accept as a known limitation, or defer it to another feature. Each option states its effect on the work already done (files, tests, a later gate).
 
 The programmer's decision updates the specification through its change log, like any other change. A discovery *covered by the programmer's words* that the specification missed is a specification defect: say so. The programmer's decision on a discovery is itself a statement: it is appended to the intent record before the specification changes.
