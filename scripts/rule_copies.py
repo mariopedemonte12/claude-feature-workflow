@@ -216,14 +216,21 @@ def normalized_value(match):
     return NUMBER_WORDS.get(value, value)
 
 
-def fingerprint_matches(flat, rule):
-    matches = sorted((match for fingerprint in rule.fingerprints + rule.names for match in fingerprint.finditer(flat.text)),
-                     key=lambda match: (match.start(), -match.end()))
+def non_overlapping(matches):
     covered_until = -1
-    for match in matches:
+    for match in sorted(matches, key=lambda match: (match.start(), -match.end())):
         if match.start() >= covered_until:
             covered_until = match.end()
             yield match
+
+
+def fingerprint_matches(flat, rule):
+    """Fingerprints win over names: a name match never hides a fingerprint it overlaps."""
+    found = list(non_overlapping(match for fingerprint in rule.fingerprints for match in fingerprint.finditer(flat.text)))
+    names = (match for name in rule.names for match in name.finditer(flat.text))
+    names = [match for match in non_overlapping(names)
+             if not any(match.start() < kept.end() and kept.start() < match.end() for kept in found)]
+    yield from sorted(found + names, key=lambda match: match.start())
 
 
 def source_values(repo, rule):
