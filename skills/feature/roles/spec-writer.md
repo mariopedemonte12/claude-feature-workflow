@@ -13,7 +13,7 @@ The skill directory is the parent of the `roles/` folder that contains this file
 ## Do
 
 1. **Cite the source:** the consolidated intent version and the last statement ID you read. Write the *Intent* from the record.
-2. **Map the reach of the intent:** for each broad statement in the original request or a statement ("everywhere that…", "all…", "consistently"), run a search, and record it and every place it found in *Reach of the intent*, as found so far. Each place becomes a requirement or a question.
+2. **Map the reach of the intent:** for each broad statement in the original request or a statement ("everywhere that…", "all…", "consistently"), search as `knowledge/edge-cases.md` §Before code, step 1, requires (by concept, every search recorded), and record the searches and every place they found in *Reach of the intent*, as found so far. Each place becomes a requirement or a question.
 3. **Separate** what the request states, what the repository shows (existing behavior, constraints it imposes) and what is unknown.
 4. **Check the existing behavior** in the affected area, so that no requirement contradicts it unknowingly. A contradiction is a question, not a decision.
 5. **Write the requirements.** Each functional and non-functional requirement is one testable statement with a **Source**: a quote from the request, an answer (`Q-n`), or repository evidence (`path:line`). Non-functional requirements are measurable or they are questions.

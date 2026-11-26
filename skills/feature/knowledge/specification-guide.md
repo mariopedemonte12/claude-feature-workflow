@@ -25,6 +25,7 @@ A discovery is recorded in the specification's *Discoveries* table (the card's, 
 
 - **What was found,** with evidence (`path:line`, a probe, a failing case).
 - **Relation to the intent:** *Covered by the programmer's words* (quote them, from the original request or a statement, with its S-ID), *Implied by the intent* (the reasoning, marked as reading), *Outside what the programmer stated*, or *Contradicts the original request or a statement*. Cite the latest statement on the point: it wins.
+- **The search that found it,** recorded with the earlier searches of *Reach of the intent* (`knowledge/edge-cases.md` §Before code, step 1), so the next mapping reuses it.
 - **Options,** in the decision format: for example, change the code, change the specification, accept as a known limitation, or defer it to another feature. Each option states its effect on the work already done (files, tests, a later gate).
 
 The programmer's decision updates the specification through its change log, like any other change. A discovery *covered by the programmer's words* that the specification missed is a specification defect: say so. The programmer's decision on a discovery is itself a statement: it is appended to the intent record before the specification changes.
@@ -45,7 +46,7 @@ Write the answers in the intent pass or the specification's context, a few lines
 ## Process
 
 1. **Intent:** read the intent record, then state who needs what outcome, and why, citing the consolidated intent version and the statements (S-n) each part rests on. If you cannot state it in a few sentences, the intent is not clear yet: ask.
-2. **Reach of the intent:** for every broad statement in the original request or a statement ("everywhere that…", "all…", "any…", "consistently", "like X does"), search the repository and list the places it reaches, with the search you ran (the command or query) and its results. Record the list as *found so far*, so a later phase that finds another place compares it with this search.
+2. **Reach of the intent:** for every broad statement in the original request or a statement ("everywhere that…", "all…", "any…", "consistently", "like X does"), search the repository as `knowledge/edge-cases.md` §Before code, step 1, requires (by concept, every search recorded) and list the places it reaches, with the searches you ran and their results. Record the list as *found so far*, so a later phase that finds another place compares it with these searches.
 3. **Existing behavior:** what the system does today in this area, with evidence (`path:line` or an observed run).
 4. **Requirements:** record each one with its source (programmer message, ticket, existing behavior, regulation). Without a source, it is not a requirement; it is a question or a hypothesis.
 5. **Constraints vs. invariants:**

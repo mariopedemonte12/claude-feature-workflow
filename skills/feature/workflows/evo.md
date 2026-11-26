@@ -28,7 +28,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 **1. Understand and explore.** Start the intent record with the request verbatim, and the refinement's output if it ran, as `workflows/sdd.md` step 1 describes. Delegate broad inspection to the Repository Analyst: existing behavior of the area, the nearest analog of the feature in the project, constraints, test framework and E2E tooling. Separate known from unknown, product from technical uncertainties, and classify each uncertainty as *blocking now* or *investigable later*.
 
 **2. Intent pass.** Without writing a specification, prepare the first gate from the request and the analyst's evidence:
-- the reach of each broad statement, with the search run and the places found so far (`knowledge/specification-guide.md` §Process, step 2);
+- the reach of each broad statement, searched by concept with every search recorded, and the places found so far (`knowledge/edge-cases.md` §Before code, step 1; `knowledge/specification-guide.md` §Process, step 2);
 - the ambiguity checklist of `knowledge/specification-guide.md`, kept to what blocks the first increment;
 - the main flows the feature has, as candidates for the first increments;
 - the specialists whose signals match, from the skill index (`protocols/skills.md`);
