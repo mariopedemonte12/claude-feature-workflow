@@ -179,6 +179,7 @@ class Restatements(SkillsCopy):
                  "Over 120k tokens, relay the agent.",
                  "Replace the agent when it is past 150k.",
                  "The 100k band is a guess.",
+                 "A band of 100k is a guess.",
                  "A point follow-up means up to three findings.",
                  "Send at most 3 defects to an agent that has them in context.",
                  "Replace the agent when subagent_tokens exceeds the limit.",
