@@ -47,6 +47,7 @@ class GitRepository(unittest.TestCase):
 class InjectedState(GitRepository):
     def test_output_has_the_contract_the_hook_runner_reads(self):
         self.write(self.directory / "memory.md", MEMORY)
+        self.claim("alpha")
         _, output, _ = run_hook(self.event())
         specific = json.loads(output)["hookSpecificOutput"]
         self.assertEqual(specific["hookEventName"], "SessionStart")
@@ -130,6 +131,51 @@ class SilentWhenThereIsNothing(GitRepository):
         folder.mkdir(parents=True)
         (folder / "state.md").write_bytes(b"\xff\xfe\x00\x80")
         self.assertSilent(self.event())
+
+
+class SessionCriterion(GitRepository):
+    def transcript(self, *lines):
+        path = self.repo / "session.jsonl"
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        return str(path)
+
+    def active_alpha(self):
+        self.write(self.claim("alpha") / "state.md", "STATE-ALPHA\n")
+
+    def test_feature_invocation_in_transcript_injects_without_claims(self):
+        self.write(self.directory / "memory.md", MEMORY)
+        path = self.transcript(
+            json.dumps({"message": {"content": "<command-name>/feature</command-name>"}}),
+            json.dumps({"message": {"content": [{"type": "text", "text": "Base directory for this skill: /h/.claude/skills/feature\n\n# Feature"}]}}))
+        self.assertIn("| alpha |", self.context(transcript_path=path))
+
+    def test_skill_tool_use_counts_as_invocation(self):
+        self.write(self.directory / "memory.md", MEMORY)
+        path = self.transcript(json.dumps({"type": "tool_use", "name": "Skill", "input": {"skill": "feature"}}))
+        self.assertIsNotNone(self.context(transcript_path=path))
+
+    def test_transcript_without_invocation_is_silent_even_with_active_claim(self):
+        self.active_alpha()
+        path = self.transcript(
+            json.dumps({"message": {"content": "<command-name>/feature-lean</command-name>"}}),
+            json.dumps({"message": {"content": "Base directory for this skill: /h/.claude/skills/feature-lean\n"}}),
+            json.dumps({"message": {"content": "hello"}}))
+        self.assertIsNone(self.context(transcript_path=path))
+
+    def test_without_transcript_an_active_claim_injects(self):
+        self.active_alpha()
+        self.assertIn("STATE-ALPHA", self.context())
+
+    def test_without_transcript_and_no_active_claim_is_silent(self):
+        self.write(self.directory / "memory.md", MEMORY)
+        self.claim("done", status="Closed")
+        self.assertIsNone(self.context())
+
+    def test_unreadable_transcript_falls_back_to_claims(self):
+        missing = str(self.repo / "missing.jsonl")
+        self.assertIsNone(self.context(transcript_path=missing))
+        self.active_alpha()
+        self.assertIn("STATE-ALPHA", self.context(transcript_path=missing))
 
 
 if __name__ == "__main__":

@@ -9,6 +9,11 @@ MAX_CHARS = 6000
 STATE_HEADING = re.compile(r"^## State\s*$", re.MULTILINE)
 PORTFOLIO_HEADING = re.compile(r"^## Portfolio\s*$", re.MULTILINE)
 NEXT_HEADING = re.compile(r"^## ", re.MULTILINE)
+INVOCATION = re.compile(
+    r"<command-name>/?feature</command-name>"
+    r"|Base directory for this skill: [^\\\"]*/feature\\n"
+    r'|"skill":\s*"(?:[\w-]+:)?feature"'
+)
 
 
 def read_event():
@@ -70,6 +75,22 @@ def active_claims(directory):
             yield claim
 
 
+def used_feature_skill(transcript_path):
+    try:
+        with open(transcript_path, encoding="utf-8", errors="replace") as lines:
+            return any(INVOCATION.search(line) for line in lines)
+    except OSError:
+        return None
+
+
+def session_uses_workflow(event, directory):
+    transcript_path = event.get("transcript_path")
+    used = used_feature_skill(transcript_path) if isinstance(transcript_path, str) and transcript_path else None
+    if used is None:
+        return any(True for _ in active_claims(directory))
+    return used
+
+
 def blocks(directory):
     memory = read_text(directory / "memory.md")
     portfolio = section(memory, PORTFOLIO_HEADING) if memory else None
@@ -87,6 +108,8 @@ def main():
         return
     directory = workflow_directory(event.get("cwd") or ".")
     if directory is None:
+        return
+    if not session_uses_workflow(event, directory):
         return
     parts = list(blocks(directory))
     if not parts:
