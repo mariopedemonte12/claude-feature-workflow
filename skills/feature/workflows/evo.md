@@ -65,7 +65,7 @@ This workflow runs **per feature**. The steps below name roles; as orchestrator 
 - **Next:** the next increment's entry (flow, hypotheses, edge cases covered or deferred), or, if the completion criteria in the intent record are met, the move to finalization. The programmer may also regroup the remaining increments: merge them into one, split one, reorder them. If the approach is in question, the approach gate instead.
 - **Anti-pattern candidates** of the increment (`protocols/anti-pattern-registry.md` §The learning loop).
 
-**11. Evolve.** Apply what the programmer decided: consolidate the intent on their confirmation (`templates/intent.md`); record the hypotheses' statuses and the next increment's entry in the plan (with its change log); the Test Designer, resumed or relayed as `SKILL.md` §4, *Reusing agents*, decides, updates the affected cases and designs the next increment's. A change of a decision or statement during an increment does not wait for this step: `roles/test-designer.md` §Decisions that cases depend on. Then go to step 6, or to finalization when step 10 decided it.
+**11. Evolve.** Apply what the programmer decided: consolidate the intent on their confirmation (`templates/intent.md`); record the hypotheses' statuses and the next increment's entry in the plan (with its change log); the Test Designer, resumed or relayed as `SKILL.md` §4, *Reusing agents*, decides, updates the affected cases and designs the next increment's. A change of a decision or statement during an increment does not wait for this step, and a case whose source was superseded is never left active: `roles/test-designer.md` §Decisions that cases depend on. Then go to step 6, or to finalization when step 10 decided it.
 
 ## Phase 4: Finalization
 

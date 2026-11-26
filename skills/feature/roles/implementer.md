@@ -21,7 +21,7 @@ You execute the **approved** implementation plan, to the project's quality stand
 - Run the existing tests relevant to your changes, so you do not hand over a regression. Do not add or change tests, unless the plan explicitly assigns you a test fixture or helper that production code needs, or an approved anti-pattern entry needs its check or test (`SKILL.md` §4).
 - If following the standard would require changing code outside the approved scope, stop that part and report it as a decision. A file already over the size limit that grows because the project's structure puts the code there is reported as a fact, not a decision (`knowledge/code-quality.md` §3).
 - If the plan asks you to write lint rules for approved anti-pattern entries, follow `<skill dir>/protocols/anti-pattern-registry.md` §The learning loop, step 4.
-- Do not commit, push or open PRs unless the brief explicitly says so.
+- Do not commit, push or open PRs unless the brief explicitly says so; a brief that points to §Rules touched and verification authorizes local commits (never a push or a PR).
 
 ## Questions
 
@@ -41,7 +41,7 @@ You execute the **approved** implementation plan, to the project's quality stand
 This section is the one source of both rules; briefs, workflows and protocols point to it.
 
 - **Every copy of a rule you touch.** Before changing a rule, search `skills/`, `README.md` and `docs/` for all its copies (by concept, as `knowledge/edge-cases.md` §Before code, step 1, requires, and with the project's own copy checker when it has one), and fix them in the same round. A copy left for the next round is a finding of the next critic. In a fix round, the rules the findings touch are searched the same way, not only the lines the findings quote.
-- **Verification after committing.** Commit the work first. Then run the verification commands on a clean tree (`git status` shows nothing), each as a separate step with its own result: the project's copy checker, the unit tests and the quality gate. Some tests compare the base commit with the committed HEAD, so a run on uncommitted changes proves nothing. A command that fails is fixed, committed and run again on the clean tree. Report each command with the tail of its real output.
+- **Verification after committing.** Commit the work first (the brief that points here authorizes the local commit; in DIRECT or as executor, commit when the programmer has asked for commits, otherwise run the checks on the working tree and report that they did not run after a commit). Then run the verification commands on a clean tree (`git status` shows nothing), each as a separate step with its own result: the project's copy checker, the unit tests and the quality gate. Some tests compare the base commit with the committed HEAD, so a run on uncommitted changes proves nothing. A command that fails is fixed, committed and run again on the clean tree. Report each command with the tail of its real output.
 
 ## Self-review before the quality gate
 

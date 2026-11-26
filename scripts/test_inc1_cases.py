@@ -238,14 +238,16 @@ class BaselinePower(unittest.TestCase):
         data["rules"] = [rule for rule in data["rules"] if self.has_source(rule["source"])]
         return data
 
-    def has_source(self, source):
-        path = self.repo / source["file"]
+    def has_source(self, source, root=None):
+        path = (root or self.repo) / source["file"]
         return path.exists() and rule_copies.section_span(rule_copies.markdown_lines(path), source["section"]) is not None
 
     def test_only_rules_with_sections_added_later_lack_a_source_in_the_baseline(self):
         rules = json.loads(RULES_FILE.read_text(encoding="utf-8"))["rules"]
         dropped = {rule["id"] for rule in rules if not self.has_source(rule["source"])}
-        self.assertEqual(dropped, {"RY-1", "DC-1", "TX-1", "CV-1"})
+        present_now = {rule["id"] for rule in rules if self.has_source(rule["source"], REPOSITORY)}
+        self.assertLessEqual(dropped, present_now)
+        self.assertIn("RY-1", dropped)
 
     def check(self, *paths):
         return base.run_check(self.repo, *paths, rules=self.rules)

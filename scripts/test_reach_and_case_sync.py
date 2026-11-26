@@ -40,66 +40,76 @@ def text_of(relative):
     return flat((FEATURE / relative).read_text(encoding="utf-8"))
 
 
+def has(pattern, text):
+    return re.search(pattern, text, re.IGNORECASE) is not None
+
+
 class ConceptSearchSource(unittest.TestCase):
     def setUp(self):
         self.text = flat(section(EDGE_CASES, "Before code"))
 
     def test_fr12_search_by_concept_with_every_search_recorded(self):
-        self.assertIn("Search by concept, not only by string", self.text)
-        for word in ("synonyms", "paraphrases", "restatements", "apply it without naming it"):
+        self.assertRegex(self.text, r"(?i)by concept")
+        for word in ("synonyms", "paraphrases", "restatements"):
             with self.subTest(word=word):
-                self.assertIn(word, self.text)
-        self.assertIn("Record every search run, literal and conceptual", self.text)
+                self.assertRegex(self.text, f"(?i){word}")
+        self.assertRegex(self.text, r"(?i)without (?:naming|citing)")
+        self.assertRegex(self.text, r"(?i)(?:record\w*|log\w*)[^.]{0,40}every search|every search[^.]{0,40}record")
 
     def test_fr13_a_late_find_is_a_discovery_and_its_search_is_recorded(self):
-        self.assertIn("recorded as a discovery against the recorded searches", self.text)
-        self.assertIn("the search that found it is added to the record", self.text)
+        self.assertRegex(self.text, r"(?i)missed[^.]{0,200}discovery")
+        self.assertRegex(self.text, r"(?i)search that found it[^.]{0,60}(?:record|added)")
 
-    def test_ac11_each_first_mapping_points_to_the_source(self):
+    def test_ac11_each_first_mapping_reach_line_points_to_the_source(self):
         for relative in ("roles/spec-writer.md", "roles/repository-analyst.md", "roles/reviewer.md", "workflows/evo.md",
                          "protocols/executor.md", "knowledge/specification-guide.md", "templates/specification.md",
                          "templates/feature-card.md"):
+            lines = (FEATURE / relative).read_text(encoding="utf-8").splitlines()
             with self.subTest(file=relative):
-                self.assertIn("edge-cases.md` §Before code", (FEATURE / relative).read_text(encoding="utf-8"))
+                self.assertTrue(any(has(r"reach", line) and has(r"edge-cases\.md`? §Before code", line) for line in lines))
 
-    def test_ac12_the_discovery_lists_where_its_search_is_recorded(self):
-        self.assertIn("Its place in the record", text_of("knowledge/specification-guide.md"))
+    def test_ac12_the_discovery_requires_its_search_to_be_recorded_with_the_searches(self):
+        discoveries = flat(section("skills/feature/knowledge/specification-guide.md", "Discoveries"))
+        self.assertRegex(discoveries, r"(?i)search that found it")
+        self.assertRegex(discoveries, r"edge-cases\.md §Before code")
 
 
 class DependentCasesSource(unittest.TestCase):
     def setUp(self):
-        self.text = flat(section(TEST_DESIGNER, "Decisions that cases depend on"))
+        self.raw = section(TEST_DESIGNER, "Decisions that cases depend on")
+        self.text = flat(self.raw)
 
     def test_fr19_each_case_records_what_it_depends_on(self):
-        self.assertIn("Each case records the decision(s) and statement(s) it depends on", self.text)
-        self.assertIn("Depends on", text_of("templates/testing-plan.md"))
+        self.assertRegex(self.text, r"(?i)each case records[^.]{0,60}depends on")
+        self.assertRegex(text_of("templates/testing-plan.md"), r"(?i)\| Depends on")
 
     def test_fr18_resumed_at_once_before_the_next_run_and_not_when_nothing_depends(self):
-        self.assertIn("resumed or relayed at once", self.text)
-        self.assertIn("before the Tester's next run", self.text)
-        self.assertIn("Retire or update every case that depends on it", self.text)
-        self.assertIn("When no case depends on the change, you are not resumed", self.text)
+        self.assertRegex(self.text, r"(?i)(?:resumed|relayed)[^.]{0,30}at once")
+        self.assertRegex(self.text, r"(?i)before the tester'?s next run")
+        self.assertRegex(self.text, r"(?i)retire or update every case")
+        self.assertRegex(self.text, r"(?i)no case depends[^.]{0,60}not resumed")
 
     def test_ac15_the_tester_never_runs_a_superseded_case(self):
-        self.assertIn("The Tester never runs a case that asserts a superseded decision", self.text)
-        self.assertIn("superseded decision", text_of("roles/tester.md"))
+        self.assertRegex(self.text, r"(?i)tester never runs[^.]{0,40}superseded")
+        self.assertRegex(text_of("roles/tester.md"), r"(?i)superseded[^.]{0,80}(?:case|decision)|(?:case|run)[^.]{0,80}superseded")
 
     def test_resume_and_relay_are_pointed_to_not_restated(self):
-        self.assertIn("`SKILL.md` §4, *Reusing agents*", section(TEST_DESIGNER, "Decisions that cases depend on"))
-        self.assertNotRegex(self.text, r"\b[24]00k\b")
+        self.assertRegex(self.text, r"SKILL\.md §4, Reusing agents")
+        self.assertNotRegex(self.text, r"(?i)\d[\d.,]*\s?k\b|\d+\s?%|\d[\d.,]*\s?tokens|subagent_tokens")
 
-    def test_places_point_to_the_source(self):
-        for relative in ("SKILL.md", "workflows/evo.md", "workflows/sdd.md", "roles/tester.md", "templates/feature-card.md"):
+    def test_places_point_to_the_source_in_the_same_sentence_as_the_rule(self):
+        for relative in ("SKILL.md", "workflows/evo.md", "workflows/sdd.md", "roles/tester.md", "protocols/executor.md"):
             with self.subTest(file=relative):
-                self.assertIn("test-designer.md` §Decisions that cases depend on", (FEATURE / relative).read_text(encoding="utf-8"))
+                self.assertRegex(text_of(relative), r"test-designer\.md §Decisions that cases depend on")
 
 
 class TextCheckSource(unittest.TestCase):
     def test_fr20_ac16_text_checks_assert_presence_and_meaning(self):
         text = flat(section(TEST_DESIGNER, "Cases that check text"))
-        self.assertIn("asserts the presence and the meaning of what the source requires, not its exact wording", text)
-        self.assertIn("an intended rewording that keeps the rule does not fail it", text)
-        self.assertIn("When the meaning changes, the case fails", text)
+        self.assertRegex(text, r"(?i)presence and (?:the )?meaning")
+        self.assertRegex(text, r"(?i)not (?:its )?exact wording")
+        self.assertRegex(text, r"(?i)rewording[^.]{0,60}does not fail")
+        self.assertRegex(text, r"(?i)meaning changes[^.]{0,30}fail")
 
 
 class VerificationSource(unittest.TestCase):
@@ -107,23 +117,30 @@ class VerificationSource(unittest.TestCase):
         self.text = flat(section(IMPLEMENTER, "Rules touched and verification"))
 
     def test_every_copy_is_searched_and_fixed_in_the_same_round(self):
-        self.assertIn("search `skills/`, `README.md` and `docs/` for all its copies".replace("`", ""), self.text)
-        self.assertIn("fix them in the same round", self.text)
+        for place in ("skills/", "README.md", "docs/"):
+            with self.subTest(place=place):
+                self.assertIn(place, self.text)
+        self.assertRegex(self.text, r"(?i)all its copies")
+        self.assertRegex(self.text, r"(?i)same round")
 
     def test_verification_runs_after_committing_on_a_clean_tree_as_separate_steps(self):
-        self.assertIn("Commit the work first", self.text)
-        self.assertIn("on a clean tree", self.text)
-        self.assertIn("each as a separate step", self.text)
-        self.assertIn("compare the base commit with the committed HEAD", self.text)
+        self.assertRegex(self.text, r"(?i)commit[^.]{0,20}first")
+        self.assertRegex(self.text, r"(?i)clean tree")
+        self.assertRegex(self.text, r"(?i)separate step")
+        self.assertRegex(self.text, r"(?i)base commit[^.]{0,40}committed HEAD")
         for command in ("copy checker", "unit tests", "quality gate"):
             with self.subTest(command=command):
                 self.assertIn(command, self.text)
+
+    def test_the_commit_is_authorized_by_the_brief_and_the_role_points_here(self):
+        self.assertRegex(self.text, r"(?i)authorizes the local commit")
+        self.assertRegex(text_of("roles/implementer.md"), r"(?i)do not commit[^.]{0,80}Rules touched and verification")
 
     def test_briefs_and_workflows_point_to_the_source(self):
         for relative in ("SKILL.md", "workflows/direct.md", "workflows/sdd.md", "workflows/evo.md", "protocols/executor.md",
                          "protocols/gates.md", "protocols/review-cycle.md", "protocols/context-handoff.md", "templates/final-report.md"):
             with self.subTest(file=relative):
-                self.assertIn("implementer.md §Rules touched and verification", text_of(relative))
+                self.assertRegex(text_of(relative), r"implementer\.md §Rules touched and verification")
 
 
 class RulesRecorded(unittest.TestCase):

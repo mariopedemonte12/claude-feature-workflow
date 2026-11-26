@@ -217,7 +217,7 @@ flowchart TB
     INC --> P3["Implement the increment<br/>a blocking discovery stops it (⛔), the rest wait"]
     P3 --> P4["Test and review the increment<br/>Tester, E2E, black-box statuses, critic on its diff"]
     P4 --> G4{"⛔ Increment gate, the only one<br/>results, findings, discoveries, hypotheses,<br/>deferred edge cases, new consolidated intent, next increment"}
-    G4 -->|"next increment"| EV["Evolve<br/>consolidate the intent, update the plan,<br/>Test Designer updates and designs cases"]
+    G4 -->|"next increment"| EV["Evolve<br/>consolidate the intent, update the plan,<br/>Test Designer designs cases; dependent cases are updated at once (roles/test-designer.md)"]
     EV --> INC
     G4 -->|"approach in question"| G2
     G4 -->|"completion criteria met"| P6["Finalization<br/>mutation testing once · short final report<br/>⛔ acceptance · ⛔ integration · ⛔ cleanup"]
