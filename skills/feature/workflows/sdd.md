@@ -40,7 +40,7 @@ The Planner returns implementation options, or a single option with the excluded
 - Write `implementation-plan.md` (`templates/implementation-plan.md`) for the approved approach only, with a one-line mention of each alternative not chosen and the decision reference.
 - Write the Planning → Implementation handoff when the Implementer is new.
 
-**7. Implement.** Brief the Implementer (`roles/implementer.md`). It follows the code quality standard and reviews its own diff against the critic's checklist before the quality gate. It writes no tests (exceptions: `SKILL.md` §4 *Who writes tests*). If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ `[gate: approach]` present it (`protocols/decisions.md`), update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and, when the Tester is new, the Implementation → Testing handoff.
+**7. Implement.** Brief the Implementer (`roles/implementer.md`). It follows the code quality standard and reviews its own diff against the critic's checklist before the quality gate. It writes no tests (exceptions: `SKILL.md` §4, *Who writes tests*). If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ `[gate: approach]` present it (`protocols/decisions.md`), update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and, when the Tester is new, the Implementation → Testing handoff.
 
 ## Phase 3: Testing and validation
 

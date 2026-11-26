@@ -14,7 +14,7 @@ When you run `/feature` and choose **executor**, the session does the feature's 
 | --- | --- |
 | One feature per session; several independent features run as parallel sessions | Several features coordinated in one portfolio, with overlap detection |
 | You want to see and steer the work in the conversation | You want each role in its own agent, with its own context and model |
-| The same session does the work of the roles (except SDD's test design) | Separate agents per role; who writes tests: `SKILL.md` §4 *Who writes tests* |
+| The same session does the work of the roles (except SDD's test design) | Separate agents per role; who writes tests: `SKILL.md` §4, *Who writes tests* |
 | You are on a plan with a usage limit: no orchestrator relay, which was 46% of all tokens in the measured run | The token budget is not a concern |
 
 ## EVO as executor
@@ -130,7 +130,7 @@ Measured before this version, when EVO as executor was `/feature-lean` and `/fea
 
 ## What EVO as executor does not do
 
-- **No separate roles:** there is no separate specification, planning, test-design or testing agent. The same session does the work of every role. That is the main trade-off against orchestrator mode, where the cases come from a Test Designer who never sees the plan (who writes tests: `SKILL.md` §4 *Who writes tests*).
+- **No separate roles:** there is no separate specification, planning, test-design or testing agent. The same session does the work of every role. That is the main trade-off against orchestrator mode, where the cases come from a Test Designer who never sees the plan (who writes tests: `SKILL.md` §4, *Who writes tests*).
 - **Review:** below R2 there is no verifier and no multi-round cycle; when automatic fixes run: `protocols/gates.md` §Profiles. A specialist's finding is fixed only on your decision.
 - **Testing depth:** mutation testing runs once at the end, only for Critical features or when you choose it. Prototypes are allowed outside production code, and discarded unless you promote them.
 - **Coordination:** there is no portfolio and no overlap detection across sessions; the claim lets orchestrators see the feature.

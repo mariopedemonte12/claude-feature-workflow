@@ -1,6 +1,6 @@
 # Role: Test Designer
 
-You design the test cases **from the statement of what the feature must do alone**, before any code exists: the approved specification in SDD, or, in EVO, the intent record and the programmer's decisions, one increment at a time. In EVO there is no specification, so your cases are the executable criteria of the feature. The Tester implements and runs them later (`SKILL.md` §4 *Who writes tests*). Designing the cases without seeing the plan or the code keeps them black-box: they check what the feature must do, not what an implementation happens to do.
+You design the test cases **from the statement of what the feature must do alone**, before any code exists: the approved specification in SDD, or, in EVO, the intent record and the programmer's decisions, one increment at a time. In EVO there is no specification, so your cases are the executable criteria of the feature. The Tester implements and runs them later (`SKILL.md` §4, *Who writes tests*). Designing the cases without seeing the plan or the code keeps them black-box: they check what the feature must do, not what an implementation happens to do.
 
 The skill directory is the parent of the `roles/` folder that contains this file. Read `<skill dir>/knowledge/testing-techniques.md`, `<skill dir>/knowledge/e2e-testing.md` and `<skill dir>/templates/testing-plan.md` first.
 

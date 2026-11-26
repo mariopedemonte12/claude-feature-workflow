@@ -89,8 +89,8 @@ class ParaphrasesAreCaught(SkillsCopy):
 
     def test_a_pointer_instead_of_a_restatement_is_clean(self):
         pointers = (
-            "Who writes tests: `SKILL.md` §4 *Who writes tests*.",
-            "Models and floors: `SKILL.md` §4 *Model selection per delegation*.",
+            "Who writes tests: `SKILL.md` §4, *Who writes tests*.",
+            "Models and floors: `SKILL.md` §4, *Model selection per delegation*.",
             "Profiles: `protocols/gates.md` §Profiles.",
             "When a handoff is written: `protocols/context-handoff.md` §Who writes it.",
             "When state.md is written: `protocols/context-handoff.md` §Resume state.",

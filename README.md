@@ -74,7 +74,7 @@ Measured before this version, under the earlier names: `/feature-lean` is today'
 
 ## Orchestrator mode
 
-- **Specialized subagents,** each driven by its own role file, with a standard model per role and a per-delegation choice of the cheapest sufficient model, with floors so architecture and review are never downgraded (`SKILL.md` §4 *Model selection per delegation*). Every delegation is logged.
+- **Specialized subagents,** each driven by its own role file, with a standard model per role and a per-delegation choice of the cheapest sufficient model, with floors so architecture and review are never downgraded (`SKILL.md` §4, *Model selection per delegation*). Every delegation is logged.
 - **Agents ask you, through the orchestrator.** An agent that needs an answer only you can give stops instead of guessing; the orchestrator puts the question to you and resumes the same agent with your answer.
 - **Cost limits.** An agent is resumed, or a new agent of the same role takes over through a relay, starting from notes its predecessor wrote and the work on the branch, as [`SKILL.md`](skills/feature/SKILL.md) §4 *Reusing agents* decides. The relay is in [`protocols/context-handoff.md`](skills/feature/protocols/context-handoff.md) §Relay. The orchestrator session compacts at a threshold you set and is best run on sonnet (see Cost settings).
 - **One git worktree per feature,** created with Claude Code's built-in worktree support. How it is integrated and whether the worktree is removed are your decisions.
@@ -169,7 +169,7 @@ A typical SDD run as orchestrator:
 2. **Recommendation.** The session assesses clarity, uncertainty, risk and reach with evidence, recommends a workflow, and asks the role. You validate.
 3. **Specification.** The Specification Writer turns your request (kept in `intent.md`: your original request, a consolidated intent you confirm at each gate, and your statements since) into requirements, constraints, invariants and acceptance criteria, each traced to its source. You approve it and set the criticality.
 4. **Planning and test design.** In parallel, the Planner maps the viable approaches and the Test Designer derives the cases from the spec. You choose an approach, approve the testing plan, decide mutation testing, and validate the recommended review level.
-5. **Implementation.** The Implementer writes production code for the approved plan, without tests (exceptions: `SKILL.md` §4 *Who writes tests*). Any deviation comes back to you. How it treats the copies of a rule and when it verifies: `roles/implementer.md` §Rules touched and verification. Reach by concept: `knowledge/edge-cases.md` §Before code. Cases that depend on a changed decision: `roles/test-designer.md` §Decisions that cases depend on.
+5. **Implementation.** The Implementer writes production code for the approved plan, without tests (exceptions: `SKILL.md` §4, *Who writes tests*). Any deviation comes back to you. How it treats the copies of a rule and when it verifies: `roles/implementer.md` §Rules touched and verification. Reach by concept: `knowledge/edge-cases.md` §Before code. Cases that depend on a changed decision: `roles/test-designer.md` §Decisions that cases depend on.
 6. **Testing and review.** The Tester implements and runs the designed cases while a clean critic reviews. Defects come back to you as decisions.
 7. **Final report, acceptance, integration and cleanup,** each decided by you.
 
@@ -212,7 +212,7 @@ And once per project, after your approval: the anti-pattern registry (`config.js
 
 | What | Where |
 | --- | --- |
-| Standard model per role, deviations and floors | `skills/feature/SKILL.md` §4 *Model selection per delegation* |
+| Standard model per role, deviations and floors | `skills/feature/SKILL.md` §4, *Model selection per delegation* |
 | Default feature folder | `SKILL.md` §2.3 |
 | How decisions and recommendations are presented | `protocols/decisions.md` |
 | Add engineering knowledge or a specialist | a skill file in `~/.claude/feature-skills/`, `<repo>/.claude/feature-skills/` or `<module>/.claude/feature-skills/`, with its classification (`protocols/skills.md`) |

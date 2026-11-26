@@ -35,7 +35,7 @@ Rows are alphabetical by slug. Above the board, the catch-up of `SKILL.md` §5 *
 ## Independence and scheduling
 
 - **A gate blocks only its own feature.** While a feature waits for the programmer, keep the others moving.
-- Parallel launches: `SKILL.md` §4 *Delegation practice* (Grouping). Name each with its Agent `description`: `[slug] <Role>: <task>`.
+- Parallel launches: `SKILL.md` §4, *Delegation practice* (Grouping). Name each with its Agent `description`: `[slug] <Role>: <task>`.
 - **When an agent finishes:**
   1. identify its feature;
   2. verify the output;
