@@ -152,7 +152,7 @@ flowchart TB
 | `bootstrap` (registry) | stops | stops | agent: local registry only |
 | `approach` | stops | stops when options differ in API, data, dependencies or shared structure | agent |
 | `depth` (testing plan, mutation, review level, E2E harness) | stops | agent: defaults; a higher review level applies, a lower one is asked | same |
-| `increment` (EVO) | stops | report and continue, unless a gate still on, a hard stop or a decision that `protocols/gates.md` §When a gate is off sends to the programmer applies | same |
+| `increment` (EVO) | stops | report and continue, unless a gate still on, a hard stop or a decision that `protocols/gates.md` §When a gate is off sends to the programmer applies | same, as a catch-up (`SKILL.md` §5) |
 | `defects` | stops | Implementer fixes the critic's and the Tester's Blocker and Major the programmer's words cover (test first when the fix changes behavior); audit findings (a security Blocker is a hard stop) and the rest to acceptance | same |
 | `discoveries` | stops | stops when outside or contradicting the intent | agent: covered ones fixed, outside ones not built, listed; contradicting: hard stop |
 | `candidates` | stops | at acceptance | listed only |
@@ -183,7 +183,7 @@ flowchart TB
         TE["8–11 · Test<br/>Tester: implements the designed cases, functional, E2E,<br/>exploration, mutation if decided, validation report"]
         RV["Review at the validated level<br/>R1 critic in parallel · R2 cycle<br/>max 3 critic rounds per feature<br/>cap reached with Blocker or Major open: stop<br/>(protocols/review-cycle.md)<br/>+ specialist audits chosen"]
         TE & RV --> G3{"⛔ Defects and anti-pattern candidates gate<br/>fix now · accept as limitation · change spec"}
-        G3 -->|"fix"| FX["Implementer (resumed or replaced, per cap): makes the Tester's failing test pass<br/>→ same Tester re-runs → new clean critic at R1/R2"]
+        G3 -->|"fix"| FX["Implementer (resumed or relayed, SKILL.md §4): makes the Tester's failing test pass<br/>→ Tester re-runs (resumed or relayed, SKILL.md §4) → new clean critic at R1/R2"]
         FX --> G3
     end
     subgraph F4["Phase 4 · Finalization"]
@@ -223,7 +223,7 @@ flowchart TB
     G4 -->|"completion criteria met"| P6["Finalization<br/>mutation testing once · short final report<br/>⛔ acceptance · ⛔ integration · ⛔ cleanup"]
 ```
 
-- **Leaner by design:** one gate per increment, the Planner only at the start and when the approach is in question, mutation testing once at the end, `handoff.md` only when a new agent takes over a phase (resume state in `state.md`), and a short final report that links the intent, the cases and the decisions.
+- **Leaner by design:** one gate per increment, the Planner only at the start and when the approach is in question, mutation testing once at the end, `handoff.md` only when a new agent takes over a phase (relay notes instead for a new agent of a role that already ran: `protocols/context-handoff.md` §Relay; resume state in `state.md`), and a short final report that links the intent, the cases and the decisions.
 - **Hypotheses** are the team's, kept in the plan's *Increments* with their status (Hypothesis, Under exploration, Confirmed, Rejected) and evidence. The programmer's words stay in the intent record.
 - **Deferred edge cases** need a programmer decision naming the increment that will cover them; they never accumulate silently.
 - **Prototypes** live outside production paths. They are discarded unless the programmer promotes them.
@@ -280,7 +280,7 @@ sequenceDiagram
 
 - **Blocking** questions are the ones whose answer changes the agent's output: a requirement, scope, observable behavior, a constraint, the viable approaches, or a test's expected result. The agent stops and does not guess. A question that changes the output for a valid input is always blocking, and the agent never weakens an acceptance criterion to avoid it.
 - **Non-blocking** questions: the agent continues under an assumption labeled Hypothesis and lists it. The question goes to the next gate.
-- **If the agent cannot be resumed** (a new session or an error), a new agent gets the same brief plus the earlier "work so far" and the answers.
+- **If the agent cannot be resumed** (a new session or an error), a new agent takes over through a relay (`protocols/context-handoff.md` §Relay) with the earlier "work so far" and the answers.
 - **Answers that change approved work** become a spec version bump or a decision record. Approved work never changes silently.
 - **Critics and verifiers never ask:** they report ambiguity as a finding.
 
@@ -308,7 +308,7 @@ flowchart LR
 - **Cap reached with a Blocker or Major open** (`protocols/review-cycle.md` §R2 · The cycle): the feature stops and asks the programmer, in every profile. Commits made after the last round reach acceptance marked unreviewed (`protocols/review-cycle.md`).
 
 - **Review level:** the recommendation starts from the default (R1 for SDD and EVO, R2 for Critical; DIRECT runs no critic unless asked). A standing "accept your recommendation" covers only that default; a deviation is asked every time. With the `depth` gate off, a raise by size and risk applies and is reported; a lowering is asked.
-- **Automatic fixes** happen only at R2, except that with the `defects` gate off the resumed Implementer fixes the critic's and the Tester's covered Blocker and Major at any level (`protocols/gates.md`). Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
+- **Automatic fixes** happen only at R2, except that with the `defects` gate off the Implementer (resumed or relayed, `SKILL.md` §4, *Reusing agents*) fixes the critic's and the Tester's covered Blocker and Major at any level (`protocols/gates.md`). Each one is listed at the next gate with its hunks and a revert option. The orchestrator never changes code itself (`SKILL.md` §1, principle 9).
 - **Convergence:** round 1 reviews the whole diff. Later rounds review only the fixes, and report only Blocker and Major findings.
 - **Clean context:** the critic and the verifier never read the spec, plan, decisions, handoffs, implementation report or earlier rounds. Each round launches a **new** critic.
 - **Round log** in `reports/review/rounds.md`. Findings that recur become anti-pattern candidates. The INVALID rate shows how noisy the critic is.
@@ -434,7 +434,9 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 - **Location:** run without `isolation`. Confirm the feature branch first, and work through absolute paths (`cd <worktree> && …`). Never call `EnterWorktree`.
 - **No delegation:** feature roles never spawn further agents.
 - **Headless:** every subagent runs in the background. The programmer sees one line when an agent starts or finishes, and the full content only at gates.
-- **Reuse:** when work returns to a role that already ran for the feature (short fixes, re-tests, spec changes, the next increment), the same agent is resumed with `SendMessage` while its context is under its model's cap; above it, or for a larger fix round, a new agent takes over with a handoff. Its ID and last token count are recorded in `state.md`. Critics and verifiers are never resumed. The rule is in `SKILL.md` §4, *Reusing agents*.
+- **Reuse:** when work returns to a role that already ran for the feature, the same agent is resumed with `SendMessage`, or a new agent of the same role takes over through a relay, as `SKILL.md` §4, *Reusing agents*, decides. In a relay the outgoing agent writes notes on what it explored, and the new one reads them plus the whole diff. Each agent's ID, model and last token count are recorded in `state.md`. Critics and verifiers are never resumed. The relay is in `protocols/context-handoff.md` §Relay.
+- **Pause and stop:** the programmer can pause a feature or stop all its work at once, and `state.md` records what must be relaunched (`SKILL.md` §7).
+- **Catch-ups in `auto`:** the programmer gets one at each phase or increment transition without asking (`SKILL.md` §5).
 - **Orchestrator cost:** the orchestrator session compacts at the threshold the programmer sets and is recommended to run on sonnet (README §Cost settings).
 - **Questions:** questions only the programmer can answer follow the agent-questions protocol. A blocking one stops the agent; it never guesses.
 - **Return:** a `STATUS` line, a summary within the word limit, the questions, and any decision in the decision format.
@@ -464,11 +466,12 @@ Standard executor and model. The orchestrator picks the cheapest sufficient mode
 
 <repo>/.quality/ or <git-common-dir>/quality/   project-wide registry, after the programmer's approval
 <git-common-dir>/feature-workflow/memory.md      project memory, ≤ 80 lines, never committed
+<git-common-dir>/feature-workflow/relay/<slug>/  relay notes, one per role, never committed (protocols/context-handoff.md §Relay)
 <git-common-dir>/feature-workflow/claims/        one JSON per feature: who orchestrates it
 ```
 
 **Handoffs** transfer knowledge, not conversation (`protocols/context-handoff.md`):
-- **When:** in orchestrator mode only, at a phase transition whose incoming agent is new; a resumed agent gets a brief instead. Resume state lives in `state.md` (the card's *State* in EVO as executor and in DIRECT with a card).
+- **When:** in orchestrator mode only, at a phase transition whose incoming agent is new; a resumed agent gets a brief instead, and a new agent of a role that already ran gets relay notes (`protocols/context-handoff.md` §Relay). Resume state lives in `state.md` (the card's *State* in EVO as executor and in DIRECT with a card).
 - **Transitions:** Request → Specification, Specification → Planning, Planning → Implementation, Implementation → Testing, Intent → Planning and Intent → Test design (EVO), Testing → Evolution (EVO), and Testing → Finalization. Each one has a checklist.
 - **Content:** handoffs reference artifacts by path and section instead of copying them, and record freshness (commit, branch, dirty state, artifact versions).
 - **Critics and verifiers** never read handoffs.

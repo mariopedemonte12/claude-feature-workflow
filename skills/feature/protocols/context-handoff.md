@@ -4,7 +4,7 @@
 
 ## Who writes it
 
-`handoff.md` is a message between agents of different phases, in orchestrator mode only. It is written at a phase transition only when the incoming agent is new, in every workflow; a resumed agent gets a brief with the new task and the artifact sections it needs instead. Executor mode never writes one.
+`handoff.md` is a message between agents of different phases, in orchestrator mode only. It is written at a phase transition only when the incoming agent is new (a same-role replacement is a relay instead: §Relay), in every workflow; a resumed agent gets a brief with the new task and the artifact sections it needs instead. Executor mode never writes one.
 
 The outgoing agent writes it, when its brief's Task line says the incoming agent is new (`SKILL.md` §4 *Briefing a subagent*). The Repository Analyst and the Planner are read-only, so they return their content and the orchestrator writes the handoff. The orchestrator also writes the handoffs whose outgoing role writes none: Request → Specification, Specification → Planning and Specification → Test design (in EVO, Intent → Planning and Intent → Test design). The orchestrator checks every handoff before the next delegation.
 
@@ -61,6 +61,34 @@ Validation results · status of each acceptance criterion · end-to-end status a
 5. Do not redo completed investigations.
 6. Report inconsistencies or missing information instead of guessing. The handoff is a starting point and may be incomplete.
 
+## Relay
+
+A relay replaces an agent by a new agent of the **same role**, when `SKILL.md` §4, *Reusing agents*, says to replace it instead of resuming it. **Relation to the handoff:** `handoff.md` starts the first agent of a role at a phase transition; relay notes start a new agent of a role that already ran for this feature. One delegation uses one of them, never both: a role that already ran gets relay notes even at a phase transition.
+
+**Who writes the notes.** Before the replacement, the orchestrator resumes the **outgoing** agent for one turn, whatever its usage, with only this task: `Write the relay notes to <path>, as protocols/context-handoff.md §Relay says, and stop.` A read-only role (Repository Analyst, Planner) returns the notes instead, and the orchestrator writes them. If the outgoing agent cannot be resumed (a new session, the agent no longer exists, an error), the orchestrator, or the phase runner that drives the phase, writes the notes from the agent's last reports and says so in the notes' first line.
+
+**Where.** `$(git rev-parse --git-common-dir)/feature-workflow/relay/<slug>/<role>.md`: local, shared by the worktrees of the repository, never committed, and available in DIRECT, which has no feature folder. Each relay of that role overwrites it.
+
+**What the notes hold:** the exploration the new agent would otherwise repeat, and nothing else. No diffs, no file contents, no logs: those are on disk.
+
+```markdown
+# Relay: <role> · <slug> · HEAD <short sha> · base <commit> · <date> · written by <the outgoing agent | the orchestrator, from the last reports>
+
+## Map
+- <rule, copy or component>: <path:line, …> · proof: `<grep or command that finds every place>`
+
+## Verification
+- `<command>`: what it checks · trap: <what makes it pass or fail for the wrong reason, e.g. "run only after committing, on a clean tree">
+
+## Decisions in force
+- D-NNN: <one line>
+
+## Read in full
+- <path>, …
+```
+
+**The incoming agent** reads the notes **and** the full diff and log of the work so far (`git -C <worktree> diff <base>..HEAD`, `git -C <worktree> log <base>..HEAD`), because the notes hold only what the outgoing agent chose to write. Its brief names both on line 2 (`SKILL.md` §4, *Briefing a subagent*), plus the earlier agent's last report. It checks freshness against the notes' HEAD (§Freshness) and treats a claim in the notes that the diff or a grep contradicts as stale.
+
 ## Freshness
 
 **When writing** a handoff or `state.md`: run these inside the feature worktree. Record `git rev-parse --short HEAD`, the branch, whether the working tree is dirty (`git status --porcelain` is non-empty), and the artifact versions (spec vN, plan status). If the project is not a git repository, record the date and time and the list of files touched.
@@ -69,7 +97,7 @@ Validation results · status of each acceptance criterion · end-to-end status a
 
 ## Resume state
 
-`state.md` (`templates/state.md`) in the feature folder holds what a fresh session needs to resume: the workflow state, with each resumable agent's ID, and, in EVO, the open questions. Whoever drives the session writes it at every stop (a gate, a pending question, the end of the turn, a pause): the orchestrator, a phase runner (`protocols/phase-runners.md`), or the SDD executor. In EVO as executor, the card's *State* plays this role. DIRECT keeps neither, unless the programmer asks for a card: then its *State* plays this role. Resuming, building the portfolio board and recovering from a compaction read `state.md`, never the handoff.
+`state.md` (`templates/state.md`) in the feature folder holds what a fresh session needs to resume: the workflow state, with each resumable agent's ID, model and last reported `subagent_tokens`, after a pause or a stop everything (`SKILL.md` §7, *Pause and stop everything*), the agents that finished, were interrupted or must be relaunched, and, in EVO, the open questions. Whoever drives the session writes it at every stop (a gate, a pending question, the end of the turn, a pause): the orchestrator, a phase runner (`protocols/phase-runners.md`), or the SDD executor. In EVO as executor, the card's *State* plays this role. DIRECT keeps neither, unless the programmer asks for a card: then its *State* plays this role. Resuming, building the portfolio board and recovering from a compaction read `state.md`, never the handoff.
 
 ## A transition is complete when
 

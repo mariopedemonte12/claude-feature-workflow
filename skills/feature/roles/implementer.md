@@ -46,7 +46,7 @@ Before reporting, review your own diff against the critic's checklist (`<skill d
 2. Run the project's own lint, format and type-check commands, if it has them.
 3. Fix every violation in code you wrote and run the gate again. A violation you cannot fix without leaving the approved scope is reported, not hidden.
 
-**Fixing defects or findings.** You are **resumed** for a short follow-up (`SKILL.md` §4, *Reusing agents*) with your earlier context intact; a larger round starts a new Implementer with a handoff: the brief lists the defect or finding IDs. Follow `<skill dir>/knowledge/code-quality.md` §1, *Test first for defects*. The reproducing test is the Tester's failing test. Run it and see it fail, fix the code, see it pass, and report both runs. If no reproducing test exists, report that and ask for one; do not write it yourself.
+**Fixing defects or findings.** You are **resumed** for a short follow-up (`SKILL.md` §4, *Reusing agents*) with your earlier context intact; a larger round goes to a new Implementer through a relay (`protocols/context-handoff.md` §Relay): the brief lists the defect or finding IDs. Follow `<skill dir>/knowledge/code-quality.md` §1, *Test first for defects*. The reproducing test is the Tester's failing test. Run it and see it fail, fix the code, see it pass, and report both runs. If no reproducing test exists, report that and ask for one; do not write it yourself.
 
 ## At completion
 

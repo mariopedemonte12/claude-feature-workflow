@@ -7,8 +7,9 @@ import shutil
 import unittest
 from pathlib import Path
 
+import rule_copies
 import test_rule_copies as base
-from inc1_support import (BASE_COMMIT, CAP_SOURCE, FEATURE_FOLDER_FILES, POINTER, REPOSITORY, REVIEWER, SDD, SkillsCopy,
+from inc1_support import (BASE_COMMIT, CAP_SOURCE, FEATURE_FOLDER_FILES, POINTER, REPOSITORY, REVIEWER, RULES_FILE, SDD, SkillsCopy,
                           git, recorded_pattern, rule_searches)
 
 class SourceChangePropagates(SkillsCopy):
@@ -229,16 +230,35 @@ class BaselinePower(unittest.TestCase):
         archive_path.write_bytes(archive.stdout)
         with tarfile.open(archive_path) as bundle:
             bundle.extractall(self.repo, filter="data")
+        self.rules = self.repo / "rules.json"
+        self.rules.write_text(json.dumps(self.rules_with_a_source_in_the_baseline()), encoding="utf-8")
+
+    def rules_with_a_source_in_the_baseline(self):
+        data = json.loads(RULES_FILE.read_text(encoding="utf-8"))
+        data["rules"] = [rule for rule in data["rules"] if self.has_source(rule["source"])]
+        return data
+
+    def has_source(self, source):
+        path = self.repo / source["file"]
+        return path.exists() and rule_copies.section_span(rule_copies.markdown_lines(path), source["section"]) is not None
+
+    def test_only_the_relay_rule_lacks_a_source_in_the_baseline(self):
+        rules = json.loads(RULES_FILE.read_text(encoding="utf-8"))["rules"]
+        dropped = {rule["id"] for rule in rules if not self.has_source(rule["source"])}
+        self.assertEqual(dropped, {"RY-1"})
+
+    def check(self, *paths):
+        return base.run_check(self.repo, *paths, rules=self.rules)
 
     def test_t_l1_09_the_known_copies_of_the_baseline_are_found(self):
-        code, output, _ = base.run_check(self.repo, "skills")
+        code, output, _ = self.check("skills")
         self.assertEqual(code, 1)
         missing = [f"{path}:{line}" for path, lines in self.KNOWN_PLACES for line in lines
                    if f"{path}:{line}: " not in output]
         self.assertEqual(missing, [])
 
     def test_t_l1_09_the_baseline_reports_a_copy_of_each_rule_family(self):
-        _, output, _ = base.run_check(self.repo, "skills")
+        _, output, _ = self.check("skills")
         for rule in ("RC-1", "RL-1", "RL-2", "RL-3", "RL-4", "RL-5", "RL-6", "HS-1", "HS-2"):
             self.assertIn(f": {rule} restated copy", output)
 
@@ -246,7 +266,7 @@ class BaselinePower(unittest.TestCase):
         text = "below R2 there is no verifier and no multi-round cycle"
         (self.repo / "docs").mkdir()
         (self.repo / "docs" / "executor.md").write_text(text + "\n", encoding="utf-8")
-        _, output, _ = base.run_check(self.repo, "docs")
+        _, output, _ = self.check("docs")
         self.assertIn("0 restated copies", output)
         self.assertIsNotNone(re.search(recorded_pattern("RL-2"), text.replace("R2", "R2 ")))
 

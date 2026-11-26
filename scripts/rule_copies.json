@@ -233,6 +233,103 @@
       "searches": [
         "grep -rniE 'rules? (the author|you) wrote|written by the author|authored rule|contradict[^.]*rules?|decided by agent' <paths>: read each hit about who settles a choice between written rules in auto"
       ]
+    },
+    {
+      "id": "AR-1",
+      "summary": "When an agent is resumed and when a relay replaces it: the per-model token caps, the 100k band, what a point follow-up is, and the usage thresholds read from subagent_tokens. Naming the cap (names) next to a pointer to SKILL.md §4 Reusing agents, in the same paragraph, cell or list item and within 60 characters, is not a copy; a number or a threshold is always a copy outside the source.",
+      "source": {
+        "file": "skills/feature/SKILL.md",
+        "section": "4. Roles, agent types and models"
+      },
+      "fingerprints": [
+        "\\b(?P<value>\\d+) ?k(?: tokens)? (?:for|on|with) (?:sonnet|opus|haiku)\\b",
+        "\\b(?:sonnet|opus|haiku)(?: (?:and|or) (?:sonnet|opus|haiku))?:? (?:at |up to )?(?P<value>\\d+) ?k\\b",
+        "\\bcaps? (?:of|is|at|=) (?P<value>\\d+) ?k\\b",
+        "\\b(?:from|over|above|under|below|past) (?P<value>\\d+) ?k(?: tokens)?\\b[^.;]{0,40}\\b(?:resum|relay|replac|cap|band|follow-up)",
+        "\\b(?:resum|relay|replac)\\w*\\b[^.;]{0,60}\\b(?:from|over|above|under|below|past) (?P<value>\\d+) ?k\\b",
+        "\\b(?P<value>\\d+) ?k band\\b|\\bband (?:of |from )?(?P<value2>\\d+) ?k\\b",
+        "\\bpoint follow-ups?\\b[^.;]{0,40}\\b(?:up to|at most|no more than) (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) (?:findings|defects)\\b",
+        "\\b(?:up to|at most|no more than) (?P<value>\\d+|one|two|three|four|five|six|seven|eight|nine|ten) (?:findings|defects)\\b[^.;]{0,60}\\b(?:context|resum|follow-up)",
+        "\\bsubagent_tokens\\b[^.;]{0,40}\\b(?:at or below|above|below|under|over|exceeds?|beyond)\\b",
+        "\\bresumed? (?:only )?(?:while|as long as|until)\\b[^.;]{0,50}\\b(?:cap|subagent_tokens|tokens|context)\\b"
+      ],
+      "names": [
+        "\\b(?:token|context|per-model) caps?\\b",
+        "\\bmodel'?s cap\\b"
+      ],
+      "pointer": "skill\\.md\\)? ?§ ?4\\b|reusing agents",
+      "searches": [
+        "grep -rniE 'resum|relay|replac|subagent_tokens|[0-9]+ ?k\\b|follow-up' <paths>: read each hit that says when an agent is resumed or replaced"
+      ]
+    },
+    {
+      "id": "RY-1",
+      "summary": "The relay: the outgoing agent is resumed for one turn to write relay notes (exploration only, no diffs, contents or logs) under the git common dir; the orchestrator writes them when it cannot; the new agent reads the notes and the full diff. Naming the relay notes or their folder (names) next to a pointer to protocols/context-handoff.md §Relay, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/protocols/context-handoff.md",
+        "section": "Relay"
+      },
+      "fingerprints": [
+        "\\bresum\\w* (?:\\w+ ){0,4}for (?:one|a single|a last|a final|one (?:more|last|final)) turn\\b",
+        "\\bnotes (?:are|hold|contain) only what the (?:outgoing )?agent chose\\b",
+        "\\bno diffs?,? (?:no )?(?:file )?contents?\\b",
+        "\\b(?:orchestrator|phase runner)\\b[^.;]{0,40}\\bwrites? the (?:relay )?notes\\b",
+        "\\breads? (?:both )?the (?:relay )?notes (?:and|plus) the (?:full |whole )?(?:diff|log)\\b"
+      ],
+      "names": [
+        "\\brelay notes?\\b",
+        "feature-workflow/relay\\b"
+      ],
+      "pointer": "protocols/context-handoff\\.md|§ ?relay\\b",
+      "searches": [
+        "grep -rniE 'relay|one turn|notes' <paths>: read each hit about how a same-role replacement starts"
+      ]
+    },
+    {
+      "id": "PS-1",
+      "summary": "Pause versus stop everything: on a pause running agents finish and no new delegation starts; on stop everything they are stopped at once and their IDs recorded; the resume state lists finished, interrupted and to-relaunch work, and interrupted work is relaunched, never assumed done. Naming stop everything (names) next to a pointer to SKILL.md §7, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/SKILL.md",
+        "section": "7. Ending"
+      },
+      "fingerprints": [
+        "\\b(?:start|starts|starting) no(?:thing)? new (?:delegations?|agents?)\\b",
+        "\\bno new (?:delegations?|agents?) (?:starts?|is started|are started|begins?|is launched|are launched)\\b",
+        "\\b(?:agents? (?:already )?running|running agents?)\\b[^.;]{0,30}\\b(?:finish|complete|run to (?:the )?end)\\b",
+        "\\b(?:stop|stops|stopped|end|ends|ended|kill|kills|killed) (?:(?:the|every|all|its|their|each) )?(?:\\w+'s )?(?:running |active )?(?:agents?|them|subagents?)\\b[^.;]{0,20}\\bat once\\b",
+        "\\bnever (?:be )?assumed (?:done|finished|complete)\\b",
+        "\\bsilently (?:lost|trusted)\\b"
+      ],
+      "names": [
+        "\\bstop everything\\b"
+      ],
+      "pointer": "skill\\.md\\)? ?§ ?7\\b|pause and stop everything",
+      "searches": [
+        "grep -rniE 'paus|stop (everything|all)|running agents|interrupted|relaunch' <paths>: read each hit about what happens to running agents when work stops"
+      ]
+    },
+    {
+      "id": "CU-1",
+      "summary": "In auto, a catch-up in the SKILL.md §5 shape goes to the programmer unasked at each phase or increment transition; the move into acceptance counts, the start of the feature does not; the auto increment report takes that shape. Naming the catch-up next to a pointer to SKILL.md §5, in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/SKILL.md",
+        "section": "5. Human decision gates"
+      },
+      "fingerprints": [
+        "\\bmove into acceptance counts\\b",
+        "\\bstart of the feature (?:does not|doesn't|adds no|is not)\\b",
+        "\\bcatch-ups?\\b[^.;]{0,60}\\bwithout (?:being asked|asking|having to ask)\\b",
+        "\\bwithout (?:being asked|asking|having to ask)\\b[^.;]{0,60}\\bcatch-ups?\\b"
+      ],
+      "names": [
+        "\\bcatch-ups?\\b[^.;]{0,60}\\b(?:phase|increment) (?:or (?:phase|increment) )?transitions?\\b",
+        "\\b(?:phase|increment) (?:or (?:phase|increment) )?transitions?\\b[^.;]{0,60}\\bcatch-ups?\\b",
+        "\\bcatch-ups?\\b[^.;]{0,40}\\bat each (?:phase|increment)\\b"
+      ],
+      "pointer": "skill\\.md\\)? ?§ ?5\\b|catch-up in auto",
+      "searches": [
+        "grep -rniE 'catch-up|transition|increment report|as a report' <paths>: read each hit about what the programmer is told unasked in auto"
+      ]
     }
   ]
 }

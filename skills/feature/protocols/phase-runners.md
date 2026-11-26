@@ -14,7 +14,7 @@ Facts to present when the programmer asks which mode to use:
 | --- | --- | --- |
 | Decisions | Every ⛔ gate is the programmer's | Same gates. A runner cannot talk to the programmer, so it cannot pass a gate that is on: it must stop and return it. A gate that is off it handles as `protocols/gates.md` §When a gate is off describes: what that section sends to the programmer stops it like a gate that is on; the rest it decides, records and reports, and continues |
 | What the programmer sees during a phase | Each agent's result, as it arrives | The phase's result at its gate; the runner's log in `delegations.md` on request |
-| Stopping or redirecting mid-phase | One agent at a time | Stop the whole runner (`TaskStop`), then relaunch the phase from the feature's `state.md` |
+| Stopping or redirecting mid-phase | One agent at a time | Stop the whole runner (`TaskStop`) as a stop everything (`SKILL.md` §7, *Pause and stop everything*), then relaunch the phase from the feature's `state.md` |
 | Agent questions | Agent → orchestrator → programmer | Agent → runner → orchestrator → programmer, and back |
 | Who verifies agents' claims | The orchestrator the programmer talks to | The runner; the orchestrator adds a cheap consistency check at each gate |
 | Orchestration cost | Measured once (3 features) | Not measured. A model in the skill repository's `docs/cost-estimates.md` gives estimates, built on assumed parameters |
@@ -46,7 +46,7 @@ It keeps everything that needs the programmer or spans features:
 - the portfolio, overlaps between features, project memory, integration and cleanup (SDD steps 14–15).
 
 **At each runner return:**
-1. If the runner returned `DONE` (its range ended with only gates that are off, nothing Pending), relay its `Decided by agent` line in one message and launch the next phase. Otherwise present the gate **from disk**: the Pending decision records and the spec's open questions the runner wrote, not its summary. The programmer sees exactly what was written.
+1. If the runner returned `DONE` (its range ended with only gates that are off, nothing Pending), relay its `Decided by agent` line in one message (in `auto`, inside the catch-up of `SKILL.md` §5, *Catch-up in `auto`*) and launch the next phase. Otherwise present the gate **from disk**: the Pending decision records and the spec's open questions the runner wrote, not its summary. The programmer sees exactly what was written.
 2. **Consistency check**, one batched command per gate: `git -C <worktree> status --porcelain` and `git -C <worktree> diff --stat <base>`, plus the existence of the reports the phase must produce. Code changes before the plan is approved, or a missing report, are reported to the programmer as facts.
 3. Gates of several features that are ready together are presented in one message, grouped by feature.
 
@@ -71,7 +71,7 @@ You orchestrate one phase of one feature.
 1. **Read**: `SKILL.md` §4 (roles, models, delegation practice, briefs, verification, escalation), the steps of the workflow file the brief names, `protocols/skills.md` §Loading, and `protocols/agent-questions.md`. Read the other protocols and templates only when a step in your range calls for them. You do not run startup, claims, memory or gates that are on; a gate that is off you handle as step 5 says.
 2. **Delegate** each step to its role exactly as `SKILL.md` §4 describes: model choice per delegation, logged in `delegations.md`; briefs in its format; parallel launches where independent. Roles never delegate further.
 3. **Verify** what each agent returns against the artifacts and the diff before using it, keeping each agent's recommendation attributed to it.
-4. **Agent questions.** Answer from evidence what you can. For the rest, stop: record them as `protocols/agent-questions.md` §For the orchestrator, steps 1–2, describes (including the agent's ID in `state.md`) and return with `QUESTIONS`. When resumed with the answers, record them and resume that agent with `SendMessage`; if it cannot be resumed, relaunch it with its work so far.
+4. **Agent questions.** Answer from evidence what you can. For the rest, stop: record them as `protocols/agent-questions.md` §For the orchestrator, steps 1–2, describes (including the agent's ID in `state.md`) and return with `QUESTIONS`. When resumed with the answers, record them and resume that agent with `SendMessage`, or replace it through a relay, as `SKILL.md` §4, *Reusing agents*, decides.
 5. **Stop at the first ⛔ whose gate is on** in your range (a gate that is off is handled as `protocols/gates.md` §When a gate is off describes, and you continue within your range, returning as `GATE` at its end, or as `DONE` when nothing is pending). A hard stop (`protocols/gates.md` §Hard stops), or a decision that §When a gate is off sends to the programmer, stops you, as a gate that is on does: record it as Pending and return as `GATE`. Do nothing that depends on a pending decision. Write every decision of that gate to `decisions/D-NNN-<topic>.md` with status **Pending** and the full option block in the decision format, so the orchestrator can present it from disk. The review level, at the plan gate, is written as a *Recommendation* with its evidence (`protocols/review-cycle.md`). Update `state.md`.
 6. **Return**, and nothing else:
 
@@ -88,7 +88,7 @@ Agents waiting on answers: <agent ID> (<role>), or none
 
 ## Limits
 
-- **Reusing agents across phases.** `SKILL.md` §4, *Reusing agents*, decides when the same Implementer or Tester is resumed. In phased mode, those agents were launched by an earlier runner that no longer exists. Whether a later runner can resume them with `SendMessage` is **untested**; if it cannot, it launches a new agent with the earlier agent's last report.
+- **Reusing agents across phases.** `SKILL.md` §4, *Reusing agents*, decides when the same Implementer or Tester is resumed. In phased mode, those agents were launched by an earlier runner that no longer exists. Whether a later runner can resume them with `SendMessage` is **untested**; if it cannot, it replaces them through a relay whose notes it writes from the earlier agent's last report (`protocols/context-handoff.md` §Relay).
 
 - **Nesting.** Orchestrator → runner → role uses 2 of the 3 subagent levels Claude Code allows by default (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). In the hierarchical mode with the *Subagents* transport (`protocols/hierarchy.md`), sub-orchestrator → runner → role reaches 3 of 3: it works only at the default limit or above. With the *Agent team* or *Separate sessions* transports, a sub-orchestrator is a full session and uses phased mode like any orchestrator.
-- **Session end.** A runner lives only as long as the orchestrator's session. A phase interrupted by the end of the session is relaunched from `state.md`; work already written to disk is not redone.
+- **Session end.** A runner lives only as long as the orchestrator's session. A phase interrupted by the end of the session is relaunched from `state.md`; what it left on disk is handled as `SKILL.md` §7, *Pause and stop everything*, says.
