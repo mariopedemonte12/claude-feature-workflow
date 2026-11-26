@@ -47,7 +47,7 @@ Rules:
 2. Read the workflow file of each feature you will act on in this session, and `protocols/decisions.md` before presenting a decision. Do not preload other protocols.
 3. Read the `state.md` only of the features the programmer's message concerns.
 
-**At every stop** (a gate, a pending question, the end of the turn):
+**At every stop** (the stops of `protocols/context-handoff.md` §Resume state):
 1. Write every decision you are about to present to the feature's `decisions/D-NNN-<topic>.md` with status **Pending**, including the full option block with its labels (A, B, T1…), exactly as presented. An answer such as "B" must be resolvable from disk. Open questions go to the artifact that owns them (spec §Open questions; in EVO, `state.md` §Open questions) with their labels. Questions an agent is waiting on also record the agent's ID in `state.md` (`protocols/agent-questions.md`).
 2. Update each touched feature's `state.md` (`protocols/context-handoff.md` §Resume state).
 3. Rewrite `memory.md` within its limit: portfolio rows, pending questions and decisions with pointers to their files, standing instructions.

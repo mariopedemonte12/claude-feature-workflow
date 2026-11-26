@@ -40,7 +40,7 @@ The Planner returns implementation options, or a single option with the excluded
 - Write `implementation-plan.md` (`templates/implementation-plan.md`) for the approved approach only, with a one-line mention of each alternative not chosen and the decision reference.
 - Write the Planning → Implementation handoff when the Implementer is new.
 
-**7. Implement.** Brief the Implementer (`roles/implementer.md`). It writes production code only, follows the code quality standard, and reviews its own diff against the critic's checklist before the quality gate. It writes no tests (exceptions: `SKILL.md` §4 *Who writes tests*). If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ `[gate: approach]` present it (`protocols/decisions.md`), update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and, when the Tester is new, the Implementation → Testing handoff.
+**7. Implement.** Brief the Implementer (`roles/implementer.md`). It follows the code quality standard and reviews its own diff against the critic's checklist before the quality gate. It writes no tests (exceptions: `SKILL.md` §4 *Who writes tests*). If it reports that the plan is invalid or that a deviation is needed, that is a new programmer decision: ⛔ `[gate: approach]` present it (`protocols/decisions.md`), update `decisions/` and the plan, then resume. The implementer writes `reports/implementation-report.md` and, when the Tester is new, the Implementation → Testing handoff.
 
 ## Phase 3: Testing and validation
 
@@ -49,7 +49,7 @@ The Planner returns implementation options, or a single option with the excluded
 - end-to-end testing through the real entry point (`knowledge/e2e-testing.md`), with status Applied / Not applicable + justification / Blocked + explanation;
 - evaluation of each black-box technique (Boundary Value Analysis, Fuzz, Symbolic/Concolic, Decision Table, Finite State Machine), with status Applied / Not applicable + justification / Blocked + explanation;
 - mutation testing, if mandatory or decided at step 6;
-- validation against the approved spec, in `reports/validation-report.md`, plus, when the incoming agent is new, the Testing → Finalization handoff.
+- validation against the approved spec, in `reports/validation-report.md`, plus the Testing → Finalization handoff when `protocols/context-handoff.md` §Who writes it calls for one.
 
 **Specialist audits.** Every specialist active in its `audit` phase runs as a clean agent, launched in parallel with the Tester and the first critic, and writes `reports/review/<name>.md` (`protocols/skills.md`). The built-in `security` specialist is mandatory for Critical features whose signals match. Audit findings go to the defects gate, merged and deduplicated with the critic's and the Tester's, and none is fixed automatically; a security audit Blocker is a hard stop (`protocols/gates.md` §Hard stops). After a finding is fixed, a **new** auditor of that specialist reviews only the fix diff.
 

@@ -86,7 +86,7 @@ How features are grouped is the programmer's choice too: several features under 
 | More than one feature in progress, `status`, or a multi-slug `resume` | `protocols/multi-feature.md` |
 | Before the first delegation of the session, and whenever an agent returns `STATUS: QUESTIONS` | `protocols/agent-questions.md` |
 | Checking a specification draft before its gate | `knowledge/specification-guide.md` |
-| Before any phase transition or delegation (a handoff only when the incoming agent is new; a relay for a new agent of a role that already ran: `protocols/context-handoff.md` §Relay) | `protocols/context-handoff.md`, `templates/handoff.md` |
+| Before any phase transition or delegation (when a handoff is written: `protocols/context-handoff.md` §Who writes it; a relay: §Relay) | `protocols/context-handoff.md`, `templates/handoff.md` |
 | The first stop of a feature (not DIRECT), as orchestrator or SDD executor | `templates/state.md` |
 | Recording a decision | `templates/decision-record.md` |
 | Writing the approved plan | `templates/implementation-plan.md` |
@@ -197,7 +197,7 @@ If you need an answer only the programmer can give, stop and ask as <absolute pa
 Return to the orchestrator in that protocol's format: the STATUS line, a summary of at most 250 words, your questions, and any decision the programmer must make, as options in the decision format.
 ```
 
-**Handoff to a new agent.** When you plan the next delegation and its incoming agent is new (`protocols/context-handoff.md`), the Task line of the outgoing agent's brief says so: `The incoming <Role> is new: write handoff.md (<transition>).` Without that line the agent writes no handoff. A new agent of a role that already ran for this feature takes over through a relay instead (§Reusing agents).
+**Handoff to a new agent.** When you plan the next delegation and `protocols/context-handoff.md` §Who writes it calls for a handoff, the Task line of the outgoing agent's brief says so: `The incoming <Role> is new: write handoff.md (<transition>).` Without that line the agent writes no handoff. A new agent of a role that already ran for this feature takes over through a relay instead (§Reusing agents).
 
 **Critic, Verifier and specialist `audit` briefs are clean:** omit line 2 (the handoff) and the questions line (they report ambiguity as findings) and give no summary of the feature or its implementation. The critic's brief adds the programmer's own words from `intent.md`, verbatim: `Original request: <…>`, `Consolidated intent (confirmed, version n): <…>` and `Statements since: <S-n, each verbatim>`. Nothing else about intent: never an unconfirmed proposal, the history or the specification, so the critic can check the reach of the intent (`roles/reviewer.md`). The Task line gives only the base commit, the round number, from round 2 the commit of the previous round (its diff is the scope), and, for the verifier, the critic report path. Scope and Output as usual.
 
@@ -251,7 +251,7 @@ The same shape serves `/feature status` and any catch-up the programmer asks for
 │             review/ rounds.md · round-<n>-critic.md · round-<n>-verification.md (EVO: inc<k>-round-<n>-…)
 ├── delegations.md                    # one row per delegation (role, model, reason, outcome)
 ├── handoff.md                        # message to a new agent at a phase transition (orchestrator mode); overwritten each time; handoff-<role>.md for parallel new agents
-├── state.md                          # resume state: workflow state, agent IDs, EVO open questions; written at every stop
+├── state.md                          # resume state: workflow state, agent IDs, EVO open questions (`protocols/context-handoff.md` §Resume state)
 └── briefs/<role>.md                  # executor mode: briefs for the sessions the programmer opens
 
 <repo>/.quality/ or <git-common-dir>/quality/   # the registry, where the programmer chose at bootstrap; outlives features

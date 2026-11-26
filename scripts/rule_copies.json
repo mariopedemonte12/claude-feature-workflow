@@ -430,6 +430,171 @@
       "searches": [
         "grep -rniE 'all copies|every copy|copies of|clean tree|after committing|same round' <paths>: read each hit about copies of a touched rule and when verification runs"
       ]
+    },
+    {
+      "id": "WT-1",
+      "summary": "Who writes tests: the Test Designer derives the cases, the Tester implements and runs them, the Implementer writes production code only; the exceptions (a fixture or helper the plan assigns, the check or test of an approved anti-pattern entry, DIRECT). Naming the division (names) next to a pointer to SKILL.md §4 Who writes tests, in the same paragraph, cell or list item and within 60 characters, is not a copy; the exceptions and who derives or implements the cases are always a copy outside the source.",
+      "source": {
+        "file": "skills/feature/SKILL.md",
+        "section": "Delegation practice"
+      },
+      "fingerprints": [
+        "\\btest designer derives (?:the )?cases\\b[^.]{0,120}\\btester implements\\b",
+        "\\bfixtures?,? (?:or )?helpers?\\b[^.;]{0,40}\\b(?:the )?plan assigns\\b",
+        "\\bplan (?:explicitly )?assigns (?:it|you) a test fixture\\b",
+        "\\b(?:a )?test fixture or helper\\b",
+        "\\b(?:check|test)s? (?:that )?enforc\\w+ (?:an |the )?(?:approved )?anti-pattern\\b",
+        "\\banti-pattern entry'?s? checks? or tests?\\b",
+        "\\bneeds its check or test\\b",
+        "\\bwrites? (?:the )?code (?:and|writes) (?:its )?tests\\b",
+        "\\bwrites code and tests\\b",
+        "\\bTester writes the tests\\b",
+        "\\bexcept (?:the )?fixtures?,? helpers?\\b"
+      ],
+      "names": [
+        "\\bwrites? production code only\\b",
+        "\\bwrites? no tests?\\b",
+        "\\bdo(?:es)? not write tests\\b",
+        "\\bnever writes? tests\\b",
+        "\\bonly agent that writes tests\\b",
+        "\\bwithout tests\\b"
+      ],
+      "pointer": "who writes tests|SKILL\\.md ?§ ?4",
+      "searches": [
+        "grep -rniE 'writes? (no |its |the )?tests?|code and tests|production code only|fixture or helper|never writes' <paths>: read each hit about who writes tests and the exceptions"
+      ]
+    },
+    {
+      "id": "MF-1",
+      "summary": "Model floors: no haiku for the specification, planning, test design, the critic, the verifier, a specialist audit or a phase runner; Critical features use opus for them. Naming a floor (names) next to a pointer to SKILL.md §4 Model selection per delegation, in the same paragraph, cell or list item and within 60 characters, is not a copy; which roles and which Critical upgrades are always a copy outside the source.",
+      "source": {
+        "file": "skills/feature/SKILL.md",
+        "section": "Model selection per delegation"
+      },
+      "fingerprints": [
+        "\\bnever haiku\\b",
+        "\\bnever use haiku\\b",
+        "\\bno haiku\\b",
+        "\\bopus if critical\\b",
+        "\\bcritical features? (?:use|uses|run on) opus\\b",
+        "\\bhaiku\\b[^.;]{0,60}\\b(?:never|not)\\b[^.;]{0,40}\\b(?:specification|planning|test design|critic|verifier|audit)",
+        "\\bhaiku\\b[^.;]{0,40}\\b(?:must not|should not|not be used|is not allowed|forbidden|banned)\\b",
+        "\\bcritical features?\\b[^.;]{0,30}\\b(?:get|require|need|must use)s? opus\\b",
+        "\\bnever (?:run|runs|ran|be run|be used)\\b[^.;]{0,20}\\bhaiku\\b"
+      ],
+      "names": [
+        "\\b(?:model|the|with|within) floors?\\b"
+      ],
+      "pointer": "model selection per delegation|SKILL\\.md ?§ ?4",
+      "searches": [
+        "grep -rniE 'haiku|floors?|opus if critical' <paths>: read each hit about a model floor or the Critical upgrade"
+      ]
+    },
+    {
+      "id": "SM-1",
+      "summary": "The standard model and agent type of each role and the typical deviations (down to haiku, up to opus). Naming a role's model next to a pointer to SKILL.md §4 is not a copy; a table of roles with their models or a deviation condition is always a copy outside the source.",
+      "source": {
+        "file": "skills/feature/SKILL.md",
+        "section": "4. Roles, agent types and models"
+      },
+      "fingerprints": [
+        "`?\\b(?:general-purpose|Explore)\\b`? ?· ?(?:opus|sonnet|haiku)\\b",
+        "`?\\bPlan\\b`? ?· ?(?:opus|sonnet|haiku)\\b",
+        "\\((?:sonnet|opus|haiku) (?:if|for) (?:mechanical|risky|re-runs|hard state|large|short|one mechanical)",
+        "\\bhaiku if mechanical\\b",
+        "\\bopus if risky\\b"
+      ],
+      "names": [],
+      "searches": [
+        "grep -rniE '(general-purpose|Explore|Plan)[` ]*· ?(opus|sonnet|haiku)|haiku if|opus if' <paths>: read each hit that gives a role's standard model or a deviation"
+      ]
+    },
+    {
+      "id": "GP-1",
+      "summary": "What each gate profile (full, key, auto) does with each gate: which gates stop, which are off and what the agent does in their place. Outside the source a profile may be named, and chosen with --gates, but never described gate by gate.",
+      "source": {
+        "file": "skills/feature/protocols/gates.md",
+        "section": "Profiles"
+      },
+      "fingerprints": [
+        "\\|\\s*gate\\s*\\|\\s*full\\s*\\|\\s*key\\b[^|]*\\|\\s*auto\\s*\\|",
+        "\\|\\s*stops\\s*\\|\\s*(?:stops|agent|off|report|at acceptance|listed)\\b",
+        "\\bfull\\b[^.;|]{0,20}\\b(?:stops?|asks?) at every gate\\b",
+        "\\bfull\\b ?\\(every gate\\)",
+        "\\bkey\\b[^.;|]{0,50}\\bonly at the intent\\b",
+        "\\bauto\\b[^.;|]{0,30}\\bonly at acceptance\\b",
+        "\\bdefects\\b(?: gate)? off\\b[^.]{0,200}\\b(?:fixed|fixes|cover)\\b",
+        "\\bautomatic fixes?\\b[^.;]{0,60}\\bdefects\\b[^.;]{0,20}\\boff\\b",
+        "\\bdiscoveries\\b(?: gate)? off\\b[^.;]{0,60}\\b(?:only )?recorded\\b",
+        "\\bdepth\\b(?: gate)? off\\b[^.;]{0,60}\\breview level follows\\b"
+      ],
+      "names": [],
+      "searches": [
+        "grep -rniE '`?(full|key|auto)`?[^.]{0,40}(stops|every gate|only at)|gate profiles?|`?(defects|discoveries|depth|increment)`?( gate)? (is |are )?off' <paths>: read each hit that says what a profile does with a gate"
+      ]
+    },
+    {
+      "id": "HW-1",
+      "summary": "When handoff.md is written: at a phase transition, only when the incoming agent is new, in orchestrator mode only (a new agent of a role that already ran gets relay notes; a resumed agent gets a brief). Naming the handoff for a new agent (names) next to a pointer to protocols/context-handoff.md, in the same paragraph, cell or list item and within 60 characters, is not a copy; the condition is always a copy outside the source.",
+      "source": {
+        "file": "skills/feature/protocols/context-handoff.md",
+        "section": "Who writes it"
+      },
+      "fingerprints": [
+        "\\bonly when (?:the )?(?:incoming|receiving) agent is new\\b",
+        "\\bwhen (?:the )?(?:incoming|receiving) agent is new\\b",
+        "\\bonly when a new agent takes over\\b",
+        "\\bhandoff\\b[^.;]{0,40}\\bonly (?:for|when)\\b[^.;]{0,30}\\bnew agent\\b",
+        "\\bexecutor mode never writes (?:one|a handoff)\\b",
+        "\\bno handoff file\\b",
+        "\\b(?:incoming|receiving) agent is new\\b"
+      ],
+      "names": [],
+      "pointer": "context-handoff\\.md|§ ?who writes it",
+      "searches": [
+        "grep -rniE 'handoff[^.]{0,60}new agent|incoming agent is new|only when the incoming|no handoff' <paths>: read each hit about when a handoff is written"
+      ]
+    },
+    {
+      "id": "ST-1",
+      "summary": "When state.md is written: at every stop (a gate, a pending question, the end of the turn, a pause or a stop everything), by whoever drives the session; the card's State plays it in EVO as executor. Naming it (names) next to a pointer to protocols/context-handoff.md §Resume state, in the same paragraph, cell or list item and within 60 characters, is not a copy; the list of stops is always a copy outside the source.",
+      "source": {
+        "file": "skills/feature/protocols/context-handoff.md",
+        "section": "Resume state"
+      },
+      "fingerprints": [
+        "\\ba gate, a pending question,? (?:and )?the end of the turn\\b",
+        "\\bwhoever drives the session writes\\b",
+        "\\bwritten by whoever drives the session\\b"
+      ],
+      "names": [
+        "\\b(?:written|rewritten|overwritten|updated) at every stop\\b",
+        "\\bat every stop\\b[^.;|]{0,40}\\bstate\\.md\\b",
+        "\\bstate\\.md\\b[^.;|]{0,40}\\bat every stop\\b"
+      ],
+      "pointer": "context-handoff\\.md ?§ ?resume state|§ ?resume state",
+      "searches": [
+        "grep -rniE 'every stop|at a stop|a pending question, the end of the turn|resume state' <paths>: read each hit about when state.md is written"
+      ]
+    },
+    {
+      "id": "PL-1",
+      "summary": "Parallel launches: independent tasks run in parallel within a feature and across features; within one feature never two code-modifying agents at the same time. Naming the parallel launch (names) next to a pointer to SKILL.md §4 Delegation practice (Grouping), in the same paragraph, cell or list item and within 60 characters, is not a copy.",
+      "source": {
+        "file": "skills/feature/SKILL.md",
+        "section": "Delegation practice"
+      },
+      "fingerprints": [
+        "\\bnever (?:run )?two code-modifying agents\\b",
+        "\\bnever two (?:code-modifying|writing) (?:agents|runners)\\b",
+        "\\blaunch independent agents in parallel\\b",
+        "\\bindependent tasks run in parallel\\b"
+      ],
+      "names": [],
+      "pointer": "delegation practice|SKILL\\.md ?§ ?4",
+      "searches": [
+        "grep -rniE 'in parallel|code-modifying|at the same time|at once' <paths>: read each hit that states a general rule of launching agents in parallel"
+      ]
     }
   ]
 }
