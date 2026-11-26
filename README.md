@@ -169,7 +169,7 @@ A typical SDD run as orchestrator:
 2. **Recommendation.** The session assesses clarity, uncertainty, risk and reach with evidence, recommends a workflow, and asks the role. You validate.
 3. **Specification.** The Specification Writer turns your request (kept in `intent.md`: your original request, a consolidated intent you confirm at each gate, and your statements since) into requirements, constraints, invariants and acceptance criteria, each traced to its source. You approve it and set the criticality.
 4. **Planning and test design.** In parallel, the Planner maps the viable approaches and the Test Designer derives the cases from the spec. You choose an approach, approve the testing plan, decide mutation testing, and validate the recommended review level.
-5. **Implementation.** The Implementer writes production code for the approved plan, without tests (except the fixtures, helpers and anti-pattern checks of `SKILL.md` §4). Any deviation comes back to you.
+5. **Implementation.** The Implementer writes production code for the approved plan, without tests (except the fixtures, helpers and anti-pattern checks of `SKILL.md` §4). Any deviation comes back to you. How it treats the copies of a rule and when it verifies: `roles/implementer.md` §Rules touched and verification. Reach by concept: `knowledge/edge-cases.md` §Before code. Cases that depend on a changed decision: `roles/test-designer.md` §Decisions that cases depend on.
 6. **Testing and review.** The Tester implements and runs the designed cases while a clean critic reviews. Defects come back to you as decisions.
 7. **Final report, acceptance, integration and cleanup,** each decided by you.
 

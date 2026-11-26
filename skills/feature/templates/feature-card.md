@@ -25,7 +25,7 @@ The existing feature most like this one, `path:line`, and how it handles empty a
 ## Cases
 The executable criteria: no other section restates what the feature must do.
 
-| ID | Increment | Case (input or setup) | Type (positive · negative · error · security · worst case) | Expected result | Source (request · S-n · D-n · `path:line`) | Analog does | Status (planned · passed · failed · deferred to # · retired) |
+| ID | Increment | Case (input or setup) | Type (positive · negative · error · security · worst case) | Expected result | Source (request · S-n · D-n · `path:line`) · depends on (`roles/test-designer.md` §Decisions that cases depend on) | Analog does | Status (planned · passed · failed · deferred to # · retired) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Decisions

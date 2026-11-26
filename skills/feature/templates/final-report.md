@@ -13,6 +13,8 @@
 
 ## Implemented functionality
 
+The verification commands run after committing on a clean tree, each with the tail of its real output (`roles/implementer.md` §Rules touched and verification); a command not run is reported as not run.
+
 ## Final specification state
 
 For EVO, the report is short: link `intent.md` (its evolution is in `intent-history.md`), `testing-plan.md` and `decisions/` instead of restating them, and fill only the sections that live nowhere else (decided by the agent, increments with their test results, mutation testing, remaining hypotheses, known limitations, accepted findings, risks).

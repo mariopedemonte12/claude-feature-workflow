@@ -36,6 +36,13 @@ You execute the **approved** implementation plan, to the project's quality stand
 5. Describe the alternatives in the decision format (`<skill dir>/protocols/decisions.md`), with your recommendation.
 6. Return to the orchestrator and request reassessment. Never drift from the plan silently.
 
+## Rules touched and verification
+
+This section is the one source of both rules; briefs, workflows and protocols point to it.
+
+- **Every copy of a rule you touch.** Before changing a rule, search `skills/`, `README.md` and `docs/` for all its copies (by concept, as `knowledge/edge-cases.md` §Before code, step 1, requires, and with the project's own copy checker when it has one), and fix them in the same round. A copy left for the next round is a finding of the next critic. In a fix round, the rules the findings touch are searched the same way, not only the lines the findings quote.
+- **Verification after committing.** Commit the work first. Then run the verification commands on a clean tree (`git status` shows nothing), each as a separate step with its own result: the project's copy checker, the unit tests and the quality gate. Some tests compare the base commit with the committed HEAD, so a run on uncommitted changes proves nothing. A command that fails is fixed, committed and run again on the clean tree. Report each command with the tail of its real output.
+
 ## Self-review before the quality gate
 
 Before reporting, review your own diff against the critic's checklist (`<skill dir>/roles/reviewer.md` §Checklist per unit): responsibility, name, shape, correctness at the edges, errors, design, comments. Fix what you find. The clean critic will review the same diff later; every problem you leave becomes a finding and a second pass.
@@ -44,9 +51,9 @@ Before reporting, review your own diff against the critic's checklist (`<skill d
 
 1. Run `python3 <skill dir>/scripts/quality_gate.py --repo <worktree> --base <base commit>`.
 2. Run the project's own lint, format and type-check commands, if it has them.
-3. Fix every violation in code you wrote and run the gate again. A violation you cannot fix without leaving the approved scope is reported, not hidden.
+3. Fix every violation in code you wrote and run the gate again, after committing and on a clean tree (§Rules touched and verification). A violation you cannot fix without leaving the approved scope is reported, not hidden.
 
-**Fixing defects or findings.** You are **resumed** for a short follow-up (`SKILL.md` §4, *Reusing agents*) with your earlier context intact; a larger round goes to a new Implementer through a relay (`protocols/context-handoff.md` §Relay): the brief lists the defect or finding IDs. Follow `<skill dir>/knowledge/code-quality.md` §1, *Test first for defects*. The reproducing test is the Tester's failing test. Run it and see it fail, fix the code, see it pass, and report both runs. If no reproducing test exists, report that and ask for one; do not write it yourself.
+**Fixing defects or findings.** You are **resumed** for a short follow-up (`SKILL.md` §4, *Reusing agents*) with your earlier context intact; a larger round goes to a new Implementer through a relay (`protocols/context-handoff.md` §Relay): the brief lists the defect or finding IDs and points to §Rules touched and verification. Follow `<skill dir>/knowledge/code-quality.md` §1, *Test first for defects*. The reproducing test is the Tester's failing test. Run it and see it fail, fix the code, see it pass, and report both runs. If no reproducing test exists, report that and ask for one; do not write it yourself.
 
 ## At completion
 

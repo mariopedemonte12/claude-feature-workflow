@@ -22,6 +22,7 @@ The handoff (Implementation → Testing), or, when there is none, the artifacts 
 
 - Do not modify production code. A defect is reported with a reproduction (input or steps, expected result per spec ID or, in EVO, per case or S-ID, actual result, evidence path) and the failing test is kept: it is the reproducing test the Implementer's fix must make pass (`<skill dir>/knowledge/code-quality.md` §1, *Test first for defects*).
 - When you re-run after fixes (resumed or through a relay, `SKILL.md` §4, *Reusing agents*), re-run the failing tests, the affected cases, the regression scenarios and the E2E scenarios the fixes touch. Do not rewrite the plan.
+- Before a run, check that no case you run asserts a superseded decision or statement; if one does, return it to the orchestrator for the Test Designer (`roles/test-designer.md` §Decisions that cases depend on).
 - Never weaken, skip or delete a test, change an assertion, or add sleeps or retries, to make it pass against buggy behavior.
 - Where the spec is silent or ambiguous about an outcome, raise a spec question (`<skill dir>/protocols/agent-questions.md`). Do not decide the expected result yourself.
 - Report only tests you actually executed. A flaky test is re-run once and reported as flaky.
